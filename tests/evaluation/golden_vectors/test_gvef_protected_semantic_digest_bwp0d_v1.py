@@ -174,54 +174,131 @@ def test_comparator_integration_pass() -> None:
     assert merged.ranking_universe.verdict is DigestVerdict.DIGEST_EQUAL
 
 
-def test_runner_fail_closed_on_unexpected_drift() -> None:
+@pytest.mark.parametrize(
+    ("candidate_rank_digest", "allow_change", "planned_class", "expected_class", "failure"),
+    [
+        pytest.param(
+            _SHA_C,
+            True,
+            FanOutEvaluationClass.LOCAL_EVALUATION,
+            FanOutEvaluationClass.DOWNSTREAM_IMPACT_EVALUATION,
+            None,
+            id="allowed-delta-reaches-registered-evidence",
+        ),
+        pytest.param(
+            _SHA_C,
+            True,
+            FanOutEvaluationClass.WHOLE_SYSTEM_REPROOF,
+            FanOutEvaluationClass.WHOLE_SYSTEM_REPROOF,
+            None,
+            id="stronger-plan-is-retained",
+        ),
+        pytest.param(
+            _SHA,
+            True,
+            FanOutEvaluationClass.LOCAL_EVALUATION,
+            FanOutEvaluationClass.LOCAL_EVALUATION,
+            None,
+            id="equal-digests-remain-local",
+        ),
+        pytest.param(
+            _SHA_C,
+            False,
+            FanOutEvaluationClass.LOCAL_EVALUATION,
+            FanOutEvaluationClass.WHOLE_SYSTEM_REPROOF,
+            FailureClassification.PROTECTED_DIGEST_DRIFT,
+            id="unexpected-drift-blocks-handoff",
+        ),
+        pytest.param(
+            _SHA_C,
+            True,
+            FanOutEvaluationClass.LOCAL_EVALUATION,
+            FanOutEvaluationClass.LOCAL_EVALUATION,
+            FailureClassification.SCHEMA_FAILURE,
+            id="invalid-original-evidence-is-not-resealed",
+        ),
+    ],
+)
+def test_runner_carries_comparison_class_to_evidence_consumers(
+    candidate_rank_digest, allow_change, planned_class, expected_class, failure
+) -> None:
     from src.evaluation.golden_vectors.contracts.validation import (
         parse_domain_evaluation_context_v1,
+    )
+    from src.evaluation.golden_vectors.integration.bounded_required_domain_fanout_v1 import (
+        BoundContextEvidenceBuilderV1,
+    )
+    from src.evaluation.golden_vectors.promotion.promotion_evidence_adapter_v1 import (
+        PromotionEvidenceAdapterV1,
+        evidence_bundle_semantic_digest,
     )
     from src.evaluation.golden_vectors.runner.deterministic_stubs_v1 import (
         DeterministicDomainEvaluatorV1,
         DeterministicDeltaBuilderV1,
-        DeterministicEvidenceBuilderV1,
         DeterministicPostGateV1,
         DeterministicPreGateV1,
         DeterministicReplayAdapterV1,
     )
-    from src.evaluation.golden_vectors.digest.comparator_v1 import ProtectedSemanticComparatorV1
     from src.evaluation.golden_vectors.registry.evidence_registry_v1 import GvefEvidenceRegistryV1
     from src.evaluation.golden_vectors.runner.generic_runner_v1 import (
         GvefRunRequestV1,
         GvefRunnerDependenciesV1,
     )
 
-    ctx = parse_domain_evaluation_context_v1(domain_context())
-    ctx_dict = ctx.model_dump(mode="json", by_alias=True)
+    ctx_dict = domain_context()
+    ctx_dict["run_manifest"]["fan_out_evaluation_class"] = planned_class.value
     ctx_dict["protected_digest_baseline"] = protected_digests()
-    ctx2 = parse_domain_evaluation_context_v1(ctx_dict)
+    ctx = parse_domain_evaluation_context_v1(ctx_dict)
 
     class DriftEvaluator(DeterministicDomainEvaluatorV1):
         def protected_digests_candidate(self, *, context):  # type: ignore[override]
-            return _digests(ru=_SHA_C, sel=_SHA_B)
+            return _digests(ru=candidate_rank_digest)
 
         def protected_digests_baseline(self, *, context):  # type: ignore[override]
             return _digests()
 
+    class InvalidEvidenceBuilder(BoundContextEvidenceBuilderV1):
+        def build(self, **kwargs):
+            return super().build(**kwargs).model_copy(update={"evidence_digest": "0" * 64})
+
+    registry = GvefEvidenceRegistryV1()
+    allowed_domains = frozenset({ProtectedDomain.RANKING_UNIVERSE}) if allow_change else frozenset()
+    builder = (
+        InvalidEvidenceBuilder(ctx)
+        if failure is FailureClassification.SCHEMA_FAILURE
+        else BoundContextEvidenceBuilderV1(ctx)
+    )
     record = GenericRunnerV1().execute(
-        GvefRunRequestV1(ctx2),
+        GvefRunRequestV1(ctx),
         GvefRunnerDependenciesV1(
             pre_gate=DeterministicPreGateV1(),
             post_gate=DeterministicPostGateV1(),
             replay_adapter=DeterministicReplayAdapterV1(),
             evaluator=DriftEvaluator(),
-            comparator=ProtectedSemanticComparatorV1(),
+            comparator=ProtectedSemanticComparatorV1(expected_changed_domains=allowed_domains),
             delta_builder=DeterministicDeltaBuilderV1(),
-            evidence_builder=DeterministicEvidenceBuilderV1(),
-            registry=GvefEvidenceRegistryV1(),
+            evidence_builder=builder,
+            registry=registry,
+            promotion_adapter=PromotionEvidenceAdapterV1(),
         ),
-        verify_deterministic_replay=False,
     )
-    assert record.state is RunnerState.FAILED
-    assert record.failure_classification is FailureClassification.PROTECTED_DIGEST_DRIFT
-    assert record.fan_out_evaluation_class is FanOutEvaluationClass.WHOLE_SYSTEM_REPROOF
+    assert record.run_manifest == ctx.run_manifest
+    assert record.fan_out_evaluation_class is expected_class
+    assert record.failure_classification is failure
+    registered = registry.get(ctx.run_manifest.run_id)
+    if failure is not None:
+        assert record.state is RunnerState.FAILED
+        assert registered is None
+        assert record.promotion_envelope is None
+        return
+
+    assert record.state is RunnerState.REGISTERED
+    assert registered is not None and registered == record.evidence_bundle
+    assert registered.fan_out_evaluation_class is expected_class
+    assert registered.evidence_digest == evidence_bundle_semantic_digest(registered)
+    assert record.promotion_envelope is not None
+    assert record.promotion_envelope.fan_out_evaluation_class is expected_class
+    assert record.promotion_envelope.evidence_digest == registered.evidence_digest
 
 
 def test_bwp0d_no_productive_side_effects_in_module() -> None:
