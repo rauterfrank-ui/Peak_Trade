@@ -12,7 +12,9 @@ import pytest
 REPO = Path(__file__).resolve().parents[2]
 MODULE_PATH = REPO / "scripts/ops/current_law_impact_map_v1.py"
 MASTER_V2 = REPO / "src/trading/master_v2"
-ACCEPTED_MASTER_V2_SOURCE = "71e4ce6912476be757ada2b4d334892320c424c6"
+# PR #7385 added native contract constraints to two offline adapters on top of
+# the #7302 Core. Their SHA-256s are in SOPH_SHADOW_CAPITAL_RISK_OFFLINE_2026_11_22.json.
+ACCEPTED_MASTER_V2_SOURCE = "b2b590de68bd7287296e437527eadd2ac84b2ac5"
 
 
 def _load():
@@ -120,10 +122,6 @@ def _frozen_source() -> str:
 
 
 def test_master_v2_unchanged_against_accepted_current_source() -> None:
-    # PR #7302 binds full effective D_t to Layer C and 29P. Compare with that
-    # fixed accepted merge, not HEAD, so later Core drift still fails. The older
-    # #7206 reference predates these three deliberate Master V2 changes.
-    # This source-integrity check grants no runtime authority; frozen tags stay.
     _frozen_source()
     accepted = ACCEPTED_MASTER_V2_SOURCE
     # A restored working file must not conceal a different staged Core body.
