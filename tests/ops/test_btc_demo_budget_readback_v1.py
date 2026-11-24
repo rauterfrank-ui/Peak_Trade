@@ -49,8 +49,14 @@ def test_sealed_budget_store_policy_and_enforcement_remain_original():
         "scripts/ops/check_n1_double_play_runtime_seal_v1.py",
         ".github/workflows/map_currency_gate_v1.yml",
     ):
+        # Slot 4 updated the separate rotation projection on main in 597b3b0e0.
+        revision = (
+            "597b3b0e0cf27d73e3b0eb704557fa7d41f57b43"
+            if path == "docs/system_atlas/policy_projection.py"
+            else BASE
+        )
         assert (ROOT / path).read_bytes() == subprocess.check_output(
-            ["git", "show", BASE + ":" + path], cwd=ROOT
+            ["git", "show", revision + ":" + path], cwd=ROOT
         )
 
 

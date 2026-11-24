@@ -589,6 +589,8 @@ def produce_current_productive_29p_risk_capital_v1(
         )
     if observation is None:
         return _fail(reasons=("FREE_MARGIN_OBSERVATION_MISSING", "NO_MINT_WITHOUT_BOUND_INPUTS"))
+    if not isinstance(observation, CurrentProductiveUsdcFreeMarginObservationV1):
+        return _fail(reasons=("PRODUCTIVE_USDC_MARGIN_OBSERVATION_REQUIRED",))
     reasons: list[str] = []
     if p01 is None:
         reasons.append("P01_FACT_MISSING")

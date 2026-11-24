@@ -118,6 +118,23 @@ def test_offline_testnet_hold_survives_cold_read(case):
         budget.owner.bind_execution_plan_v1(rid, None)
     with pytest.raises(ValueError, match="FRESH_FIRST_ENTRY"):
         host.reserve_offline_testnet_entry_v1(**kwargs)
+    from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import (
+        read_budget_revision_read_only_v1,
+    )
+    from pathlib import Path
+
+    seq, head = budget.budget_revision_ref_v1()
+    row = read_budget_revision_read_only_v1(
+        Path(budget.owner.durable_scope_identity_v1()["root"]),
+        account_identity=budget.account,
+        sequence=seq,
+        expected_digest=head,
+    )
+    saved = row["state"]["sizing_bindings"][rid]
+    assert (
+        saved["schema"] == "reservation_sizing_binding.v10"
+        and saved["offline_testnet_source_digest"] == checksum
+    )
     binding = budget.owner.risk_snapshot_v1()["state"]["sizing_bindings"][rid]
     assert binding["offline_testnet_source_digest"] == checksum
     evidence = json.loads(
@@ -223,7 +240,7 @@ def test_invalid_source_or_journal_cannot_create_hold(case, fault, reason, monke
 
         monkeypatch.setattr(draft, "immutable_json_v1", corrupt_source)
     elif fault == "writer-clock":
-        reserve = owner.try_reserve_v1
+        reserve = owner.reserve_fixture_v2
 
         def wrong_receipt_time(**arguments):
             arguments["offline_testnet_evaluated_at"] = (
@@ -231,15 +248,15 @@ def test_invalid_source_or_journal_cannot_create_hold(case, fault, reason, monke
             ).isoformat()
             return reserve(**arguments)
 
-        monkeypatch.setattr(owner, "try_reserve_v1", wrong_receipt_time)
+        monkeypatch.setattr(owner, "reserve_fixture_v2", wrong_receipt_time)
     elif fault == "race":
-        writer = owner.try_reserve_v1
+        writer = owner.reserve_fixture_v2
 
         def intervening_writer(**arguments):
             owner.restart_fail_closed_v1()
             return writer(**arguments)
 
-        monkeypatch.setattr(owner, "try_reserve_v1", intervening_writer)
+        monkeypatch.setattr(owner, "reserve_fixture_v2", intervening_writer)
     else:
         key = {
             "balance-account": "balance",

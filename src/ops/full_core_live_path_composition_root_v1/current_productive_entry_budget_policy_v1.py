@@ -75,9 +75,6 @@ class EntryBudgetPolicyV1:
         self.validate_v1()
         if context.capital_risk_mode != "LIVE_ACCOUNT_BOUND":
             raise EntryBudgetPolicyError("ENTRY_BUDGET_REQUIRES_ACCOUNT_BOUND_CONTEXT")
-        return self._apply_entry_limits_v1(context)
-
-    def _apply_entry_limits_v1(self, context):
         original_equity = context.account_equity
         policy_digest = self.digest_v1()
         binding_digest = sha256(

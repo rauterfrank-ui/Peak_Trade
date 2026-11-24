@@ -4,7 +4,7 @@ The original Core, cursor, G17, budget and Exit owners retain their roles.
 Public USD valuation is never a USDC sizing operand or account-settlement proof.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -33,6 +33,10 @@ from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
     PHYSICAL_USDC_REQUIRED_FOR_NUMERAIRE,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+    _denied_result,
+    STATUS_FAIL,
+    current_productive_decision_class_v1,
+    DECISION_ENTER,
     CurrentProductiveEnterLive29PInjectedGetV1,
     CurrentProductiveEnterLive29PPortfolioSlotContextV1,
     join_current_productive_enter_live_29p_before_venue_plan_v1,
@@ -58,6 +62,70 @@ from trading.master_v2.canonical_trading_decision_evidence_v1 import (
 from trading.master_v2.canonical_market_context_v1 import (
     serialize_canonical_market_context_canonical,
 )
+
+
+def _reservation_only_context_matches_v1(replay, owner, slot, recovery, injected, bound, epoch):
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+    )
+
+    return (
+        current_productive_decision_class_v1(replay) == DECISION_ENTER
+        and type(recovery) is HostBudgetRecoveryContextV1
+        and type(recovery.host) is PortfolioBudgetHostV1
+        and not recovery.host.closed
+        and recovery.host.execution_environment == "INTERNAL_SIMULATED_EXECUTION"
+        and type(owner) is PortfolioCapitalReservationBudgetOwnerV1
+        and recovery.host.owner is owner
+        and type(slot) is CurrentProductiveEnterLive29PPortfolioSlotContextV1
+        and slot.slot_id == "LANE_3"
+        and bound is not None
+        and recovery.host.bindings == {slot.slot_id: bound}
+        and slot.decision_id == replay.evidence.decision_id
+        and type(injected) is CurrentProductiveEnterLive29PInjectedGetV1
+        and recovery.account == recovery.host.account == injected.expected_account_identity
+        and slot.cycle_id == injected.acquisition_cycle_id
+        and epoch
+        == injected.acquisition_decision_id
+        == replay.intermediate.market_context.decision_time
+    )
+
+
+def rehearse_simulated_29p_v2(
+    *,
+    replay,
+    bound_instrument,
+    decision_epoch,
+    injected,
+    portfolio_budget_owner,
+    portfolio_slot,
+    host_budget_recovery,
+):
+    if not _reservation_only_context_matches_v1(
+        replay,
+        portfolio_budget_owner,
+        portfolio_slot,
+        host_budget_recovery,
+        injected,
+        bound_instrument,
+        decision_epoch,
+    ):
+        return _denied_result(
+            status=STATUS_FAIL,
+            blocker="RESERVATION_ONLY_ORIGINAL_ENTER_CONTEXT_REQUIRED",
+            replay=None,
+            get_count=0,
+        )
+    result = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        replay=replay,
+        bound_instrument=bound_instrument,
+        decision_epoch=decision_epoch,
+        injected=injected,
+        portfolio_budget_owner=portfolio_budget_owner,
+        portfolio_slot=portfolio_slot,
+        host_budget_recovery=host_budget_recovery,
+    )
+    return replace(result, venue_plan_authorized=False, replay=None)
 
 
 def _need(value, reason):
@@ -443,7 +511,7 @@ class BtcDemoOfflineTradingHostV1:
                 and self.budget.owner.active_sum_v1() == 0,
                 "BTC_REHEARSAL_FRESH_FLAT_ENTRY_REQUIRED",
             )
-            result = join_current_productive_enter_live_29p_before_venue_plan_v1(
+            result = rehearse_simulated_29p_v2(
                 replay=replay,
                 bound_instrument=bound,
                 decision_epoch=epoch,
@@ -453,7 +521,6 @@ class BtcDemoOfflineTradingHostV1:
                     demo._LANE, replay.evidence.decision_id, cycle.cycle_id
                 ),
                 host_budget_recovery=recovery,
-                reservation_only=True,
             )
             _need(
                 result.status == "PASS", result.first_blocker or "BTC_REHEARSAL_RESERVATION_DENIED"

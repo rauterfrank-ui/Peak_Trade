@@ -814,34 +814,6 @@ def check_authenticated_double_play_29p_admission_v1(
     )
 
 
-def _reservation_only_context_matches_v1(replay, owner, slot, recovery, injected, bound, epoch):
-    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
-        HostBudgetRecoveryContextV1,
-        PortfolioBudgetHostV1,
-    )
-
-    return (
-        current_productive_decision_class_v1(replay) == DECISION_ENTER
-        and type(recovery) is HostBudgetRecoveryContextV1
-        and type(recovery.host) is PortfolioBudgetHostV1
-        and not recovery.host.closed
-        and recovery.host.execution_environment == "INTERNAL_SIMULATED_EXECUTION"
-        and type(owner) is PortfolioCapitalReservationBudgetOwnerV1
-        and recovery.host.owner is owner
-        and type(slot) is CurrentProductiveEnterLive29PPortfolioSlotContextV1
-        and slot.slot_id == "LANE_3"
-        and bound is not None
-        and recovery.host.bindings == {slot.slot_id: bound}
-        and slot.decision_id == replay.evidence.decision_id
-        and type(injected) is CurrentProductiveEnterLive29PInjectedGetV1
-        and recovery.account == recovery.host.account == injected.expected_account_identity
-        and slot.cycle_id == injected.acquisition_cycle_id
-        and epoch
-        == injected.acquisition_decision_id
-        == replay.intermediate.market_context.decision_time
-    )
-
-
 def join_current_productive_enter_live_29p_before_venue_plan_v1(
     *,
     replay: IntegratedOfflineReplayResultV1 | None,
@@ -856,32 +828,9 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     restrictive_risk: object | None = None,
     handoff_journal: object | None = None,
     double_play: CurrentProductiveDoublePlay29PInputV1 | None = None,
-    reservation_only: bool = False,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
     """Consume Live-29P on ENTER or assess and optionally reserve a simulated reversal."""
     reject_direct_avail_eq_29p_claim_v1(claimed="producer")
-    if type(reservation_only) is not bool or (
-        reservation_only
-        and (
-            double_play is not None
-            or handoff_journal is not None
-            or not _reservation_only_context_matches_v1(
-                replay,
-                portfolio_budget_owner,
-                portfolio_slot,
-                host_budget_recovery,
-                injected,
-                bound_instrument,
-                decision_epoch,
-            )
-        )
-    ):
-        return _denied_result(
-            status=STATUS_FAIL,
-            blocker="RESERVATION_ONLY_ORIGINAL_ENTER_CONTEXT_REQUIRED",
-            replay=None,
-            get_count=0,
-        )
     native_decision = None
     if double_play is not None:
         try:
@@ -1806,7 +1755,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         called=True,
         get_count=get_count,
         status=STATUS_PASS,
-        venue_plan_authorized=not reservation_only,
+        venue_plan_authorized=True,
         first_blocker="",
         producer_output_value=str(output.value),
         producer_output_status="PRODUCED",
@@ -1814,7 +1763,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
         used_offline_default_equity=FALSE_TOKEN,
         sizing_outcome=sizing_outcome,
-        replay=None if reservation_only else rebound,
+        replay=rebound,
         portfolio_reservation_id=portfolio_reservation_id,
         portfolio_reservation_disposition=portfolio_reservation_disposition,
         reason_codes=(JOIN_SEAM_ID, STATUS_PASS, PRODUCER_IDENTITY),

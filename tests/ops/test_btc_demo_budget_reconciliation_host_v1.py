@@ -88,7 +88,9 @@ def owner_host(tmp_path, policy=None):
             }
         )
     )
-    owner = Owner(
+    from src.ops.btc_demo_testnet_entry_reservation_v1 import BtcDemoBudgetOwnerV2
+
+    owner = BtcDemoBudgetOwnerV2(
         durable_root=lane.parent / "budget-owner/owner",
         durable_account_identity=ACCOUNT,
         durable_mode="create",

@@ -6,7 +6,8 @@ inspection is not an input to this fixture.
 """
 
 from copy import deepcopy
-from dataclasses import asdict
+from dataclasses import asdict, replace
+from threading import RLock
 from datetime import datetime
 from decimal import Decimal
 import json
@@ -52,7 +53,17 @@ from src.ops.portfolio_capital_reservation_budget_v1.native_initial_margin_v1 im
     NativeInitialMarginObservationV1,
 )
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
-    _reserve_from_admitted_capital_v1,
+    PortfolioCapitalReservationBudgetOwnerV1,
+    capital_context_facts_v1,
+    apply_capital_context_facts_v1,
+    evaluate_capital_risk_sizing_v1,
+    CapitalRiskSizingOutcome,
+    CapitalReservationV1,
+    ReservationId,
+    SlotId,
+    ReservationStateV1,
+    _reservation_key,
+    observation_identity_v1,
     ReserveDispositionV1,
 )
 from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
@@ -228,16 +239,16 @@ def _sizing(cycle, bound, instruments, equity, observed_at, policy, source_diges
         reference_price=price,
         protective_stop_price=protection,
         account_equity=amount,
-        scope_capital_limit=amount,
+        scope_capital_limit=min(amount, policy.per_entry_notional_limit),
         per_trade_risk_limit=amount,
-        total_capital_limit=amount,
+        total_capital_limit=min(amount, policy.aggregate_reserved_notional_limit),
         daily_loss_remaining_budget=amount,
         instrument=meta.constraints,
         config_digest=source_digest,
         capital_risk_mode="OFFLINE_TESTNET_ACCOUNT_BOUND",
     )
     sizing, reasons = build_capital_risk_sizing_input_from_decision_v0(
-        decision=replay.evidence, capital_context=policy.constrain_offline_testnet_entry_v1(context)
+        decision=replay.evidence, capital_context=context
     )
     _need(sizing is not None, "BTC_TESTNET_SIZING_INPUT_REQUIRED:" + ",".join(reasons))
     return sizing, source
@@ -282,6 +293,219 @@ def require_fixture_journal_source_v1(owner, *, checksum, slot, decision, cycle,
     return capture
 
 
+class BtcDemoBudgetOwnerV2(PortfolioCapitalReservationBudgetOwnerV1):
+    """Isolated TESTNET owner using the existing journal format, writer and restore."""
+
+    def __init__(
+        self,
+        *,
+        durable_root,
+        durable_account_identity,
+        durable_mode,
+        durable_lane_bindings,
+        entry_budget_policy=None,
+    ):
+        root = Path(durable_root)
+        lane = demo._demo_lane_root(root.parents[2])
+        _need(
+            root == lane.parent / "budget-owner" / "owner"
+            and root.resolve() == root
+            and set(durable_lane_bindings) == {demo._LANE}
+            and durable_lane_bindings[demo._LANE].venue_native_id == demo._NATIVE,
+            "BTC_TESTNET_ORIGINAL_OWNER_REQUIRED",
+        )
+        super().__init__(
+            durable_root=root,
+            durable_account_identity=durable_account_identity,
+            durable_mode=durable_mode,
+            durable_lane_bindings=durable_lane_bindings,
+            entry_budget_policy=entry_budget_policy,
+        )
+        # V2 composes original locked recovery and sizing reads in one critical section.
+        self._lock = RLock()
+
+    def recover_at_head_v2(self, *, expected_durable_head, **inputs):
+        with self._lock:
+            if self._store.head != expected_durable_head:
+                return self._closed(("DURABLE_RECOVERY_HEAD_CHANGED",))
+            return super().recover_automatically_v1(**inputs)
+
+    def reserve_fixture_v2(
+        self,
+        *,
+        output,
+        observation,
+        slot_id,
+        decision_id,
+        cycle_id,
+        account_identity,
+        sizing_input,
+        local_generation,
+        monetary_source,
+        opening_cost_observation,
+        funding_cost_observation,
+        native_initial_margin_observation,
+        absolute_movement_cost_observation,
+        expected_durable_head,
+        offline_testnet_source_digest,
+        offline_testnet_evaluated_at,
+    ):
+        from src.ops.portfolio_capital_reservation_budget_v1.sizing_binding_v1 import (
+            ReservationSizingBindingV1,
+            request_digest_v1,
+        )
+        from src.ops.portfolio_capital_reservation_budget_v1.native_initial_margin_v1 import (
+            bind_native_initial_margin_v1,
+            require_native_margin_locked_v1,
+        )
+        from src.ops.portfolio_capital_reservation_budget_v1.absolute_movement_cost_v1 import (
+            bind_absolute_movement_cost_v1,
+        )
+        from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import (
+            remaining_loss,
+        )
+
+        with self._lock:
+            _need(self._store.head == expected_durable_head, "RESERVATION_DURABLE_HEAD_CHANGED")
+            _need(
+                self._admitted
+                and not self._by_key
+                and not self._recovery_required
+                and not self._storage_failed
+                and not self._closed_owner,
+                "BTC_TESTNET_FRESH_FIRST_ENTRY_REQUIRED",
+            )
+            observed = observation_identity_v1(output)
+            _need(
+                observed == self._observation_id and account_identity == self._account_identity,
+                "BTC_TESTNET_WRONG_ACCOUNT",
+            )
+            try:
+                capture = require_fixture_journal_source_v1(
+                    self,
+                    checksum=offline_testnet_source_digest,
+                    slot=slot_id,
+                    decision=decision_id,
+                    cycle=cycle_id,
+                    evaluated_at=offline_testnet_evaluated_at,
+                )
+            except (KeyError, OSError, ValueError, TypeError) as exc:
+                raise ValueError("BTC_TESTNET_ORIGINAL_JOURNAL_SOURCE_REQUIRED") from exc
+            _need(
+                capture["bound"] == self._lane_bindings[slot_id]["bound"]
+                and capture["policy_digest"] == self._entry_budget_policy.digest_v1()
+                and capture["decision_outcome"] == sizing_input.decision_outcome
+                and capture["bound"]["instrument_id"] == sizing_input.instrument_id
+                and decision_id == sizing_input.decision_id
+                and capture["sources"]["funding"]
+                == json.loads(funding_cost_observation.source_json)
+                and json.loads(native_initial_margin_observation.sources_json)
+                == {key: capture["sources"][key] for key in ("balance", "leverage")}
+                and json.loads(opening_cost_observation.sources_json)
+                == {
+                    key: capture["sources"][key]
+                    for key in ("account", "fees", "book", "instruments")
+                },
+                "BTC_TESTNET_ORIGINAL_SOURCE_MISMATCH",
+            )
+            _need(
+                self.local_commitment_readback_v1().generation_digest == local_generation,
+                "LOCAL_COMMITMENT_GENERATION_CHANGED_BEFORE_RESERVE",
+            )
+            applied = apply_capital_context_facts_v1(
+                sizing_input, capital_context_facts_v1(self, slot_id=slot_id)
+            )
+            decision = evaluate_capital_risk_sizing_v1(applied)
+            _need(decision.outcome is CapitalRiskSizingOutcome.PASS, "BTC_TESTNET_SIZING_DENIED")
+            args = dict(
+                applied_input=applied,
+                decision=decision,
+                monetary_source=monetary_source,
+                evaluated_at_utc=offline_testnet_evaluated_at,
+            )
+            opening = cost.bind_entry_execution_cost_v1(
+                opening_cost_observation,
+                account_identity=account_identity,
+                slot_id=slot_id,
+                cycle_id=cycle_id,
+                **args,
+            )
+            close = cost.bind_closing_execution_cost_v1(opening, **args)
+            funding = cost.bind_next_funding_cost_v1(
+                funding_cost_observation, entry_binding=opening, close_binding=close, **args
+            )
+            native = bind_native_initial_margin_v1(
+                native_initial_margin_observation,
+                original_margin=observation,
+                entry_binding=opening,
+                **args,
+            )
+            sizing = ReservationSizingBindingV1(
+                request_digest=request_digest_v1(sizing_input),
+                applied_input=applied,
+                decision=decision,
+                monetary_source=monetary_source,
+                entry_cost_binding=opening,
+                close_cost_binding=close,
+                funding_cost_binding=funding,
+                native_initial_margin_binding=native,
+                offline_testnet_source_digest=offline_testnet_source_digest,
+            )
+            movement = bind_absolute_movement_cost_v1(
+                absolute_movement_cost_observation,
+                sizing=sizing,
+                evaluated_at_utc=offline_testnet_evaluated_at,
+            )
+            sizing = ReservationSizingBindingV1.from_dict_v1(
+                replace(sizing, absolute_movement_cost_binding=movement).to_dict_v1()
+            )
+            amount = decision.canonical_position_sizing.resulting_notional
+            sizing.validate_v1(amount=amount, decision_id=decision_id)
+            require_native_margin_locked_v1(
+                self, sizing, evaluated_at_utc=offline_testnet_evaluated_at
+            )
+            closing_and_funding = cost.reserved_closing_cost_v1(
+                sizing
+            ) + cost.reserved_funding_cost_v1(sizing)
+            opening_cost = Decimal(json.loads(opening.receipt_json)["total_opening_cost_usdc"])
+            denial = self._entry_budget_denial_locked(slot_id, amount)
+            _need(not denial, denial)
+            _need(
+                decision.post_sizing_risk.resulting_max_loss + opening_cost + closing_and_funding
+                <= remaining_loss(self, slot_id),
+                "TEST_SLOT_REMAINING_LOSS_BUDGET_EXCEEDED",
+            )
+            _need(
+                amount + cost.reserved_opening_fee_v1(sizing) + closing_and_funding
+                <= min(self._budget, applied.total_capital_limit, demo._BUDGET_USDC),
+                "ENTRY_COST_CAPITAL_WITH_FEES_EXCEEDED",
+            )
+            key = _reservation_key(
+                slot_id=slot_id, decision_id=decision_id, cycle_id=cycle_id, observation_id=observed
+            )
+            hold = CapitalReservationV1(
+                ReservationId(key),
+                SlotId(slot_id),
+                decision_id,
+                cycle_id,
+                observed,
+                amount,
+                ReservationStateV1.RESERVED,
+                ("REQUESTED", "RESERVED"),
+                "",
+            )
+            self._by_key[key] = hold
+            self._by_id[key] = key
+            self._reservation_bindings[key] = dict(self._lane_bindings[slot_id])
+            self._sizing_bindings[key] = sizing
+            return self._result_locked(
+                disposition=ReserveDispositionV1.ADMITTED,
+                reservation=hold,
+                reason_codes=("BTC_TESTNET_OFFLINE_RESERVED",),
+                mutated=True,
+            )
+
+
 def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_revision, clock):
     """Called under the original Core entry lock. All nine GETs are in-memory fixtures."""
     budget = host.budget
@@ -304,6 +528,7 @@ def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_
         ),
         "BTC_TESTNET_ORIGINAL_OWNER_REQUIRED",
     )
+    _need(type(owner) is BtcDemoBudgetOwnerV2, "BTC_TESTNET_V2_OWNER_REQUIRED")
     policy = owner.entry_budget_policy_v1()
     _need(
         policy is not None
@@ -410,7 +635,7 @@ def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_
     path = folder / (checksum + ".json")
     _need(path.resolve() == path, "BTC_TESTNET_FIXTURE_SOURCE_PATH_INVALID")
     immutable_json_v1(path, capture)
-    recovered = owner.recover_automatically_v1(
+    recovered = owner.recover_at_head_v2(
         output=output,
         reconciliation=gate,
         observed=observed,
@@ -424,8 +649,7 @@ def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_
     _need(seq == expected_revision[0] + 1, "BTC_TESTNET_RECOVERY_REVISION_CHANGED")
     local = owner.local_commitment_readback_v1()
     generation = owner.require_local_commitment_readback_v1(local, account_identity=account)
-    result = _reserve_from_admitted_capital_v1(
-        owner,
+    result = owner.reserve_fixture_v2(
         output=output,
         observation=margin,
         slot_id=demo._LANE,

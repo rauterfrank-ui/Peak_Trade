@@ -619,7 +619,10 @@ def test_testnet_entry_reads_bound_to_original_decision_and_budget(
                 fresh_evidence_validated=True,
             )
             assert reserved.disposition.value == "FAIL_CLOSED" and reserved.reservation is None
-            assert reserved.reason_codes == ("PRODUCTIVE_USDC_MARGIN_OBSERVATION_REQUIRED",)
+            assert reserved.reason_codes == (
+                "PRODUCTIVE_USDC_MARGIN_OBSERVATION_REQUIRED",
+                "PRODUCER_OUTPUT_NOT_ADMITTED",
+            )
             assert report["available_usdc_covers_declared_budget"] is True
             assert report["taker_fee_rate_signed"] == "-0.0005"
             assert [path for path, _ in reads.calls] == [

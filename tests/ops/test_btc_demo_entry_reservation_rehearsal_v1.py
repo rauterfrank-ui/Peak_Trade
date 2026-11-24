@@ -236,8 +236,9 @@ def test_reservation_only_requires_original_simulated_entry_before_acquisition(
 ):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
         CurrentProductiveEnterLive29PPortfolioSlotContextV1,
-        join_current_productive_enter_live_29p_before_venue_plan_v1,
     )
+
+    from src.ops.btc_demo_offline_trading_host_v1 import rehearse_simulated_29p_v2
 
     demo, sim, entry, injected, recovery = scenario
     before = sim.owner.risk_snapshot_v1()["durable_head"]
@@ -252,7 +253,6 @@ def test_reservation_only_requires_original_simulated_entry_before_acquisition(
             "LANE_3", cycle.replay.evidence.decision_id, cycle.cycle_id
         ),
         host_budget_recovery=recovery,
-        reservation_only=True,
     )
     if missing in ("live-host", "testnet-host"):
         monkeypatch.setattr(
@@ -264,7 +264,7 @@ def test_reservation_only_requires_original_simulated_entry_before_acquisition(
         inputs["portfolio_slot"] = replace(inputs["portfolio_slot"], cycle_id="another-cycle")
     else:
         inputs[missing] = None
-    result = join_current_productive_enter_live_29p_before_venue_plan_v1(**inputs)
+    result = rehearse_simulated_29p_v2(**inputs)
     assert result.first_blocker == "RESERVATION_ONLY_ORIGINAL_ENTER_CONTEXT_REQUIRED"
     assert result.venue_plan_authorized is False and result.replay is None
     assert result.get_count == 0 and sim.owner.risk_snapshot_v1()["durable_head"] == before

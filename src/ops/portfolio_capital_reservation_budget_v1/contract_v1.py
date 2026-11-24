@@ -57,7 +57,8 @@ from src.governance.capital_risk_sizing_v1 import (
     evaluate_capital_risk_sizing_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
-    evaluate_productive_29p_capital_output_v1,
+    CapitalAdmissionClaimV1,
+    evaluate_capital_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
@@ -65,6 +66,8 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     REAL_VENUE_POST_ALLOWED,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+    ADMISSION_CONTEXT_LIVE,
+    CAPITAL_SOURCE_OBSERVED_VENUE,
     FreshPretradeGetStatusV1,
     LiveAccountBoundStatusV1,
 )
@@ -458,7 +461,6 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         lane_bindings: Mapping,
         now_unix: float,
         capital_max_age_seconds: float,
-        expected_durable_head: str | None = None,
     ) -> ReserveResultV1:
         """Fresh facts + existing reconciliation gate, with all old holds retained.
 
@@ -471,14 +473,6 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     disposition=ReserveDispositionV1.FAIL_CLOSED,
                     reservation=None,
                     reason_codes=("DURABLE_RECOVERY_UNAVAILABLE",),
-                    mutated=False,
-                )
-            # An older read must not supersede a concurrent writer's state.
-            if expected_durable_head is not None and expected_durable_head != self._store.head:
-                return self._result_locked(
-                    disposition=ReserveDispositionV1.FAIL_CLOSED,
-                    reservation=None,
-                    reason_codes=("DURABLE_RECOVERY_HEAD_CHANGED",),
                     mutated=False,
                 )
             parsed = _producer_budget(output)
@@ -1972,28 +1966,10 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         max_active_sum: Decimal | None = None,
         expected_risk_snapshot_digest: str | None = None,
         expected_local_commitment_generation: str | None = None,
-        expected_durable_head: str | None = None,
-        offline_testnet_evaluated_at: str | None = None,
         handoff_journal: object | None = None,
         futures_financial_custody: object | None = None,
         double_play_source: DoublePlayReservationSourceV1 | None = None,
     ) -> ReserveResultV1:
-        fixture_hold = (
-            type(sizing_binding) is ReservationSizingBindingV1
-            and sizing_binding.offline_testnet_source_digest is not None
-        )
-        if fixture_hold != (offline_testnet_evaluated_at is not None) or (
-            fixture_hold
-            and (
-                str(slot_id) != "LANE_3"
-                or expected_durable_head is None
-                or futures_financial_custody is not None
-                or double_play_source is not None
-                or handoff_journal is not None
-                or getattr(self._entry_budget_policy, "require_xperp_liquidation_projection", False)
-            )
-        ):
-            return self._closed(("OFFLINE_TESTNET_CLOCK_SCOPE_MISMATCH",))
         try:
             slot = SlotId(str(slot_id))
         except PortfolioCapitalBudgetError as exc:
@@ -2036,39 +2012,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
             and sizing_binding.xperp_liquidation_binding is not None
         ):
             return self._closed(("XPERP_LIQUIDATION_EXPLICIT_POLICY_REQUIRED",))
-        if fixture_hold:
-            from src.ops.btc_demo_testnet_entry_reservation_v1 import (
-                require_fixture_journal_source_v1,
-            )
-
-            try:
-                require_fixture_journal_source_v1(
-                    self,
-                    checksum=sizing_binding.offline_testnet_source_digest,
-                    slot=str(slot),
-                    decision=decision,
-                    cycle=cycle,
-                    evaluated_at=offline_testnet_evaluated_at,
-                )
-            except (ValueError, TypeError, OSError, KeyError) as exc:
-                return self._closed(("BTC_TESTNET_ORIGINAL_JOURNAL_SOURCE_REQUIRED", str(exc)))
         with self._lock:
-            if fixture_hold and self._by_key:
-                return self._result_locked(
-                    disposition=ReserveDispositionV1.FAIL_CLOSED,
-                    reservation=None,
-                    reason_codes=("BTC_TESTNET_FRESH_FIRST_ENTRY_REQUIRED",),
-                    mutated=False,
-                )
-            if expected_durable_head is not None and (
-                self._store is None or self._store.head != expected_durable_head
-            ):
-                return self._result_locked(
-                    disposition=ReserveDispositionV1.FAIL_CLOSED,
-                    reservation=None,
-                    reason_codes=("RESERVATION_DURABLE_HEAD_CHANGED",),
-                    mutated=False,
-                )
             if expected_local_commitment_generation is not None:
                 from .local_commitment_readback_v1 import read_local_commitments_locked_v1
 
@@ -2401,12 +2345,11 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     require_native_margin_locked_v1(
                         self,
                         detached_sizing,
-                        evaluated_at_utc=offline_testnet_evaluated_at or utc_now_iso_v1(),
+                        evaluated_at_utc=utc_now_iso_v1(),
                     )
                     if detached_sizing.absolute_movement_cost_binding is not None:
                         detached_sizing.absolute_movement_cost_binding.validate_v1(
-                            sizing=detached_sizing,
-                            evaluated_at_utc=offline_testnet_evaluated_at or utc_now_iso_v1(),
+                            sizing=detached_sizing, evaluated_at_utc=utc_now_iso_v1()
                         )
                 except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
                     return self._result_locked(
@@ -3333,9 +3276,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         for binding in state["sizing_bindings"].values():
             binding.pop("risk_binding", None)
             binding["schema"] = (
-                "reservation_sizing_binding.v10"
-                if "offline_testnet_source_digest" in binding
-                else "reservation_sizing_binding.v9"
+                "reservation_sizing_binding.v9"
                 if "xperp_liquidation_binding" in binding
                 else "reservation_sizing_binding.v8"
                 if "absolute_movement_cost_binding" in binding
@@ -3920,15 +3861,6 @@ def admit_sized_slot_reservation_v1(
     Sizing runs against a budget snapshot. Admission is only the later atomic
     reserve of ``resulting_notional``. A lost race denies with no partial hold.
     """
-    if (
-        observation is not None
-        and type(observation) is not CurrentProductiveUsdcFreeMarginObservationV1
-    ):
-        return _sized_deny(
-            owner,
-            disposition=ReserveDispositionV1.FAIL_CLOSED,
-            reason_codes=("PRODUCTIVE_USDC_MARGIN_OBSERVATION_REQUIRED",),
-        )
     if str(decision_id).startswith("l10:") and double_play_source is None:
         return _sized_deny(
             owner,
@@ -4004,8 +3936,19 @@ def admit_sized_slot_reservation_v1(
         fresh_evidence_fetched=fresh_evidence_fetched is True,
         fresh_evidence_validated=trusted and bound_trusted and fresh_evidence_validated is True,
     )
-    capital = evaluate_productive_29p_capital_output_v1(
-        output=output, account_identity=account_identity, instrument_id=instrument_id
+    capital = evaluate_capital_admission_v1(
+        claim=CapitalAdmissionClaimV1(
+            source_class=CAPITAL_SOURCE_OBSERVED_VENUE,
+            account_identity=account_identity,
+            instrument_id=instrument_id,
+            observed_capital_raw=output.value,
+            observed_field_name=PRODUCER_IDENTITY,
+            evidence_class="LIVE_TYPED",
+            evidence_id=output.decision_epoch,
+        ),
+        expected_account_identity=account_identity,
+        expected_instrument_id=instrument_id,
+        admission_context=ADMISSION_CONTEXT_LIVE,
     )
     admissibility = evaluate_step_29p_capital_risk_admissibility_v1(capital=capital, claim=claim)
     if admissibility.risk_admissible is not True:
@@ -4017,59 +3960,6 @@ def admit_sized_slot_reservation_v1(
     bound = owner.bind_canonical_producer_output_v1(output)
     if bound.disposition is ReserveDispositionV1.FAIL_CLOSED:
         return _sized_deny(owner, disposition=bound.disposition, reason_codes=bound.reason_codes)
-    return _reserve_from_admitted_capital_v1(
-        owner,
-        output=output,
-        observation=observation,
-        slot_id=slot_id,
-        decision_id=decision_id,
-        cycle_id=cycle_id,
-        account_identity=account_identity,
-        sizing_input=sizing_input,
-        local_generation=local_generation,
-        monetary_source=monetary_source,
-        opening_cost_observation=opening_cost_observation,
-        funding_cost_observation=funding_cost_observation,
-        native_initial_margin_observation=native_initial_margin_observation,
-        absolute_movement_cost_observation=absolute_movement_cost_observation,
-        restrictive_risk=restrictive_risk,
-        handoff_journal=handoff_journal,
-        futures_financial_custody=futures_financial_custody,
-        double_play_source=double_play_source,
-    )
-
-
-def _reserve_from_admitted_capital_v1(
-    owner,
-    *,
-    output,
-    observation,
-    slot_id,
-    decision_id,
-    cycle_id,
-    account_identity,
-    sizing_input,
-    local_generation,
-    monetary_source,
-    opening_cost_observation,
-    funding_cost_observation,
-    native_initial_margin_observation,
-    absolute_movement_cost_observation,
-    restrictive_risk=None,
-    handoff_journal=None,
-    futures_financial_custody=None,
-    double_play_source=None,
-    expected_durable_head=None,
-    offline_testnet_source_digest=None,
-    offline_testnet_evaluated_at=None,
-):
-    """Size and journal an entry after the owning admission path bound its capital."""
-    if (offline_testnet_source_digest is None) != (offline_testnet_evaluated_at is None):
-        return _sized_deny(
-            owner,
-            disposition=ReserveDispositionV1.FAIL_CLOSED,
-            reason_codes=("OFFLINE_TESTNET_CLOCK_SCOPE_MISMATCH",),
-        )
     observation_id = observation_identity_v1(output)
     existing = owner.lookup_v1(
         slot_id=slot_id,
@@ -4181,7 +4071,7 @@ def _reserve_from_admitted_capital_v1(
                 account_identity=account_identity,
                 slot_id=slot_id,
                 cycle_id=cycle_id,
-                evaluated_at_utc=offline_testnet_evaluated_at or utc_now_iso_v1(),
+                evaluated_at_utc=utc_now_iso_v1(),
             )
         except (
             ValueError,
@@ -4207,7 +4097,7 @@ def _reserve_from_admitted_capital_v1(
                 monetary_source=monetary_source,
                 applied_input=patched,
                 decision=decision,
-                evaluated_at_utc=offline_testnet_evaluated_at or utc_now_iso_v1(),
+                evaluated_at_utc=utc_now_iso_v1(),
             )
         except (
             ValueError,
@@ -4244,7 +4134,7 @@ def _reserve_from_admitted_capital_v1(
                 monetary_source=monetary_source,
                 applied_input=patched,
                 decision=decision,
-                evaluated_at_utc=offline_testnet_evaluated_at or utc_now_iso_v1(),
+                evaluated_at_utc=utc_now_iso_v1(),
             )
         except (
             ValueError,
@@ -4281,7 +4171,7 @@ def _reserve_from_admitted_capital_v1(
                 monetary_source=monetary_source,
                 applied_input=patched,
                 decision=decision,
-                evaluated_at_utc=offline_testnet_evaluated_at or utc_now_iso_v1(),
+                evaluated_at_utc=utc_now_iso_v1(),
             )
         except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
             return _sized_deny(
@@ -4313,7 +4203,6 @@ def _reserve_from_admitted_capital_v1(
             )
     sizing_binding = ReservationSizingBindingV1(
         request_digest=request_digest_v1(sizing_input),
-        offline_testnet_source_digest=offline_testnet_source_digest,
         applied_input=patched,
         decision=decision,
         risk_binding=risk_binding,
@@ -4330,7 +4219,7 @@ def _reserve_from_admitted_capital_v1(
             movement = bind_absolute_movement_cost_v1(
                 absolute_movement_cost_observation,
                 sizing=sizing_binding,
-                evaluated_at_utc=offline_testnet_evaluated_at or utc_now_iso_v1(),
+                evaluated_at_utc=utc_now_iso_v1(),
             )
             sizing_binding = replace(sizing_binding, absolute_movement_cost_binding=movement)
         except (ValueError, TypeError, KeyError, AttributeError, ArithmeticError) as exc:
@@ -4359,8 +4248,6 @@ def _reserve_from_admitted_capital_v1(
         if risk_snapshot is not None
         else None,
         expected_local_commitment_generation=local_generation,
-        expected_durable_head=expected_durable_head,
-        offline_testnet_evaluated_at=offline_testnet_evaluated_at,
         handoff_journal=handoff_journal,
         futures_financial_custody=futures_financial_custody,
         double_play_source=double_play_source,
