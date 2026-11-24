@@ -89,6 +89,8 @@ def test_tick_latches_dataset_excludes_open_paper_and_skips_completed_source(tmp
         campaign_ops.publish_v1(state / "offline-ddo-research" / cycle / "result.json", result)
         return result
 
+    # This scheduler test supplies a stub scientific result.
+    monkeypatch.setattr(campaign_ops, "read_learning_research_chain_v1", lambda *args: {})
     monkeypatch.setattr(campaign_ops, "_read_source", source)
     monkeypatch.setattr(campaign_ops, "run_offline_paper_ddo_research_cycle_v1", research)
     tick = campaign_ops.tick_research_campaign_v1

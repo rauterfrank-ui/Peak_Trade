@@ -575,6 +575,11 @@ def _run_research(
             {
                 "experiment_id": unit.research_loop_record["selected_experiment_id"],
                 "result_sha256": unit.research_loop_record["integrity"]["content_sha256"],
+                **(
+                    {"late_gap_ids": [g["reality_gap_record_id"] for g in unit.late_gaps]}
+                    if unit.late_gaps
+                    else {}
+                ),
             }
             for unit in campaign_history
         ]

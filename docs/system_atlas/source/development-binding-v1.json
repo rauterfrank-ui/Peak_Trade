@@ -1714,7 +1714,7 @@
     {
       "path": "scripts/ops/run_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "ef08beeecef79acee4a549cd71ce864b70628b4954183fcefc407cb0e697e62e"
+      "sha256": "d411e3f0df2887dcf0ee3be2e905ef6e4c04bf71cdc7ce538acf477c33c6d430"
     },
     {
       "path": "scripts/ops/shadow_ddo_learning_handoff_v1.py",
@@ -1767,6 +1767,11 @@
       "sha256": "14027702f7d32eec8dd0f9c64e0ab505c65fc758f52c6f9300e3a1ec5b6eaffb"
     },
     {
+      "path": "src/experiments/campaign_reality_gap_return_v1.py",
+      "before_sha256": null,
+      "sha256": "e2a561df709be8a6dc7f87207d3fa59ce7005f987cc7e592f0ac27a58a4ebaf8"
+    },
+    {
       "path": "src/experiments/canonical_advanced_search_v1.py",
       "before_sha256": "9e627095c9aeb75983c8343e5c269c963ab873759f2b488c510c6d5765797840",
       "sha256": "1cb4b24d0f768e22d19e5d9d956e8790aa78a6ef8a26807eb8a74409d1565749"
@@ -1804,7 +1809,7 @@
     {
       "path": "src/experiments/canonical_native_research_session_v1.py",
       "before_sha256": "4b9b45a07df4c18c5b6e11bf197c42d5226a07fe75a21cb42790d7ea8a81b31b",
-      "sha256": "330df566519bc4367bda6166df1facfac421257903e1a115fda976e457072eba"
+      "sha256": "21ea7f68816f44f7c880ff776b529f30efbd0b68bce56d4f477de65898419946"
     },
     {
       "path": "src/experiments/canonical_research_prepared_execution_v1.py",
@@ -1814,7 +1819,7 @@
     {
       "path": "src/experiments/canonical_research_result_to_meta_input_v1.py",
       "before_sha256": "26e183dbb85a23a9e93077c828a4913240df4cb9ce50693082bcfc9ed13da67b",
-      "sha256": "420f5f1674e1e4d71822c691bab5b0c023fd6ac422ebab1b528534b613b78759"
+      "sha256": "10bcf8dc93ed730eabb873dbc5abe9b0cefec76f1c97e11d6563060712e6e37e"
     },
     {
       "path": "src/experiments/f2_meta_cost_model_follow_up_v1.py",
@@ -1822,9 +1827,14 @@
       "sha256": "4c4336d72d5ce88acbcea89757b4a1c5014cadf5fd662393ecc4a3f5ff6a94e6"
     },
     {
+      "path": "src/experiments/learning_research_chain_readback_v1.py",
+      "before_sha256": null,
+      "sha256": "d55a871a485d7ad94318b86ae16ecbdbb746e9d7bf7fa74118d2710e8852768b"
+    },
+    {
       "path": "src/experiments/offline_ddo_research_cycle_v1.py",
       "before_sha256": null,
-      "sha256": "0f1b3a346a8cf3be2a852547b2246d89f0fa0a01cd7f82272b428fa67ac0cb06"
+      "sha256": "3d35df3984506f9aa91049174b6569bb0e3b85d049a1086bc9e0c7de8c31d1f0"
     },
     {
       "path": "src/features/canonical_alt_data_consumer_boundary_v1/verifier_v1.py",
@@ -3497,6 +3507,11 @@
       "sha256": "f8c4765ce50e1710a45dc1c90507730abbad5a40554ed8f67bdee2fa15aa9fbb"
     },
     {
+      "path": "tests/learning/test_learning_research_chain_readback_v1.py",
+      "before_sha256": null,
+      "sha256": "6a0a546d48065cc920b783543272c165fb6124bf184003fe4fe57f3852aaa4b1"
+    },
+    {
       "path": "tests/learning/test_market_ols_next_forecast_v1.py",
       "before_sha256": "17396e2f481f75d201dad9675ca1f9b74290dcdf562dec512b2474a1c4ba7856",
       "sha256": "ad5e09b08ab8e6e060ccebf1745bda447f97cfa6ec088d2d492e8e34a6dfeb19"
@@ -3539,7 +3554,7 @@
     {
       "path": "tests/learning/test_recurrent_offline_research_v1.py",
       "before_sha256": null,
-      "sha256": "21381bae69bf34ddf20bc3d6ddc5c6d9b266ca965ef3b16255c576e3142991f9"
+      "sha256": "04e427cfc41777c1c3ead0fe04af7f61cb1f36ce42f5183a867c83146215e7ed"
     },
     {
       "path": "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
