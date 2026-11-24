@@ -473,3 +473,35 @@ def test_rebate_retains_sign_and_generates_no_investigation(f2_result, confirmed
     assert result["consumed_fee_finding"]["underestimation_count"] == 0
     assert result["follow_up"] is None
     assert result["disposition"] == "NO_FEE_UNDERESTIMATION_OBSERVED"
+
+
+def test_campaign_cost_investigation_waits_for_matching_grid(f2_result, tmp_path):
+    from scripts.ops.run_recurrent_offline_research_v1 import CostResearchGridV1
+    from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (
+        EvaluationReceiptArchiveV1,
+    )
+    from src.experiments.campaign_reality_gap_return_v1 import route_cost_hypotheses_v1
+
+    result, path = f2_result
+    meta, proposal_id = _meta_investigation(result)
+    workspace = EvaluationReceiptArchiveV1(tmp_path / "campaign")
+    completed = dict(
+        learning_digest="a" * 64,
+        instrument_id=result["research_dataset_evidence"]["dataset_admissibility"]["instrument_id"],
+    )
+    bound = {"campaign_meta_feedback": {"meta_input_binding": {"meta_learning_record": meta}}}
+    route_cost_hypotheses_v1(workspace, completed, bound, {})
+    (request,) = workspace.root.glob("cost-hypotheses/*/request.json")
+    stored = read_v1(request)
+    assessment = request.with_name("assessment.json")
+    assert stored["proposal"]["proposal_id"] == proposal_id and not assessment.exists()
+    grids = {
+        stored["proposal"]["target"]: CostResearchGridV1(
+            archive=path, execution_digest=result["execution_digest"]
+        )
+    }
+    route_cost_hypotheses_v1(workspace, completed, bound, grids)
+    original = assessment.read_bytes()
+    route_cost_hypotheses_v1(workspace, completed, bound, grids)
+    assert assessment.read_bytes() == original
+    assert read_v1(assessment)["disposition"] == "REQUIRE_OOS_TRADE_EVIDENCE"

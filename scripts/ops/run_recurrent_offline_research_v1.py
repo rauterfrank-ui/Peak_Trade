@@ -28,6 +28,8 @@ from src.evaluation.golden_vectors.integration.evaluation_receipt_v1 import (  #
 )
 from src.experiments.canonical_experiment_identity_v1 import inspect_code_provenance_v1  # noqa: E402
 from src.experiments.canonical_native_research_session_v1 import NativeResearchExecutionArchiveV1  # noqa: E402
+from src.experiments.campaign_reality_gap_return_v1 import route_cost_hypotheses_v1  # noqa: E402
+from src.experiments.learning_research_chain_readback_v1 import read_learning_research_chain_v1  # noqa: E402
 from src.experiments.canonical_research_prepared_execution_v1 import digest_v1, publish_v1, read_v1  # noqa: E402
 from src.experiments.offline_ddo_research_cycle_v1 import (  # noqa: E402
     OfflineDdoResearchProfileV1,
@@ -94,6 +96,12 @@ class ResearchSlotScopeV1(BaseModel):
             raise ValueError("RESEARCH_SLOT_SOURCE_SCOPE_MISMATCH")
 
 
+class CostResearchGridV1(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    archive: Path
+    execution_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
 class ResearchCampaignV1(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     state: Path
@@ -101,6 +109,9 @@ class ResearchCampaignV1(BaseModel):
     shadow_follow_ups: Path
     shadow_runs: Path
     research_inputs: dict[str, list[ResearchInputV1]]
+    cost_grids: dict[str, CostResearchGridV1] = Field(
+        default_factory=dict, exclude_if=lambda grids: not grids
+    )
     jobs_per_tick: int = Field(gt=0, strict=True)
     history_jobs: int = Field(gt=0, strict=True)
     retry_seconds: int = Field(gt=0, strict=True)
@@ -301,7 +312,9 @@ def _history(workspace, instrument, strategy_id, strategy_version, as_of):
     return prior
 
 
-def _history_units(workspace, references, meta_digests, input_digest, surface):
+def _history_units(workspace, references, meta_digests, input_digest, surface, returns=()):
+    from src.experiments.campaign_reality_gap_return_v1 import with_returns_v1
+
     units = {}
     regions = {}
     for row in references:
@@ -335,6 +348,8 @@ def _history_units(workspace, references, meta_digests, input_digest, surface):
         for artifact in row["artifacts"]:
             unit = archive.get(artifact).next_meta_input
             if for_meta:
+                if returns:
+                    unit = with_returns_v1(unit, workspace.root, returns)
                 units[unit.research_loop_record["selected_experiment_id"]] = unit
             if for_coverage:
                 region = dict(unit.research_loop_record["robustness_evidence"]["parameter_region"])
@@ -401,7 +416,7 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
     receipt = workspace.safe_path_v1(Path("sources") / (digest_v1(source) + ".json"))
     done = workspace.safe_path_v1(Path("completed") / (digest + ".json"))
     if done.exists():
-        _verify_completed(workspace, digest)
+        _verify_completed(workspace, digest, campaign)
         publish_v1(receipt, {"source": source, "learning_digest": digest})
         return "ALREADY_COMPLETED"
     path = workspace.safe_path_v1(Path("jobs") / (digest + ".json"))
@@ -472,6 +487,11 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
             "history": history,
             "meta_digests": meta_digests,
         }
+        from src.experiments.campaign_reality_gap_return_v1 import known_returns_v1
+
+        returns = known_returns_v1(workspace.root, meta_digests, now)
+        if returns:
+            packet["gap_returns"] = returns
         publish_v1(path, packet)
     runner = {
         "PAPER_EXCHANGE": run_offline_paper_ddo_research_cycle_v1,
@@ -479,7 +499,12 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
         "TESTNET": run_offline_testnet_ddo_research_cycle_v1,
     }[source["surface"]]
     prior_units, coverage = _history_units(
-        workspace, packet["history"], packet["meta_digests"], input_digest, source["surface"]
+        workspace,
+        packet["history"],
+        packet["meta_digests"],
+        input_digest,
+        source["surface"],
+        packet.get("gap_returns", ()),
     )
     result = runner(
         workspace.root,
@@ -495,30 +520,30 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
     )
     if result["status"] == "MECHANISM_INCOMPLETE":
         return result["status"]
-    publish_v1(
-        done,
-        {
-            "authority": "NONE",
-            "completed_at_utc": _utc(datetime.now(timezone.utc)),
-            "instrument_id": instrument,
-            "learning_digest": digest,
-            "source": source,
-            "result_digest": digest_v1(result),
-            "input_digest": input_digest,
-            "status": result["status"],
-            "strategy_id": template["strategy_id"],
-            "strategy_version": template["strategy_version"],
-            "artifacts": [
-                artifact
-                for artifact in (
-                    result["first_artifact_id"],
-                    result["next_artifact_id"],
-                    (result.get("follow_up") or {}).get("artifact_id"),
-                )
-                if artifact is not None
-            ],
-        },
-    )
+    completed = {
+        "authority": "NONE",
+        "completed_at_utc": _utc(datetime.now(timezone.utc)),
+        "instrument_id": instrument,
+        "learning_digest": digest,
+        "source": source,
+        "result_digest": digest_v1(result),
+        "input_digest": input_digest,
+        "status": result["status"],
+        "strategy_id": template["strategy_id"],
+        "strategy_version": template["strategy_version"],
+        "artifacts": [
+            artifact
+            for artifact in (
+                result["first_artifact_id"],
+                result["next_artifact_id"],
+                (result.get("follow_up") or {}).get("artifact_id"),
+            )
+            if artifact is not None
+        ],
+    }
+    read_learning_research_chain_v1(workspace.root, digest, completed)
+    route_cost_hypotheses_v1(workspace, completed, result, campaign.cost_grids)
+    publish_v1(done, completed)
     publish_v1(receipt, {"source": source, "learning_digest": digest})
     return result["status"]
 
@@ -540,7 +565,7 @@ def _select_input(campaign, instrument, evidence, now):
     return available[max(available)] if available else None
 
 
-def _verify_completed(workspace, digest):
+def _verify_completed(workspace, digest, campaign):
     result = read_v1(workspace.safe_path_v1(Path("offline-ddo-research") / digest / "result.json"))
     completed = read_v1(workspace.safe_path_v1(Path("completed") / (digest + ".json")))
     if (
@@ -549,6 +574,8 @@ def _verify_completed(workspace, digest):
         or digest_v1(result) != completed["result_digest"]
     ):
         raise ValueError("RESEARCH_CAMPAIGN_RESULT_MISMATCH")
+    read_learning_research_chain_v1(workspace.root, digest)
+    route_cost_hypotheses_v1(workspace, completed, result, campaign.cost_grids)
 
 
 def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):
@@ -637,7 +664,7 @@ def tick_research_campaign_v1(campaign: ResearchCampaignV1, *, code, now=None):
                     completed = read_v1(receipt)
                     if completed["source"] != source:
                         raise ValueError("RESEARCH_CAMPAIGN_SOURCE_MISMATCH")
-                    _verify_completed(workspace, completed["learning_digest"])
+                    _verify_completed(workspace, completed["learning_digest"], campaign)
                     continue
                 handoff, measurements = _read_source(workspace, source, campaign)
                 status = _run_one(

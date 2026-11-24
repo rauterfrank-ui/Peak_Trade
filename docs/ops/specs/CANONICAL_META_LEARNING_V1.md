@@ -2,6 +2,11 @@
 
 Contract for Peak_Trade Phase 11 Meta-Learning.
 
+Meta-Learning belongs to the Self-Learning universe. The Optimization universe
+executes research and consumes proposals in its search. A search records the Meta
+identity it used. The technical Atlas grouping and the Python package describe
+implementation locations. See the [causal handoffs and November evidence](OFFLINE_DDO_NATIVE_RESEARCH_CYCLE_V1.md#fachliche-zuordnung-und-nachweis-am-consumer).
+
 ```text
 SCHEMA_VERSION=canonical_meta_learning_v1
 META_LEARNING_DOMAIN=peak_trade.canonical_meta_learning.v1

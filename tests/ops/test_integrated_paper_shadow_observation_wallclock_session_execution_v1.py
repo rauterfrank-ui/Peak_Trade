@@ -870,9 +870,8 @@ def test_double_play_readback_preserves_decision_clock_after_hour_boundary(
         assert timing["decision_input_available_ts_unix"] - mark[
             "receive_ts_unix"
         ] == pytest.approx(0.08, abs=1e-6)
-        assert timestamp.timestamp() == pytest.approx(
-            timing["decision_input_available_ts_unix"], rel=0, abs=1e-6
-        )
+        assert timestamp.timestamp() >= timing["decision_input_available_ts_unix"]
+        assert decision["event_time_utc"] == timing["canonical_decision_time_utc"]
         assert row["event_time_utc"] == decision["event_time_utc"]
 
 
@@ -995,6 +994,7 @@ def test_strict_shadow_readback_binds_every_typed_cycle(run_two_hour_shadow, cap
         ("wrong_market", "DDO_MARKET_CYCLE_BINDING_MISMATCH"),
         ("foreign_capture", "DDO_CAPTURE_RECORD_CYCLE_MISMATCH"),
         ("before_inputs", "DDO_MARKET_DECISION_CLOCK_INVALID"),
+        ("bridge_after_decision", "DDO_MARKET_DECISION_CLOCK_INVALID"),
         ("wrong_decision_clock", "DDO_TYPED_CYCLE_DECISION_CLOCK_MISMATCH"),
         ("missing_capture", "DDO_TYPED_CYCLE_CAPTURE_REQUIRED"),
         ("hidden_typed_cycle", "DDO_TYPED_CYCLE_VOLATILITY_FLAG_MISMATCH"),
@@ -1008,8 +1008,12 @@ def test_strict_shadow_readback_binds_every_typed_cycle(run_two_hour_shadow, cap
             cycle["ddo_capture"]["record_ids"] = other["ddo_capture"]["record_ids"]
         elif case == "before_inputs":
             timing["decision_input_available_ts_unix"] = timing["decision_cycle_ts_unix"] + 0.5
-        elif case == "wrong_decision_clock":
+        elif case == "bridge_after_decision":
             timing["decision_cycle_ts_unix"] += 0.5
+        elif case == "wrong_decision_clock":
+            timing["canonical_decision_time_utc"] = other["shadow_decision_timing"][
+                "canonical_decision_time_utc"
+            ]
         elif case == "missing_capture":
             cycle.pop("ddo_capture")
         else:
@@ -1485,7 +1489,9 @@ def test_instrument_shadow_reaches_self_learning_after_two_final_o4_bars(
         monkeypatch.setattr(
             owner,
             "read_ranked_run_slot_v1",
-            lambda config: SimpleNamespace(instrument=row, reference=lambda: ref),
+            lambda config: SimpleNamespace(
+                lane_id=instrument.lane_id, instrument=row, reference=lambda: ref
+            ),
         )
         selection_root = tmp_path / "ranked-slot.json"
         selection_root.write_text(

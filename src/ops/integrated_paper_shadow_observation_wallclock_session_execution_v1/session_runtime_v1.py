@@ -1414,6 +1414,13 @@ class WallclockSessionRuntimeV1:
                                 "decision_cycle_ts_unix": now_wall,
                                 "bridge_return_ts_unix": decision_return_ts,
                             }
+                            # Capture follows the canonical decision owner's clock.
+                            # Keep it distinct from input availability and the
+                            # bridge invocation timestamp; do not retime the core.
+                            if ddo_capture_binding.capture_event_time_utc is not None:
+                                cycle["shadow_decision_timing"]["canonical_decision_time_utc"] = (
+                                    ddo_capture_binding.capture_event_time_utc
+                                )
                             if self.candidate_observation is not None:
                                 cycle["i17_candidate_comparison"] = (
                                     self.candidate_observation.observe(

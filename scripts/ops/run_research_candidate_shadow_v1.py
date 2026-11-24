@@ -272,6 +272,8 @@ def prepare_v1(
             reality_gap_policy, registered=registered, start=start, end=_utc(plan["end_utc"])
         )
         plan["reality_gap_policy_digest"] = digest_v1(reality_gap_policy)
+        if not target.exists() or "gap_return_campaign" in read_v1(target):
+            plan["gap_return_campaign"] = str(_absolute(campaign))
     publish_v1(target, plan)
     return read_v1(target)
 

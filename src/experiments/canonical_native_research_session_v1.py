@@ -401,6 +401,17 @@ def _run_native_research_session_step_locked_v1(
                 "campaign_history": [
                     _plain(unit.research_loop_record)["integrity"] for unit in campaign_history
                 ],
+                **(
+                    {
+                        "late_gap_ids": [
+                            g["reality_gap_record_id"]
+                            for u in campaign_history
+                            for g in u.late_gaps
+                        ]
+                    }
+                    if any(u.late_gaps for u in campaign_history)
+                    else {}
+                ),
                 "campaign_regions": _plain(campaign_regions),
             }
         )
