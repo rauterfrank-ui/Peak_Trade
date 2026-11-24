@@ -142,14 +142,28 @@ def _replacement(case, initial, now, *, good_rank=True):
 @pytest.mark.parametrize("count", [1, 5])
 @pytest.mark.parametrize(
     "problem",
-    ["holding", "rank", "position", "pending", "unknown", "missing_selection", "corrupt_selection"],
+    [
+        "proposal",
+        "rank",
+        "position",
+        "pending",
+        "unknown",
+        "missing_selection",
+        "corrupt_selection",
+    ],
 )
 def test_rejected_change_preserves_all_stored_assignments_and_selections(lane_case, count, problem):
     initial = _bootstrap(lane_case, count)
     root, _, _ = lane_case
-    now = OBSERVED_UNIX + (60 if problem == "holding" else 4000)
+    now = OBSERVED_UNIX + (60 if problem == "proposal" else 4000)
     args, lane, old, _ = _replacement(lane_case, initial, now, good_rank=problem != "rank")
-    if problem == "position":
+    if problem == "proposal":
+        args["replacement_admission_by_lane"][lane] = replace(
+            args["replacement_admission_by_lane"][lane],
+            phase=RotationPhase.PROPOSAL,
+            reason_code="PROPOSAL_OK",
+        )
+    elif problem == "position":
         args["observed_portfolio"] = replace(
             args["observed_portfolio"],
             positions=(
@@ -397,11 +411,17 @@ def test_resume_preserves_barrier_until_recovery_conditions_are_proven(
         )
 
 
-@pytest.mark.parametrize("problem", ["holding", "rank", "pending", "unknown"])
+@pytest.mark.parametrize("problem", ["proposal", "rank", "pending", "unknown"])
 def test_temporary_denial_has_recovery_action_and_does_not_latch(lane_case, problem):
     initial = _bootstrap(lane_case, 5)
-    early = OBSERVED_UNIX + (60 if problem == "holding" else 4000)
-    args, _, _, _ = _replacement(lane_case, initial, early, good_rank=problem != "rank")
+    early = OBSERVED_UNIX + (60 if problem == "proposal" else 4000)
+    args, lane, _, _ = _replacement(lane_case, initial, early, good_rank=problem != "rank")
+    if problem == "proposal":
+        args["replacement_admission_by_lane"][lane] = replace(
+            args["replacement_admission_by_lane"][lane],
+            phase=RotationPhase.PROPOSAL,
+            reason_code="PROPOSAL_OK",
+        )
     if problem == "pending":
         args["replacement_admission_by_lane"] = {}
     if problem == "unknown":
@@ -410,7 +430,9 @@ def test_temporary_denial_has_recovery_action_and_does_not_latch(lane_case, prob
         publication.publish_checked_lane_selections_v1(**args)
     assert denied.value.recovery_action
     assert "recovery_action=" in str(denied.value)
-    args, lane, _, new = _replacement(lane_case, initial, OBSERVED_UNIX + 5000)
+    # Rotation owns timing. Cap23 can consume its COMMIT at the same clock.
+    retry_time = early if problem == "proposal" else OBSERVED_UNIX + 5000
+    args, lane, _, new = _replacement(lane_case, initial, retry_time)
     result = publication.publish_checked_lane_selections_v1(**args)
     assert result.selections[lane].instrument_id == new
     assert not result.resumed

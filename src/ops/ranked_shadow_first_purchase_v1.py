@@ -119,14 +119,31 @@ def _native_constraints(inventory, instrument):
 
 def _cost_limit(state, market, native, mark, side, stop_distance, available, loss):
     """Find the largest lot affordable on both sides of this book, before original CRS."""
+    return ranked_shadow_book_cost_limit_v1(
+        state.portfolio.model.params,
+        market.book,
+        market.source_observations["funding"].payload,
+        market.native_id,
+        native,
+        mark,
+        side,
+        stop_distance,
+        available,
+        loss,
+    )
+
+
+def ranked_shadow_book_cost_limit_v1(
+    params, book, funding_payload, native_id, native, mark, side, stop_distance, available, loss
+):
     fee, slip = (
         v / 10000
         for v in (
-            state.portfolio.model.params.fee_rate_bps,
-            state.portfolio.model.params.slippage_bps,
+            params.fee_rate_bps,
+            params.slippage_bps,
         )
     )
-    funding = _one(market.source_observations["funding"].payload, market.native_id)
+    funding = _one(funding_payload, native_id)
     floor, ceiling = map(_decimal, (funding["minFundingRate"], funding["maxFundingRate"]))
     if not floor <= _decimal(funding["fundingRate"]) <= ceiling or not (0 <= fee and 0 <= slip < 1):
         raise ValueError("SHADOW_FIRST_PURCHASE_COST_INPUT_INVALID")
@@ -134,7 +151,7 @@ def _cost_limit(state, market, native, mark, side, stop_distance, available, los
 
     def costs(count):
         opening, closing = (
-            market.book.executable_price_v1(s, count, native.tick_size)
+            book.executable_price_v1(s, count, native.tick_size)
             for s in (side, "SELL" if side == "BUY" else "BUY")
         )
         if opening is None or closing is None:

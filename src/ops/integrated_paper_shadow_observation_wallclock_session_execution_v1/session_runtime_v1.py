@@ -348,7 +348,9 @@ class WallclockSessionRuntimeV1:
         if self.state == WallclockSessionState.RECONNECTING:
             self._transition(WallclockSessionState.RUNNING)
             self.reconnect_success_count += 1
-            self._post_reconnect_reconciliation_required = True
+            checkpoint = self.bridge_state.slot4_pre_tick_checkpoint
+            with checkpoint.changing("RECONNECT") if checkpoint is not None else nullcontext():
+                self._post_reconnect_reconciliation_required = True
             self.writer.append_event(
                 "connectivity_events.jsonl",
                 {
@@ -400,6 +402,13 @@ class WallclockSessionRuntimeV1:
             repository_sha=str(self._expected_repository_sha or "UNKNOWN"),
             now_unix=now_wall,
         )
+        if (
+            ranked_slot is not None
+            and self.bridge_state.venue_instrument_id == "PIEVERSE-USDT-SWAP"
+        ):
+            from src.ops.ranked_shadow_slot4_rotation_v1 import retain_slot4_observation_v1
+
+            retain_slot4_observation_v1(self.bridge_state, ranked_slot, observed, "reconnect")
         self.post_reconnect_reconciliation_count += 1
         self.writer.append_event(
             "runtime_events.jsonl",
@@ -505,13 +514,42 @@ class WallclockSessionRuntimeV1:
             doc["GOVERNED_INJECTED_TRANSPORT_FAULT_USED"] = True
         self.writer.write_immutable_json("transport_telemetry.json", doc)
 
+    def _initialize_ranked_shadow_account(self, slot):
+        state = HardenedBridgeSessionStateV2(
+            instrument_id=slot.instrument.canonical_instrument_id,
+            venue_instrument_id=slot.instrument.venue_native_inst_id,
+            session_id=self.session_id,
+        )
+        portfolio = state.portfolio
+        state.portfolio = portfolio.from_params(
+            replace(portfolio.model.params, linear_futures_collateral=True)
+        )
+        if slot.lane_id == "LANE_4":
+            from src.ops.ranked_shadow_slot4_pre_tick_v1 import Slot4PreTickCheckpointV1
+
+            state.slot4_pre_tick_checkpoint = Slot4PreTickCheckpointV1(self, slot, state)
+        self.bridge_state = state
+
     def _abort(self, trigger: str, detail: str = "") -> None:
+        checkpoint = self.bridge_state.slot4_pre_tick_checkpoint
+        if checkpoint is not None:
+            try:
+                checkpoint.begin("KILLSTATE")
+            except (OSError, RuntimeError, ValueError) as exc:
+                # Losing the writer or an unfinished change must never suppress a kill.
+                self.blockers.append(f"SHADOW_SLOT4_CHECKPOINT_UNAVAILABLE:{exc}")
+                checkpoint = None
         self.killstate.raise_killstate(
             trigger=trigger,
             detail=detail,
             mono_ts=self.clock_mono(),
             wall_ts=self.clock_wall(),
         )
+        if checkpoint is not None:
+            try:
+                checkpoint.finish("KILLSTATE")
+            except (OSError, RuntimeError, ValueError, KeyError, TypeError, ArithmeticError) as exc:
+                self.blockers.append(f"SHADOW_SLOT4_CHECKPOINT_UNAVAILABLE:{exc}")
         try:
             self.writer.append_event(
                 "killstate_events.jsonl",
@@ -794,15 +832,7 @@ class WallclockSessionRuntimeV1:
                 **({"instruments_payload": ranked_entry.inventory} if ranked_entry else {}),
             )
             if ranked_slot is not None:
-                self.bridge_state = HardenedBridgeSessionStateV2(
-                    instrument_id=instrument.canonical_id,
-                    venue_instrument_id=instrument.native_id,
-                    session_id=session_id,
-                )
-                portfolio = self.bridge_state.portfolio
-                self.bridge_state.portfolio = portfolio.from_params(
-                    replace(portfolio.model.params, linear_futures_collateral=True)
-                )
+                self._initialize_ranked_shadow_account(ranked_slot)
             elif instrument != ETH_I17:
                 self.bridge_state = HardenedBridgeSessionStateV2(
                     instrument_id=self.venue_mapping.canonical_instrument_id,
@@ -895,14 +925,18 @@ class WallclockSessionRuntimeV1:
             self._transition(WallclockSessionState.RUNNING)
         except MarketDataBindingErrorV1 as exc:
             self._abort(exc.error_class, str(exc))
-            return self._finalize_result(session_id=session_id, incomplete=True)
+            return self._finalize_result(
+                session_id=session_id, incomplete=True, ranked_slot=ranked_slot
+            )
         except Exception as exc:  # noqa: BLE001
             err_cls, reconnectable = classify_transport_message_v1(str(exc))
             if not reconnectable:
                 self._abort(err_cls, str(exc))
             else:
                 self._abort("ABORT_AFTER_CONSUMPTION", str(exc))
-            return self._finalize_result(session_id=session_id, incomplete=True)
+            return self._finalize_result(
+                session_id=session_id, incomplete=True, ranked_slot=ranked_slot
+            )
 
         self.started_wall = self.clock_wall()
         self.started_mono = self.clock_mono()
@@ -1115,6 +1149,8 @@ class WallclockSessionRuntimeV1:
                     decision_input_available_ts = now_wall
                     now_mono = self.clock_mono()
                     price = float(normalized.mark_px)
+                    if self.bridge_state.slot4_pre_tick_checkpoint is not None:
+                        self.bridge_state.slot4_pre_tick_checkpoint.first_mark()
                     self.sequence += 1
                     # Natural receive timestamp from wall clock; optional Step-6
                     # governed stale control may adjust receive_ts for classification
@@ -1531,7 +1567,9 @@ class WallclockSessionRuntimeV1:
             if self.accepted_ticks <= 0:
                 self.quality_fail = True
 
-        return self._finalize_result(session_id=session_id, incomplete=self.killstate.active)
+        return self._finalize_result(
+            session_id=session_id, incomplete=self.killstate.active, ranked_slot=ranked_slot
+        )
 
     def _finalize_result(
         self,
@@ -1539,6 +1577,7 @@ class WallclockSessionRuntimeV1:
         session_id: str,
         incomplete: bool,
         force_verdict: Optional[TerminalVerdict] = None,
+        ranked_slot=None,
     ) -> WallclockSessionResultV1:
         if self.instrument_card_stream is not None:
             self.instrument_card_stream.unavailable_v1(
@@ -1549,6 +1588,41 @@ class WallclockSessionRuntimeV1:
                 self.transport.close()
             except Exception:
                 pass
+        if (
+            self.bridge_state.slot4_pre_tick_checkpoint is not None
+            and self.consumed
+            and not self.killstate.active
+            and force_verdict is None
+            and self.state
+            in {
+                WallclockSessionState.ABORTED,
+                WallclockSessionState.KILLSTATE,
+                WallclockSessionState.INVALID,
+            }
+        ):
+            # Persist the terminal fallback kill while the generation lock is still held.
+            self._abort("ABORT_AFTER_CONSUMPTION", "post_consumption_terminal")
+        abort_observation = None
+        if (
+            ranked_slot is not None
+            and ranked_slot.lane_id == "LANE_4"
+            and self.bridge_state.venue_instrument_id == "PIEVERSE-USDT-SWAP"
+            and self.killstate.active
+        ):
+            from src.ops.ranked_shadow_slot4_rotation_v1 import capture_slot4_shadow_abort_v1
+
+            try:
+                abort_observation = capture_slot4_shadow_abort_v1(self, ranked_slot, session_id)
+            except (
+                ValueError,
+                KeyError,
+                TypeError,
+                AttributeError,
+                ArithmeticError,
+                OSError,
+                RuntimeError,
+            ) as exc:
+                abort_observation = {"session_id": session_id, "unavailable": str(exc)}
         if self.lock and self.lock.acquired:
             try:
                 self.lock.release()
@@ -1738,6 +1812,33 @@ class WallclockSessionRuntimeV1:
                         "blocker": "BRIDGE_REQUIRED_FOR_FULL_SYSTEM_EVIDENCE",
                     },
                 )
+            if (
+                ranked_slot is not None
+                and self.bridge_state.venue_instrument_id == "PIEVERSE-USDT-SWAP"
+            ):
+                from src.ops.ranked_shadow_slot4_rotation_v1 import (
+                    RECEIPT,
+                    capture_slot4_shadow_closeout_v1,
+                )
+
+                try:
+                    closeout = (
+                        abort_observation
+                        if abort_observation is not None
+                        else capture_slot4_shadow_closeout_v1(self, ranked_slot, session_id)
+                    )
+                except (
+                    ValueError,
+                    KeyError,
+                    TypeError,
+                    AttributeError,
+                    ArithmeticError,
+                    OSError,
+                    RuntimeError,
+                ) as exc:
+                    # Record the unavailable handoff without changing the observation verdict.
+                    closeout = {"session_id": session_id, "unavailable": str(exc)}
+                self.writer.write_immutable_json(RECEIPT, closeout)
             if not (self.evidence_root / "shutdown_reason.json").exists():
                 self.writer.write_immutable_json(
                     "shutdown_reason.json",

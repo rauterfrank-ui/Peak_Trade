@@ -256,6 +256,16 @@ FIXED_RANK_PERSISTENCE = (
 )
 FIXED_RANK_PERSISTENCE_SHA256 = "3888a545bd92f39036eecdd66293fd012d6b0d5286e5e66eeb0480df091fc707"
 
+# A slot-4 successor must go through its scoped recovery owner. Pair its
+# publisher with the matching persistence implementation for immutable generations.
+SHADOW_SLOT4_PUBLICATION_DELTAS = {
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py": (
+        "3f9259c701a031761be90d9a951660be531134076037d20221c9d00629b63c04",
+        "c643c3d0b6a75d31586a34c5fc08e77c2ba55e6dd0b67c0409c7d013b631de17",
+    ),
+}
+SHADOW_SLOT4_PERSISTENCE_SHA256 = "bd5b98f6f64ee8403238b65f51caaca4b7827955f3b661ad9a1273e2d4b421e1"
+
 # Frank requested the open test-slot loss close and continuation of BWP1.
 # This exact two-adapter successor carries an original-budget proof to the
 # existing per-cycle safety input. The reviewed rotation parent, native Core,
@@ -794,12 +804,15 @@ def validate_reserved_slot_rotation_bundle(
             soph = _exact_double_play_successor(expected, SOPH_SHADOW_SLOT2_PUBLICATION_DELTAS)
             accepted += (soph,)
             persistence = root / FIXED_RANK_PERSISTENCE
-            if (
-                persistence.is_file()
-                and hashlib.sha256(persistence.read_bytes()).hexdigest()
-                == FIXED_RANK_PERSISTENCE_SHA256
-            ):
-                accepted += (_exact_double_play_successor(soph, FIXED_RANK_PUBLICATION_DELTAS),)
+            if persistence.is_file():
+                digest = hashlib.sha256(persistence.read_bytes()).hexdigest()
+                fixed = _exact_double_play_successor(soph, FIXED_RANK_PUBLICATION_DELTAS)
+                if digest == FIXED_RANK_PERSISTENCE_SHA256:
+                    accepted += (fixed,)
+                elif digest == SHADOW_SLOT4_PERSISTENCE_SHA256:
+                    accepted += (
+                        _exact_double_play_successor(fixed, SHADOW_SLOT4_PUBLICATION_DELTAS),
+                    )
     else:
         accepted = (before, after, protected_after, scope_bound_after)
     if actual not in accepted:

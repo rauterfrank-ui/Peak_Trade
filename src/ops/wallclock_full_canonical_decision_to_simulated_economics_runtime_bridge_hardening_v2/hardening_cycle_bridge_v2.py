@@ -595,6 +595,10 @@ class HardenedBridgeSessionStateV2:
 
     soph_entry_cost_limit_usdc: Decimal | None = None
     ranked_confirmed_entry_budget: dict[str, Any] | None = None
+    slot4_pre_tick_checkpoint: Any = field(default=None, init=False, repr=False, compare=False)
+    slot4_reconciliation_observations: dict[str, Any] = field(
+        default_factory=dict, init=False, repr=False
+    )
     soph_confirmed_entry_budget: dict[str, Any] | None = None
     soph_selection_root: Path | SophSlotSourcesV1 | None = None
     soph_selection_repository_sha: str | None = None

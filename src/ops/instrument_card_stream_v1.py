@@ -7,7 +7,7 @@ and actual decisions. It never opens a transport or starts a session.
 
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from copy import deepcopy
 from dataclasses import asdict
 from datetime import datetime
@@ -610,7 +610,13 @@ def bind_shadow_slot_entry_budget_v1(*, state, bound, budget, entry, sizing=None
         raise ValueError("CARD_SLOT_ENTRY_BUDGET_ALREADY_BOUND")
     if ranked:
         validate_ranked_sized_amount_v1(budget, entry, sizing)
-        state.ranked_confirmed_entry_budget = dict(entry)
+        checkpoint = getattr(state, "slot4_pre_tick_checkpoint", None)
+        with (
+            checkpoint.changing("BUDGET_BIND", proposed_budget=entry)
+            if checkpoint is not None
+            else nullcontext()
+        ):
+            state.ranked_confirmed_entry_budget = dict(entry)
         return state.ranked_confirmed_entry_budget
     else:
         state.soph_confirmed_entry_budget = dict(entry)

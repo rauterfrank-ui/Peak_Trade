@@ -25,6 +25,7 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 impor
     EXIT_POLICY,
     FIVE_LANE_RUNTIME_CREATED,
     FIXED_RANK_ASSIGNMENT_POLICY,
+    SHADOW_SLOT4_SUCCESSOR_POLICY,
     FREE_LANE_ASSIGNMENT_POLICY,
     INITIAL_ASSIGNMENT_POLICY,
     INSTRUMENT_ID_ALONE_SUFFICIENT,
@@ -573,7 +574,10 @@ def apply_isolated_lane_topology_v1(
     base = Path(topology_state_root_base)
     assignment: dict[str, str] = {}
 
-    if prior_topology and prior_topology.initial_assignment_policy == FIXED_RANK_ASSIGNMENT_POLICY:
+    if prior_topology and prior_topology.initial_assignment_policy in (
+        FIXED_RANK_ASSIGNMENT_POLICY,
+        SHADOW_SLOT4_SUCCESSOR_POLICY,
+    ):
         _fail("LANE_FIXED_BINDINGS_ALREADY_PUBLISHED")
 
     initial_policy = INITIAL_ASSIGNMENT_POLICY

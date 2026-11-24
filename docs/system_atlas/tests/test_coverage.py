@@ -15,7 +15,9 @@ def test_every_path_is_placed_and_current_research_boundaries_keep_their_scope()
     model = COVERAGE["_load"](ROOT, "current-model.json")
     doc, rows, routes, signals, counts = COVERAGE["load_coverage"](ROOT, model)
     assert counts["atlas_assigned_paths"] == len(rows)
-    assert counts["atlas_assigned_paths"] - counts["atlas_baseline_assigned_paths"] == 146
+    assert counts["atlas_assigned_paths"] - counts["atlas_baseline_assigned_paths"] == 153
+    assert rows["src/ops/ranked_shadow_slot4_pre_tick_v1.py"]["area"] == "STORE"
+    assert rows["src/ops/ranked_shadow_slot4_rotation_v1.py"]["area"] == "ACCOUNTING"
     assert rows["scripts/ops/up_paper_ws_depth_v1.py"]["area"] == "DATA"
     assert rows["scripts/ops/up_paper_measurement_v1.py"]["area"] == "EVAL"
     learning = rows["scripts/ops/paper_episode_learning_handoff_v1.py"]

@@ -1,7 +1,7 @@
 # Fachbereiche, Außenkanten und Dateizuordnung
 
 Stand der Außenkanten `898bc69b25981edb67569689789ee8667f7ea639` · Obsidian-Basis `e6994ec60d357576c0c42aef3e4733fe60c25e91`.
-Dateizuordnung für 22.944 Pfade am Repo-Stand `46847180a80fba7c3a324922a09340116f30af41`.
+Dateizuordnung für 22.951 Pfade am Repo-Stand `5a1acfc6e32034c9a60e5d683c8714b816a4740f`.
 Die Karte führt die Außenstruktur des Obsidian-Registers und die Fachowner aus dem Repo zusammen.
 Die Zuordnung hat Autorität NONE. Dokumentierte, historische, offene und offline ausgeführte Kanten behalten ihren Belegstatus.
 
@@ -105,7 +105,7 @@ Die Funktionsgruppen verwenden die vorhandenen Atlas-Quellen. Die native Core-Re
 
 ### RANK · Ranking-Universum
 
-81 zugeordnete Dateien.
+83 zugeordnete Dateien.
 
 - RANK-FG01 · Universe / Cap21 · [producer_v1.py](../../../src/ops/governed_futures_universe_producer_v1/producer_v1.py).
 - RANK-FG02 · Economic-MD / B05-Merkmale · [producer_v1.py](../../../src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py).
@@ -241,7 +241,7 @@ Ausgehende Übergaben: GRENZE-P09, GRENZE-P41, REPO-BUDGET-EXEC.
 
 ### ACCOUNTING · Accounting Position und Reconciliation
 
-73 zugeordnete Dateien.
+74 zugeordnete Dateien.
 
 - ACCOUNTING-FG01 · Originale Truth-/Reconciliationadmission · [models_v1.py](../../../src/ops/productive_reconciliation_runtime_binding_v1/models_v1.py).
 - ACCOUNTING-FG02 · Lifecycle-/Fillbezug · [full_core_exchange_reconciliation_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py).
@@ -338,7 +338,7 @@ Ausgehende Übergaben: GRENZE-P31, GRENZE-P43, GRENZE-P53, GRENZE-RUNTIME-SL, RE
 
 ### STORE · Persistenz Identität und Transportmechanik
 
-534 zugeordnete Dateien.
+535 zugeordnete Dateien.
 
 - STORE-FG01 · Integrität und Identityhelper · [contract_safety_v1.py](../../../src/meta/learning_loop/contract_safety_v1.py).
 - STORE-FG02 · Writer und dauerhafter Handoff · [durable_store_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py).
@@ -347,7 +347,7 @@ Eingehende Übergaben: GRENZE-OPT-STORE, GRENZE-P41, GRENZE-P42, GRENZE-P43, REK
 
 ### VIEW · Operator Anzeige Monitoring und Wissen
 
-253 zugeordnete Dateien.
+254 zugeordnete Dateien.
 
 - VIEW-FG01 · Readmodel und Projektion · [producer_v1.py](../../../src/ops/future_profile_snapshot_v1/producer_v1.py).
 - VIEW-FG02 · Anzeige und erklärender Kontext · Modulfamilie webui.
@@ -356,7 +356,7 @@ Eingehende Übergaben: GRENZE-P44, GRENZE-P45.
 
 ### ENG · Entwicklung Tests CI und Auslieferung
 
-6770 zugeordnete Dateien.
+6772 zugeordnete Dateien.
 
 - ENG-FG01 · Delivery-/Policygrenzen · Modulfamilie ci.
 
