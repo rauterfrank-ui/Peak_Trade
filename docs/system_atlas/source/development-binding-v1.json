@@ -1794,7 +1794,7 @@
     {
       "path": "scripts/ops/inspect_btc_demo_account_v1.py",
       "before_sha256": null,
-      "sha256": "e066bcc12e02919525c10e1e113bdeaf950ce0b315ba520617087168bc939974"
+      "sha256": "610f6027a1cbde47a4e45024e23db6d012a0420e1ba7b6d6e6c8dce0f74e5c7c"
     },
     {
       "path": "scripts/ops/inspect_shadow_slot4_rotation_v1.py",
@@ -2674,12 +2674,12 @@
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
       "before_sha256": null,
-      "sha256": "325cc5be058ec6cecabdd9f505da34a2554499bd409c4d366b554465583f7149"
+      "sha256": "675557de11abd0b6e04077409fc9191d2c173c2439a81a83d203976d84deede2"
     },
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "ee95955262c9600437db19c52be3ff3ab6dddc2f1af3034ecee63df4bb6d7f01"
+      "sha256": "71e4e15d38aaf57f82dacd1db7dab6baa68c37c74184690aefdf7de530c98ace"
     },
     {
       "path": "src/ops/btc_demo_testnet_entry_reservation_v1.py",
@@ -5089,7 +5089,7 @@
     {
       "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "b06f3028e1000ed244e43dc02b7c5709929486582d76ca162550ecaa11b8d060"
+      "sha256": "7eaca6fb619e72ef43d2b6da1916f2def95ef31cb7b11e0b55ce2b99d72403c3"
     },
     {
       "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
@@ -5649,7 +5649,7 @@
     {
       "path": "tests/ops/test_inspect_btc_demo_account_v1.py",
       "before_sha256": null,
-      "sha256": "d3a1d9914267d8430e56095d11b6f439d898f1fff408ead8a884a4427945b9bb"
+      "sha256": "47724ab69363a883d55151139002337a55af37afbcc056d55b1d6418a16b85b7"
     },
     {
       "path": "tests/ops/test_instrument_card_budget_assessment_v1.py",
@@ -6373,10 +6373,10 @@
   "ranked_nonlive_slots_scope": "Paper can associate the occupied L10 decision with its confirmed simulated net reversal. Ranked USDT swap Shadow reads the N5 selection, Cap23 admission, analytical positions in native contracts and Cap24 result. DDO and GVEF retain original instrument, slot and measured unit. Virtual first purchase requires a separate sizing amount and slot budget binding. The BTC offline host retains pending reversals for reconciliation. Runtime authority effect NONE.",
   "up_paper_confirmation_and_shadow_entry_scope": "The ranked Shadow entry carries native sizing, FX and costs to the virtual slot budget. UP Paper reuses its validated DDO index and timestamps the confirmed reversal. Parallel public depth observation and retrospective liquidity checks are bounded to the selected UP Paper session. The historical rank-six OL handoff remains unbound. The bounded Paper and Shadow preparations pair GVEF with authenticated session inputs and closed episodes or the Shadow DDO outcome.",
   "artifact_assignments": {
-    "repo_commit": "d78051a9c181c3ef67bc2bda7c490c1141144363",
+    "repo_commit": "1c03fc8c1646725baa7dc332029e246db70e2ea6",
     "obsidian_register": "08 Register/Repo-Dateien.jsonl",
     "obsidian_register_sha256": "a714e113cee9c4869cd37649cbcc3484c99df38dcc54d90782b97de3ab658988",
-    "records_sha256": "8ef4df6f34f1bf50f65cf7573f6d662549acb54931e130df187e425058eeab84",
+    "records_sha256": "34bd5686a57ec67405c52e9369940b492c186983ea5da220d81ace0d35f30ab2",
     "additions": [
       {
         "path": "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json",
@@ -6567,7 +6567,7 @@
           "ACCOUNTING"
         ],
         "mode": "100644",
-        "repo_blob": "0e520a88cf7fa2094ccd07cdf6a513681eeb3931",
+        "repo_blob": "c85d0729b77e112205762f877e4952a8f076e771",
         "zuordnungsbasis_blob": "cc05045617055597142899fdabc69b84d8230401"
       },
       {
@@ -6808,7 +6808,7 @@
         "role": "source",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "2ecddfe9a718669e676edaeb2753ac272e3790ae",
+        "repo_blob": "fc178fd140aaf4a01f9c0a6885734d1956a68e83",
         "zuordnungsbasis_blob": "5688f99d035b5332c9924694e5d62f7ad4e95b02"
       },
       {
@@ -6817,7 +6817,7 @@
         "role": "source",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "4192da5752ea113de92a4d4fcaea8117c1625fcc",
+        "repo_blob": "38492251511911994e958a0f8b2fcaeceac5642e",
         "zuordnungsbasis_blob": "f21b4e73c9ad3086effa1581cc735d95cd81e4da"
       },
       {
@@ -7543,7 +7543,7 @@
         "role": "test",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "718ed7b1b3e230863adcfbac0dad90f828fe8874",
+        "repo_blob": "ac522860aa2ae9695a77dc48249d391ea1e992b0",
         "zuordnungsbasis_blob": "f800399555fbac09d53fc29f13f484bbbccfeefd"
       },
       {
@@ -7640,7 +7640,7 @@
           "ACCOUNTING"
         ],
         "mode": "100644",
-        "repo_blob": "bb5fb6461a661d238f04b4bd3e9d6d094e2b67ed",
+        "repo_blob": "5afb71e5a14e73df69fb9a4a61e4fdd8072b3b75",
         "zuordnungsbasis_blob": "70defce6f9a50f134cbe95d99cc5439753a516c1"
       },
       {
