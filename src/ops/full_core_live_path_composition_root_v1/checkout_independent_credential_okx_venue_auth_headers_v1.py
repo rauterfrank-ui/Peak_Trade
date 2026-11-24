@@ -56,6 +56,7 @@ _FORBIDDEN_HANDLE_ID_TOKENS = (
     "private_key",
 )
 _SESSION_FIELDS: dict[str, tuple[str, str, str]] = {}
+_SESSION_ENVIRONMENTS: dict[str, str] = {}
 
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
@@ -73,8 +74,11 @@ class FullCoreK1BoundVenueAuthHandleV1:
     bound: bool
     can_sign: bool
     material_loaded: bool = False
+    execution_environment: str = "LIVE"
 
     def __post_init__(self) -> None:
+        if self.execution_environment not in {"LIVE", "TESTNET"}:
+            raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_ENVIRONMENT_INVALID")
         token = str(self.handle_id or "").lower()
         for forbidden in _FORBIDDEN_HANDLE_ID_TOKENS:
             if forbidden in token:
@@ -85,13 +89,16 @@ class FullCoreK1BoundVenueAuthHandleV1:
             raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_HANDLE_NOT_BOUND")
 
     def to_dict(self) -> dict[str, str]:
-        return {
+        result = {
             "handle_id": self.handle_id,
             "bound": TRUE_TOKEN if self.bound else FALSE_TOKEN,
             "can_sign": TRUE_TOKEN if self.can_sign else FALSE_TOKEN,
             "material_loaded": FALSE_TOKEN,
             "plaintext_present": FALSE_TOKEN,
         }
+        if self.execution_environment == "TESTNET":
+            result["execution_environment"] = "TESTNET"
+        return result
 
 
 def format_k1_okx_access_timestamp_iso_ms_v1(*, now: datetime | None = None) -> str:
@@ -120,6 +127,7 @@ def bind_already_held_k1_venue_auth_session_v1(
     api_key: str,
     api_secret: str,
     passphrase: str,
+    execution_environment: str = "LIVE",
 ) -> FullCoreK1BoundVenueAuthHandleV1:
     """Bind already-held session fields into a K1 handle.
 
@@ -137,8 +145,10 @@ def bind_already_held_k1_venue_auth_session_v1(
         bound=True,
         can_sign=True,
         material_loaded=False,
+        execution_environment=execution_environment,
     )
     _SESSION_FIELDS[handle.handle_id] = (key, secret, phrase)
+    _SESSION_ENVIRONMENTS[handle.handle_id] = execution_environment
     return handle
 
 
@@ -146,6 +156,7 @@ def release_k1_venue_auth_session_v1(handle: FullCoreK1BoundVenueAuthHandleV1) -
     if not isinstance(handle, FullCoreK1BoundVenueAuthHandleV1):
         raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_HANDLE_TYPE_FORBIDDEN")
     _SESSION_FIELDS.pop(handle.handle_id, None)
+    _SESSION_ENVIRONMENTS.pop(handle.handle_id, None)
 
 
 def require_same_k1_venue_credential_v1(observed_handle, signing_handle) -> None:
@@ -155,6 +166,8 @@ def require_same_k1_venue_credential_v1(observed_handle, signing_handle) -> None
         for handle in (observed_handle, signing_handle)
     ):
         raise FullCoreK1OkxVenueAuthError("K1_VENUE_CREDENTIAL_UNPROVEN")
+    if observed_handle.execution_environment != signing_handle.execution_environment:
+        raise FullCoreK1OkxVenueAuthError("K1_VENUE_CREDENTIAL_ENVIRONMENT_MISMATCH")
     if not all(
         hmac.compare_digest(observed.encode(), signing.encode())
         for observed, signing in zip(
@@ -174,11 +187,58 @@ def build_k1_okx_venue_auth_headers_v1(
     extra_headers: Mapping[str, str] | None = None,
 ) -> dict[str, str]:
     """Build OKX auth headers from an already-bound K1 handle."""
+    return _build_environment_bound_auth_headers_v1(
+        handle=handle,
+        url=url,
+        method=method,
+        body=body,
+        extra_headers=extra_headers,
+        execution_environment="LIVE",
+    )
+
+
+def build_k1_okx_demo_auth_headers_v1(
+    *,
+    handle: FullCoreK1BoundVenueAuthHandleV1,
+    url: str,
+    method: str,
+    body: str = "",
+    extra_headers: Mapping[str, str] | None = None,
+) -> dict[str, str]:
+    """Sign only an explicitly Demo-bound session; the Demo marker is mandatory."""
+    from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.constants_v1 import (
+        REST_HOST,
+    )
+
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or parsed.netloc != REST_HOST or parsed.fragment:
+        raise FullCoreK1OkxVenueAuthError("K1_DEMO_EEA_HOST_REQUIRED")
+    return _build_environment_bound_auth_headers_v1(
+        handle=handle,
+        url=url,
+        method=method,
+        body=body,
+        extra_headers=extra_headers,
+        execution_environment="TESTNET",
+    )
+
+
+def _build_environment_bound_auth_headers_v1(
+    *,
+    handle,
+    url,
+    method,
+    body,
+    extra_headers,
+    execution_environment,
+) -> dict[str, str]:
     _assert_standing_pins_v1()
     if not isinstance(handle, FullCoreK1BoundVenueAuthHandleV1):
         raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_HANDLE_TYPE_FORBIDDEN")
     if handle.bound is not True:
         raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_HANDLE_NOT_BOUND")
+    if handle.execution_environment != execution_environment:
+        raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_ENVIRONMENT_MISMATCH")
     if handle.can_sign is not True:
         raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_CAN_SIGN_REQUIRED")
     if handle.material_loaded is True:
@@ -223,7 +283,9 @@ def build_k1_okx_venue_auth_headers_v1(
         merged = dict(extra_headers)
         merged.update(headers)
         _assert_no_demo_headers(merged)
-        return merged
+        headers = merged
+    if execution_environment == "TESTNET":
+        headers["x-simulated-trading"] = "1"
     return headers
 
 
@@ -303,4 +365,6 @@ def _borrow_session_fields_v1(
     fields = _SESSION_FIELDS.get(handle.handle_id)
     if fields is None:
         raise FullCoreK1OkxVenueAuthError("EPHEMERAL_MATERIAL_GONE")
+    if _SESSION_ENVIRONMENTS.get(handle.handle_id) != handle.execution_environment:
+        raise FullCoreK1OkxVenueAuthError("K1_VENUE_AUTH_SESSION_ENVIRONMENT_MISMATCH")
     return fields

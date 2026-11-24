@@ -167,6 +167,8 @@ class AuthenticatedReconciliationGetV1:
         handle = transport._handle
         if type(handle) is not FullCoreK1BoundVenueAuthHandleV1:
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_K1_HANDLE_REQUIRED")
+        if handle.execution_environment != transport.execution_environment:
+            raise ExecutionReconciliationSourceError("RECONCILIATION_GET_ENVIRONMENT_MISMATCH")
         self.offline_l10_close = transport.offline_l10_close
         if self.offline_l10_close and (not allow_offline_l10_close or proof_root is not None):
             raise ExecutionReconciliationSourceError("RECONCILIATION_OFFLINE_CLOSE_ONLY")
@@ -340,7 +342,10 @@ class AuthenticatedReconciliationGetV1:
             raise ExecutionReconciliationSourceError("RECONCILIATION_OFFLINE_CLOSE_ONLY")
         if (
             not (host.account == identity.account_identity == self.account)
-            or identity.execution_environment != "LIVE"
+            or identity.execution_environment != self.transport.execution_environment
+            or identity.execution_environment != getattr(host, "execution_environment", "LIVE")
+            or identity.execution_environment
+            != getattr(host.owner, "execution_environment_v1", lambda: "LIVE")()
             or identity.portfolio_reservation_id != rid
         ):
             raise ExecutionReconciliationSourceError("RECONCILIATION_GET_SEQUENCE_UNPROVEN")

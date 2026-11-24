@@ -231,8 +231,9 @@ def test_incompatible_sizing_context_or_unproven_hold_cannot_replay(tmp_path, ch
     assert owner.active_sum_v1() == held_before
 
 
+@pytest.mark.parametrize("environment", ["LIVE", "TESTNET"])
 def test_durable_recovery_restores_original_sizing_without_new_learning_or_recalculation(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, environment
 ):
     bound = replace(_bound(), instrument_id="ETH-USD-PERP")
     bindings = {"LANE_1": bound}
@@ -243,6 +244,7 @@ def test_durable_recovery_restores_original_sizing_without_new_learning_or_recal
             durable_account_identity=ACCOUNT,
             durable_mode=mode,
             durable_lane_bindings=bindings,
+            execution_environment=environment,
         )
 
     def recover(owner):
@@ -263,12 +265,24 @@ def test_durable_recovery_restores_original_sizing_without_new_learning_or_recal
             capital_max_age_seconds=5,
         )
 
+    from src.ops.portfolio_capital_reservation_budget_v1 import contract_v1
+
+    evidence = []
+    original_admission = contract_v1.evaluate_capital_admission_v1
+
+    def inspect_admission(**kwargs):
+        evidence.append((kwargs["claim"].evidence_class, kwargs["claim"].execution_environment))
+        return original_admission(**kwargs)
+
+    monkeypatch.setattr(contract_v1, "evaluate_capital_admission_v1", inspect_admission)
     owner = open_owner("create")
     assert recover(owner).disposition is D.ADMITTED
     request = _sizing_input()
     admitted = _admit(owner, request)
     assert admitted.disposition is D.ADMITTED
     original = admitted.sizing_decision
+    assert evidence[-1] == (environment + "_TYPED", environment)
+    assert owner.execution_environment_v1() == environment
     owner.close()
     owner = open_owner("recover")
     try:

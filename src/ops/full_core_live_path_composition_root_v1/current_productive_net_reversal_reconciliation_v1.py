@@ -60,6 +60,11 @@ class AuthenticatedNetReversalFillV1:
 
 def collect_authenticated_net_reversal_fill_v1(*, transport, clock, plan, envelope, record):
     """Use the actual K1 GET producer with the retained order and transport barrier."""
+    _need(
+        plan.episode.account_scope.execution_environment in {"LIVE", "TESTNET"}
+        and plan.episode.account_scope.execution_environment == transport.execution_environment,
+        "NET_REVERSAL_EXECUTION_ENVIRONMENT_MISMATCH",
+    )
     account = plan.episode.account_scope.account_identity
     source = AuthenticatedReconciliationGetV1(
         transport,
@@ -482,13 +487,26 @@ def open_booked_net_position_episode_v1(*, host, bound, booking, config_digest, 
         open_position_episode_binding_v1,
     )
 
+    _need(
+        host.execution_environment in {"LIVE", "TESTNET"}
+        and host.owner.execution_environment_v1() == host.execution_environment,
+        "NET_REVERSAL_BOOKED_ENVIRONMENT_MISMATCH",
+    )
+    _need(
+        host.bindings.get(booking["slot_id"]) == bound
+        and booking["account"] == host.expected_account_identity
+        and (booking["instrument_id"], booking["native_id"], booking["selection_digest"])
+        == (bound.instrument_id, bound.venue_native_id, bound.selection_integrity_digest)
+        and host.owner.read_authenticated_net_reversal_v1(booking["reservation_id"]) == booking,
+        "NET_REVERSAL_BOOKED_ORIGINAL_OWNER_REQUIRED",
+    )
     identity = PositionEpisodeIdentityV1(
         booking["slot_id"],
         bound.instrument_id,
         bound.venue_native_id,
         booking["envelope_digest"],
         "long" if Decimal(booking["position_contracts"]) > 0 else "short",
-        PositionEpisodeScopeV1(booking["account"], "LIVE"),
+        PositionEpisodeScopeV1(booking["account"], host.execution_environment),
     )
     source_ref = "authenticated_net_reversal.v1:" + booking["booking_digest"]
     args = dict(

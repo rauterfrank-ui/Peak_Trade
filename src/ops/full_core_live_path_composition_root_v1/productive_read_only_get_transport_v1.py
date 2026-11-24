@@ -17,6 +17,7 @@ from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_ope
 from src.data.safety import DataSourceKind
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
     build_k1_okx_venue_auth_headers_v1,
+    build_k1_okx_demo_auth_headers_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
@@ -71,7 +72,16 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         max_request_count: int = 16,
         offline_l10_close_responses: Mapping[str, bytes] | None = None,
+        execution_environment: str = "LIVE",
     ) -> None:
+        if execution_environment not in {"LIVE", "TESTNET"}:
+            raise FullCoreProductiveReadOnlyGetError("GET_EXECUTION_ENVIRONMENT_INVALID")
+        if (
+            handle is not None
+            and getattr(handle, "execution_environment", "LIVE") != execution_environment
+        ):
+            raise FullCoreProductiveReadOnlyGetError("GET_CREDENTIAL_ENVIRONMENT_MISMATCH")
+        self._execution_environment = execution_environment
         self._handle = handle
         self.timeout_seconds = float(timeout_seconds)
         self.max_request_count = int(max_request_count)
@@ -95,6 +105,10 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         # Explicit private evidence consumer only. Never enabled by default;
         # request headers/signing material are not supplied to this callback.
         self.raw_response_sink_v1 = None
+
+    @property
+    def execution_environment(self) -> str:
+        return self._execution_environment
 
     @property
     def offline_l10_close(self) -> bool:
@@ -174,11 +188,16 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         if auth_required:
             if self._handle is None:
                 raise FullCoreProductiveReadOnlyGetError("PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE")
-            headers = build_k1_okx_venue_auth_headers_v1(
-                handle=self._handle, url=url, method=METHOD_GET
+            builder = (
+                build_k1_okx_demo_auth_headers_v1
+                if self.execution_environment == "TESTNET"
+                else build_k1_okx_venue_auth_headers_v1
             )
+            headers = builder(handle=self._handle, url=url, method=METHOD_GET)
             headers["User-Agent"] = USER_AGENT
             auth_sent = True
+        if self.execution_environment == "TESTNET":
+            headers["x-simulated-trading"] = "1"
         req = Request(url, method=METHOD_GET, headers=headers)
         offline_responses = self._offline_l10_close_responses
         body = b""

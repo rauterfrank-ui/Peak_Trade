@@ -423,7 +423,9 @@ def read_authenticated_execution_reconciliation_source_v1(
             or identity.budget_owner_root != str(budget_owner_root)
             or identity.portfolio_reservation_id != reservation_id
             or identity.account_identity != account
-            or identity.execution_environment != "LIVE"
+            or identity.execution_environment not in {"LIVE", "TESTNET"}
+            or identity.execution_environment
+            != revision["state"].get("execution_environment", "LIVE")
             or identity.identity_digest() != record["identity_digest"]
             or link["phase"] != "SUBMIT_MAY_HAVE_OCCURRED"
         ):

@@ -172,6 +172,59 @@ def assess_opening_execution_cost_v1(
     cycle_id,
     evaluated_at_utc=None,
 ):
+    return _assess_execution_cost_v1(
+        observation,
+        monetary_source=monetary_source,
+        applied_input=applied_input,
+        decision=decision,
+        account_identity=account_identity,
+        slot_id=slot_id,
+        cycle_id=cycle_id,
+        evaluated_at_utc=evaluated_at_utc,
+    )
+
+
+def assess_net_reversal_execution_cost_v1(observation, *, current_contracts, **kwargs):
+    """Price the full close-plus-open net delta using the original book walker."""
+    decision, applied = kwargs["decision"], kwargs["applied_input"]
+    if (
+        type(current_contracts) is not Decimal
+        or not current_contracts.is_finite()
+        or current_contracts == 0
+        or applied.selected_side.upper() not in {"LONG", "SHORT"}
+        or decision.selected_side.upper() != applied.selected_side.upper()
+        or not decision.final_quantity.is_finite()
+        or decision.final_quantity <= 0
+    ):
+        raise ValueError("NET_REVERSAL_COST_ORIGINAL_POSITION_REQUIRED")
+    target = decision.final_quantity * (1 if applied.selected_side.upper() == "LONG" else -1)
+    if target * current_contracts >= 0:
+        raise ValueError("NET_REVERSAL_COST_OPPOSITE_TARGET_REQUIRED")
+    order = _assess_execution_cost_v1(
+        observation, execution_quantity=abs(target - current_contracts), **kwargs
+    )
+    body = dict(
+        schema="net_reversal_execution_cost.v1",
+        current_contracts=str(current_contracts),
+        target_contracts=str(target),
+        signed_order_contracts=str(target - current_contracts),
+        order_cost=order,
+    )
+    return dict(**body, digest=digest(body))
+
+
+def _assess_execution_cost_v1(
+    observation,
+    *,
+    monetary_source,
+    applied_input,
+    decision,
+    account_identity,
+    slot_id,
+    cycle_id,
+    evaluated_at_utc=None,
+    execution_quantity=None,
+):
     if type(observation) is not EntryExecutionCostObservationV1 or any(
         type(getattr(observation, f.name)) is not str or not getattr(observation, f.name)
         for f in fields(observation)
@@ -310,7 +363,7 @@ def assess_opening_execution_cost_v1(
         raise ValueError("ENTRY_COST_SUPPORTED_LINEAR_CONTRACT_REQUIRED")
     if context.usdt_usdc_edge is not None:
         _event_clock(context.usdt_usdc_edge.source_timestamp, monetary_source.observed_at, now)
-    quantity = decision.final_quantity
+    quantity = decision.final_quantity if execution_quantity is None else execution_quantity
     remaining, price_sum = quantity, Decimal(0)
     side = applied_input.selected_side.upper()
     if side not in {"LONG", "SHORT"}:

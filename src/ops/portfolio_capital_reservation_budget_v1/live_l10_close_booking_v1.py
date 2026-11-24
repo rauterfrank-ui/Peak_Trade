@@ -122,7 +122,7 @@ def validate_live_l10_booking_v1(owner, row):
     if (
         checksum != digest(result)
         or type(identity) is not PortfolioExecutionReconciliationIdentityV2
-        or identity.execution_environment != "LIVE"
+        or identity.execution_environment != owner.execution_environment_v1()
         or identity.decision_outcome not in {"ENTER_LONG", "ENTER_SHORT"}
         or identity.identity_digest() != booking.episode_id
         or booking.account_identity != owner._account_identity

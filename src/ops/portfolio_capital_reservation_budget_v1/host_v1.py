@@ -315,9 +315,10 @@ class HostBudgetRecoveryContextV1:
         host = self.host
         if (
             host.closed
-            or host.execution_environment != "LIVE"
+            or host.execution_environment not in {"LIVE", "TESTNET"}
             or self.pending_orders
             or host.owner is None
+            or host.owner.execution_environment_v1() != host.execution_environment
             or lane_id not in (host.bindings or {})
             or type(proof) is not AuthenticatedExecutionReconciliationProofV1
             or proof.session_id != host.session_id
@@ -434,6 +435,7 @@ class PortfolioBudgetHostV1:
         execution_incident_state_path: Path | None = None,
         slot_capital_allocation: "SlotCapitalAllocationV1 | None" = None,
         live_slot_capital_allocation: "SlotCapitalAllocationV1 | None" = None,
+        testnet_owner_contract: str | None = None,
     ):
         if (
             not isinstance(expected_account_identity, str)
@@ -467,8 +469,23 @@ class PortfolioBudgetHostV1:
         self.transport_retry_count = 0
         self.reconciliation_transport = reconciliation_transport
         self.execution_environment = execution_environment
+        self._testnet_owner_contract = testnet_owner_contract
+        if testnet_owner_contract is not None:
+            from src.ops.btc_demo_budget_owner_v3 import CONTRACT
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            if execution_environment != "TESTNET" or testnet_owner_contract != CONTRACT:
+                raise ValueError("HOST_TESTNET_OWNER_CONTRACT_MISMATCH")
+            require_btc_testnet_slot_scope_v1(entry_budget_policy)
+        if execution_environment == "TESTNET" and entry_budget_policy is not None:
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            require_btc_testnet_slot_scope_v1(entry_budget_policy)
         self.execution_incident_state_path = execution_incident_state_path
-        if execution_incident_state_path is not None and execution_environment != "LIVE":
+        if execution_incident_state_path is not None and execution_environment not in {
+            "LIVE",
+            "TESTNET",
+        }:
             raise ValueError("HOST_EXECUTION_INCIDENT_LIVE_SCOPE_REQUIRED")
         if entry_budget_policy is not None:
             from .test_phase_limits_v1 import (
@@ -481,12 +498,12 @@ class PortfolioBudgetHostV1:
         if (
             entry_budget_policy is not None
             and entry_budget_policy.per_slot_reserved_notional_limit is not None
-            and execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            and execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "TESTNET"}
         ):
             raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
         if slot_capital_allocation is not None and (
             durable_mode != "create"
-            or execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "TESTNET"}
             or entry_budget_policy is None
         ):
             raise ValueError("HOST_SLOT_CAPITAL_SIMULATED_BOOTSTRAP_REQUIRED")
@@ -507,11 +524,16 @@ class PortfolioBudgetHostV1:
         )
 
     def _open_budget_owner_v1(self, *, account, bindings):
-        owner = PortfolioCapitalReservationBudgetOwnerV1(
+        if self.execution_environment == "TESTNET" and self.entry_budget_policy is not None:
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            require_btc_testnet_slot_scope_v1(self.entry_budget_policy, bindings)
+        owner_args = dict(
             durable_root=self.root / "owner",
             durable_account_identity=account,
             durable_mode=self.durable_mode,
             durable_lane_bindings=bindings,
+            execution_environment="TESTNET" if self.execution_environment == "TESTNET" else "LIVE",
             entry_budget_policy=self.entry_budget_policy,
             slot_capital_allocation=self._slot_capital_allocation
             if self.durable_mode == "create"
@@ -520,17 +542,35 @@ class PortfolioBudgetHostV1:
                 self._live_slot_capital_allocation if self.durable_mode == "create" else None
             ),
         )
+        if self._testnet_owner_contract is not None:
+            from src.ops.btc_demo_budget_owner_v3 import BtcDemoBudgetOwnerV3
+
+            # Explicit selection, no journal migration or fallback to a generic
+            # owner. V3 also validates the existing isolated Demo root itself.
+            del owner_args["execution_environment"]
+            del owner_args["live_slot_capital_allocation"]
+            owner = BtcDemoBudgetOwnerV3(**owner_args)
+        else:
+            owner = PortfolioCapitalReservationBudgetOwnerV1(**owner_args)
         restored_policy = owner.entry_budget_policy_v1()
         if (
             restored_policy is not None
             and restored_policy.per_slot_reserved_notional_limit is not None
-            and self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            and self.execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "TESTNET"}
         ):
             owner.close()
             raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
         if owner.has_live_slot_capital_allocation_v1() and self.execution_environment != "LIVE":
             owner.close()
             raise ValueError("LIVE_SLOT_CAPITAL_HOST_SCOPE_MISMATCH")
+        if self.execution_environment == "TESTNET" and restored_policy is not None:
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            try:
+                require_btc_testnet_slot_scope_v1(restored_policy, bindings)
+            except Exception:
+                owner.close()
+                raise
         return owner
 
     def recover_owner_for_l10_close_booking_v1(self, bindings):
@@ -538,7 +578,11 @@ class PortfolioBudgetHostV1:
 
     def recover_owner_for_occupied_execution_v1(self, bindings, *, operation):
         """Open the original writer without reconciling or admitting new capital."""
-        if self.closed or self.execution_environment != "LIVE" or self.durable_mode != "recover":
+        if (
+            self.closed
+            or self.execution_environment not in {"LIVE", "TESTNET"}
+            or self.durable_mode != "recover"
+        ):
             raise ValueError(f"{operation}_ORIGINAL_HOST_REQUIRED")
         if self.owner is None:
             self.owner = self._open_budget_owner_v1(
@@ -665,13 +709,17 @@ class PortfolioBudgetHostV1:
     def observe_authenticated_execution_reconciliation_v1(
         self, bindings, *, proof_root=None, deliver_authenticated_incidents=False
     ):
-        """Observe the original LIVE chain with per-request GET proof."""
+        """Observe the original environment-bound chain with per-request GET proof."""
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedReconciliationGetV1,
         )
 
-        if self.execution_environment != "LIVE":
+        if self.execution_environment not in {"LIVE", "TESTNET"}:
             raise ValueError("HOST_EXECUTION_EVIDENCE_LIVE_IDENTITY_REQUIRED")
+        if self.execution_environment == "TESTNET":
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            require_btc_testnet_slot_scope_v1(self.entry_budget_policy, bindings)
         if deliver_authenticated_incidents and (
             proof_root is None or self.execution_incident_state_path is None
         ):
@@ -682,6 +730,8 @@ class PortfolioBudgetHostV1:
             clock=self.clock,
             proof_root=proof_root,
         )
+        if self.reconciliation_transport.execution_environment != self.execution_environment:
+            raise ValueError("HOST_AUTHENTICATED_GET_ENVIRONMENT_MISMATCH")
         context = self._observe_with_retry_v1(
             bindings,
             capture=capture,
@@ -742,7 +792,7 @@ class PortfolioBudgetHostV1:
         if (
             self.closed
             or self.owner is None
-            or self.execution_environment != "LIVE"
+            or self.execution_environment not in {"LIVE", "TESTNET"}
             or self.bindings != bindings
             or len(bindings) != 1
             or proof_root is None

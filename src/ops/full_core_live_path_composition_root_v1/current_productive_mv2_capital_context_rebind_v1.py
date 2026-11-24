@@ -49,8 +49,10 @@ class ProductiveCapitalRiskLimitsV1:
     lineage_ref: str
 
 
-def _productive_config_digest_v1(*, lineage_ref: str) -> str:
-    material = f"{REBIND_SEAM_ID}:{lineage_ref}:{CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND}"
+def _productive_config_digest_v1(
+    *, lineage_ref: str, capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
+) -> str:
+    material = f"{REBIND_SEAM_ID}:{lineage_ref}:{capital_risk_mode}"
     return hashlib.sha256(material.encode("utf-8")).hexdigest()
 
 
@@ -79,6 +81,33 @@ def build_current_productive_live_account_capital_context_v1(
     instrument_constraints: InstrumentQuantityConstraintsV1,
 ) -> CanonicalCoreRuntimeCapitalContextV0:
     """Construct LIVE_ACCOUNT_BOUND capital_context for authoritative sizing."""
+    return build_current_productive_account_capital_context_v1(
+        instrument_id=instrument_id,
+        typed_account_equity=typed_account_equity,
+        reference_price=reference_price,
+        protective_stop_price=protective_stop_price,
+        instrument_constraints=instrument_constraints,
+        execution_environment="LIVE",
+    )
+
+
+def build_current_productive_account_capital_context_v1(
+    *,
+    instrument_id,
+    typed_account_equity,
+    reference_price,
+    protective_stop_price,
+    instrument_constraints,
+    execution_environment,
+) -> CanonicalCoreRuntimeCapitalContextV0:
+    """Use the original limit producer with an explicit venue environment."""
+    if execution_environment not in {"LIVE", "TESTNET"}:
+        raise CurrentProductiveMv2CapitalContextRebindError("ACCOUNT_CAPITAL_ENVIRONMENT_INVALID")
+    mode = (
+        CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
+        if execution_environment == "LIVE"
+        else "TESTNET_ACCOUNT_BOUND"
+    )
     limits = resolve_productive_capital_risk_limits_from_29p_producer_v1(
         typed_account_equity=typed_account_equity,
     )
@@ -106,10 +135,12 @@ def build_current_productive_live_account_capital_context_v1(
         total_capital_limit=limits.total_capital_limit,
         daily_loss_remaining_budget=limits.daily_loss_remaining_budget,
         instrument=instrument_constraints,
-        config_digest=_productive_config_digest_v1(lineage_ref=limits.lineage_ref),
-        capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+        config_digest=_productive_config_digest_v1(
+            lineage_ref=limits.lineage_ref, capital_risk_mode=mode
+        ),
+        capital_risk_mode=mode,
     )
-    if ctx.capital_risk_mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+    if ctx.capital_risk_mode != mode:
         raise CurrentProductiveMv2CapitalContextRebindError("LIVE_ACCOUNT_BOUND_MODE_NOT_BOUND")
     if ctx.account_equity != typed_account_equity:
         raise CurrentProductiveMv2CapitalContextRebindError("PRODUCER_EQUITY_NOT_BOUND")
