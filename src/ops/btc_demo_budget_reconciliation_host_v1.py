@@ -343,6 +343,10 @@ class BtcDemoBudgetReconciliationHostV1:
         lock fences another in-process budget transition during the Core write.
         It does not provide a distributed transaction across the Core stores.
         """
+        _need(
+            type(self.owner) is PortfolioCapitalReservationBudgetOwnerV1,
+            "BTC_TESTNET_V2_FIRST_ENTRY_ONLY",
+        )
         _number(now)
         identity, revision, captured, snapshot = self._require_matched_reconciliation_v1(
             reconciliation, require_receipt=True

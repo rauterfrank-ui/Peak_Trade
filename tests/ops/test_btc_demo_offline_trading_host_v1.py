@@ -42,7 +42,7 @@ EXIT_CONFIG = layer_c_derived_exit_policy_adverse_config_digest_v1(
 )
 
 
-def setup_host(tmp_path, monkeypatch, direction=1, *, policy=None):
+def setup_host(tmp_path, monkeypatch, direction=1, *, policy=None, testnet_v2=False):
     row = instrument(settlement="USD")
     row["instId"] = demo._NATIVE
     row["expTime"] = str(int(datetime(2031, 3, 28, 8, tzinfo=timezone.utc).timestamp() * 1000))
@@ -54,7 +54,7 @@ def setup_host(tmp_path, monkeypatch, direction=1, *, policy=None):
     )
     monkeypatch.setattr(budget_fixture, "BOUND", bound)
     monkeypatch.setattr(budget_fixture, "BINDINGS", {"LANE_3": bound})
-    budget, _ = budget_fixture.owner_host(tmp_path, policy=policy)
+    budget, _ = budget_fixture.owner_host(tmp_path, policy=policy, testnet_v2=testnet_v2)
     c1 = NOW.timestamp() - 120
     closes = [64000 * (1 + direction * (i - 99) * 0.002) for i in range(100)]
     candles = {

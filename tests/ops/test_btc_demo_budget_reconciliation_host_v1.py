@@ -73,7 +73,7 @@ def capital():
     )
 
 
-def owner_host(tmp_path, policy=None):
+def owner_host(tmp_path, policy=None, *, testnet_v2=False):
     root = tmp_path / "demo"
     root.mkdir(mode=0o700)
     lane = root / "testnet-state/LANE_3"
@@ -90,7 +90,8 @@ def owner_host(tmp_path, policy=None):
     )
     from src.ops.btc_demo_testnet_entry_reservation_v1 import BtcDemoBudgetOwnerV2
 
-    owner = BtcDemoBudgetOwnerV2(
+    owner_type = BtcDemoBudgetOwnerV2 if testnet_v2 else Owner
+    owner = owner_type(
         durable_root=lane.parent / "budget-owner/owner",
         durable_account_identity=ACCOUNT,
         durable_mode="create",
@@ -519,7 +520,7 @@ def test_typed_original_usdc_capital_reaches_original_bounded_owner(
         Path(__file__).resolve().parents[2]
         / "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
     )
-    host, observed = owner_host(tmp_path, policy)
+    host, observed = owner_host(tmp_path, policy, testnet_v2=True)
     try:
         report = demo.read_btc_demo_coverage_v2(reads=CoverageReads(), expected_uid=ACCOUNT)
         from src.ops.portfolio_capital_reservation_budget_v1.recovery_v1 import (

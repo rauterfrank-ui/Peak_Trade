@@ -35,7 +35,7 @@ def case(tmp_path, monkeypatch, request):
         aggregate_reserved_notional_limit=Decimal(25),
     )
     host, candles, admission, public = btc.setup_host(
-        tmp_path, monkeypatch, direction, policy=policy
+        tmp_path, monkeypatch, direction, policy=policy, testnet_v2=True
     )
     try:
         entry, _ = btc.enter(host, candles, admission, direction)

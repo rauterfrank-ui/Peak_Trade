@@ -324,6 +324,9 @@ class BtcDemoBudgetOwnerV2(PortfolioCapitalReservationBudgetOwnerV1):
         # V2 composes original locked recovery and sizing reads in one critical section.
         self._lock = RLock()
 
+    def try_reserve_v1(self, **kwargs):
+        return self._closed(("BTC_TESTNET_V2_FIXTURE_RESERVATION_REQUIRED",))
+
     def recover_at_head_v2(self, *, expected_durable_head, **inputs):
         with self._lock:
             if self._store.head != expected_durable_head:
