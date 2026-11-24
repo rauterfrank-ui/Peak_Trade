@@ -1,7 +1,7 @@
 # Fachbereiche, Außenkanten und Dateizuordnung
 
 Stand der Außenkanten `898bc69b25981edb67569689789ee8667f7ea639` · Obsidian-Basis `e6994ec60d357576c0c42aef3e4733fe60c25e91`.
-Dateizuordnung für 22.954 Pfade am Repo-Stand `a7ab2b24aff613c361ed08bd992f32766fea0e12`.
+Dateizuordnung für 22.956 Pfade am Repo-Stand `44ee132e425ff8ff4486849bbbf23526414d9504`.
 Die Karte führt die Außenstruktur des Obsidian-Registers und die Fachowner aus dem Repo zusammen.
 Die Zuordnung hat Autorität NONE. Dokumentierte, historische, offene und offline ausgeführte Kanten behalten ihren Belegstatus.
 
@@ -228,7 +228,7 @@ Ausgehende Übergaben: GRENZE-P08, GRENZE-P10, GRENZE-P56, REPO-RISK-BUDGET.
 
 ### BUDGET · Portfolio und Reservierung
 
-84 zugeordnete Dateien.
+85 zugeordnete Dateien.
 
 - BUDGET-FG01 · Stabiler Start/Restore · [host_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/host_v1.py).
 - BUDGET-FG02 · Admission / Rest / Hold · [contract_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py).
@@ -356,7 +356,7 @@ Eingehende Übergaben: GRENZE-P44, GRENZE-P45.
 
 ### ENG · Entwicklung Tests CI und Auslieferung
 
-6774 zugeordnete Dateien.
+6775 zugeordnete Dateien.
 
 - ENG-FG01 · Delivery-/Policygrenzen · Modulfamilie ci.
 
