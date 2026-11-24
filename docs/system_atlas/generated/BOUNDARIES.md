@@ -1,7 +1,7 @@
 # Fachbereiche, Außenkanten und Dateizuordnung
 
 Stand der Außenkanten `898bc69b25981edb67569689789ee8667f7ea639` · Obsidian-Basis `e6994ec60d357576c0c42aef3e4733fe60c25e91`.
-Dateizuordnung für 22.956 Pfade am Repo-Stand `5992b75da79ff217c2d1d2e6935c3113a6b06515`.
+Dateizuordnung für 22.965 Pfade am Repo-Stand `e045776d73537dfec4e200ff99137188f3185e88`.
 Die Karte führt die Außenstruktur des Obsidian-Registers und die Fachowner aus dem Repo zusammen.
 Die Zuordnung hat Autorität NONE. Dokumentierte, historische, offene und offline ausgeführte Kanten behalten ihren Belegstatus.
 
@@ -215,7 +215,7 @@ Ausgehende Übergaben: GRENZE-P06, REPO-TREASURY-RISK.
 
 ### RISK · Risk Sizing und Equityadmission
 
-309 zugeordnete Dateien.
+312 zugeordnete Dateien.
 
 - RISK-FG01 · Q0 und Kapitaladmission · Modulfamilie governed_productive_account_equity_authority_producer_v1.
 - RISK-FG02 · Decision-bound Risikomodelle · [decision_bound_model_adapters_v1.py](../../../src/risk/decision_bound_model_adapters_v1.py).
@@ -228,7 +228,7 @@ Ausgehende Übergaben: GRENZE-P08, GRENZE-P10, GRENZE-P56, REPO-RISK-BUDGET.
 
 ### BUDGET · Portfolio und Reservierung
 
-85 zugeordnete Dateien.
+87 zugeordnete Dateien.
 
 - BUDGET-FG01 · Stabiler Start/Restore · [host_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/host_v1.py).
 - BUDGET-FG02 · Admission / Rest / Hold · [contract_v1.py](../../../src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py).
@@ -303,7 +303,7 @@ Ausgehende Übergaben: GRENZE-P01, GRENZE-P02, GRENZE-P07, GRENZE-P16, GRENZE-P5
 
 ### EXEC · Intent Ausführungsgrenze und Lifecycle
 
-324 zugeordnete Dateien.
+325 zugeordnete Dateien.
 
 - EXEC-FG01 · CanonicalIntent · [canonical_order_intent_v1.py](../../../src/governance/canonical_order_intent_v1.py).
 - EXEC-FG02 · Venueplan und Envelope · [final_order_envelope_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py).
@@ -325,7 +325,7 @@ Ausgehende Übergaben: GRENZE-P39, GRENZE-P40.
 
 ### HOST · Host Session und Prozessbetrieb
 
-913 zugeordnete Dateien.
+914 zugeordnete Dateien.
 
 - HOST-FG01 · Manifest effektive Config und Ressourcen · [session_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/session_v1.py).
 - HOST-FG02 · Attempt und Originalaufruf · [governed_attempt_v1.py](../../../src/ops/bounded_peaktrade_system_composition_v1/governed_attempt_v1.py).
@@ -356,7 +356,7 @@ Eingehende Übergaben: GRENZE-P44, GRENZE-P45.
 
 ### ENG · Entwicklung Tests CI und Auslieferung
 
-6775 zugeordnete Dateien.
+6777 zugeordnete Dateien.
 
 - ENG-FG01 · Delivery-/Policygrenzen · Modulfamilie ci.
 

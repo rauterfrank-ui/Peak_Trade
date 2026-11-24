@@ -4,6 +4,7 @@ import argparse
 from datetime import datetime, timezone
 import getpass
 import json
+import subprocess
 import sys
 import warnings
 from urllib.parse import urlencode
@@ -25,6 +26,20 @@ def account_reader(api_key, secret, passphrase):
         demo._FEE + "?" + urlencode({"instType": "FUTURES", "instFamily": demo._FAMILY}),
     }
 
+    return _scoped_demo_reader(api_key, secret, passphrase, endpoints)
+
+
+def pretrade_reader(api_key, secret, passphrase):
+    """Sign only the exact Slot 3 Demo entry queries, including no order send."""
+    endpoints = {
+        path + ("?" + urlencode(query) if query else "")
+        for key, (path, query) in demo.BTC_DEMO_PRETRADE_QUERIES_V1.items()
+        if key not in {"book", "funding"}
+    }
+    return _scoped_demo_reader(api_key, secret, passphrase, endpoints)
+
+
+def _scoped_demo_reader(api_key, secret, passphrase, endpoints):
     def sign_get(endpoint):
         if endpoint not in endpoints:
             raise ValueError("BTC_DEMO_ACCOUNT_QUERY_OUT_OF_SCOPE")
@@ -59,6 +74,7 @@ def inspect_account(reads, expected_uid, clock):
     instrument = rows[demo._INSTRUMENTS]
     fee = next(f for f in rows[demo._FEE]["feeGroup"] if f["groupId"] == instrument["groupId"])
     return {
+        "key_permissions": account.get("perm") or None,
         "instrument": demo._NATIVE,
         "observed_at": report["coverage_observed_at"],
         "futures_account_mode": account.get("acctLv") == "2" if account.get("acctLv") else None,
@@ -83,29 +99,52 @@ def main():
     parser = argparse.ArgumentParser(
         description="Einmalige Leseprüfung für Slot 3 im OKX-EEA-Demokonto."
     )
+    parser.add_argument("--keychain-service", help="Bestehenden macOS-Schlüsselbunddienst lesen")
+    parser.add_argument("--demo-uid", help="Erwartete UID des Demokontos")
     parser.add_argument("--lesen", action="store_true", help="Demokonto einmal lesend abfragen")
     args = parser.parse_args()
     if not args.lesen:
         parser.print_help()
         return 0
-    if not sys.stdin.isatty():
+    if not args.keychain_service and not sys.stdin.isatty():
         parser.exit(2, "Für die verdeckte Eingabe ist ein lokales Terminal erforderlich.\n")
     try:
-        with warnings.catch_warnings():
-            warnings.simplefilter("error", getpass.GetPassWarning)
-            uid = getpass.getpass("Erwartete UID des Demokontos: ").strip()
-            if not uid.isascii() or not uid.isdecimal():
-                raise ValueError("Ungültige UID")
-            fields = [
-                getpass.getpass(prompt)
-                for prompt in ("Demo-API-Key: ", "Demo-API-Secret: ", "Demo-API-Passphrase: ")
-            ]
+        if args.keychain_service:
+            uid = args.demo_uid or ""
+            fields = []
+            for field in ("api-key", "secret", "passphrase"):
+                value = subprocess.run(
+                    [
+                        "/usr/bin/security",
+                        "find-generic-password",
+                        "-s",
+                        args.keychain_service,
+                        "-a",
+                        field,
+                        "-w",
+                    ],
+                    capture_output=True,
+                    check=True,
+                    timeout=60,
+                )
+                fields.append(value.stdout.decode().rstrip("\n"))
+        else:
+            with warnings.catch_warnings():
+                warnings.simplefilter("error", getpass.GetPassWarning)
+                uid = args.demo_uid or getpass.getpass("Erwartete UID des Demokontos: ").strip()
+                fields = [
+                    getpass.getpass(prompt)
+                    for prompt in ("Demo-API-Key: ", "Demo-API-Secret: ", "Demo-API-Passphrase: ")
+                ]
+        if not uid.isascii() or not uid.isdecimal():
+            raise ValueError("Ungültige UID")
         if not all(fields):
             raise ValueError("Unvollständige Eingabe")
         result = inspect_account(
             account_reader(*fields), uid, lambda: datetime.now(timezone.utc).timestamp()
         )
     except (
+        subprocess.SubprocessError,
         EOFError,
         OSError,
         ArithmeticError,

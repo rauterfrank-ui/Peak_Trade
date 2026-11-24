@@ -67,6 +67,7 @@ def build_capital_risk_sizing_monetary_context_v1(
     index_tickers_payload: Mapping[str, Any] | None,
     conversion_pair_instruments_payload: Mapping[str, Any] | None = None,
     already_canonical: bool = False,
+    contract_settlement_sources_json: str = "",
 ) -> CapitalRiskSizingMonetaryContextV1:
     """Build typed CRS monetary context; fail-closed on missing edge or mixed units."""
     if already_canonical:
@@ -76,6 +77,19 @@ def build_capital_risk_sizing_monetary_context_v1(
         instruments_payload,
         venue_native_id=venue_native_id,
     )
+    settlement_rule = None
+    if contract_settlement_sources_json:
+        if index_tickers_payload is not None or conversion_pair_instruments_payload is not None:
+            raise MonetaryNormalizationError("XPERP_PAYOFF_IS_NOT_MARKET_FX")
+        from .xperp_settlement_v1 import bind_xperp_settlement_rule_v1
+
+        settlement_rule, instrument_identity = bind_xperp_settlement_rule_v1(
+            contract_settlement_sources_json,
+            instruments_payload=instruments_payload,
+            venue_native_id=venue_native_id,
+            decision_epoch=decision_epoch,
+            evaluated_at_utc=observed_at,
+        )
     pair_base = pair_quote = None
     if (
         instrument_identity.instrument_money_unit == "USDT"
@@ -115,7 +129,10 @@ def build_capital_risk_sizing_monetary_context_v1(
     canonical_ref = native_ref
     canonical_stop = native_stop
 
-    if instrument_identity.instrument_money_unit == CANONICAL_INTERNAL_RISK_NUMERAIRE:
+    if settlement_rule is not None:
+        canonical_ref = settlement_rule.cash_operand_v1(native_ref)
+        canonical_stop = settlement_rule.cash_operand_v1(native_stop)
+    elif instrument_identity.instrument_money_unit == CANONICAL_INTERNAL_RISK_NUMERAIRE:
         if native_ref.currency != CANONICAL_INTERNAL_RISK_NUMERAIRE:
             raise MonetaryNormalizationError(REASON_QUOTE_CURRENCY_MISMATCH)
     elif instrument_identity.instrument_money_unit == "USDT":
@@ -153,6 +170,7 @@ def build_capital_risk_sizing_monetary_context_v1(
         usdt_usdc_edge=usdt_edge,
         usdc_identity_edge=identity_edge,
         normalization_digest="",
+        contract_settlement_rule=settlement_rule,
     )
     digest = monetary_context_digest_v1(ctx)
     return CapitalRiskSizingMonetaryContextV1(
@@ -166,6 +184,7 @@ def build_capital_risk_sizing_monetary_context_v1(
         usdt_usdc_edge=ctx.usdt_usdc_edge,
         usdc_identity_edge=ctx.usdc_identity_edge,
         normalization_digest=digest,
+        contract_settlement_rule=settlement_rule,
     )
 
 

@@ -1,8 +1,8 @@
-"""Offline first-entry reservation using the original Slot 3 TESTNET journal.
+"""Fixture entry adapter and shared typed BTC reservation primitives.
 
-The input consists of synthetic, decision-bound GET receipts. No transport,
-credential or execution port is available here. The separate signed Demo
-inspection is not an input to this fixture.
+The fixture adapter consumes synthetic GET receipts in its isolated journal.
+The shared risk/cost primitive follows source-specific admission by each owner.
+Transport and credential acquisition belong to their existing adapters.
 """
 
 from copy import deepcopy
@@ -150,108 +150,27 @@ def _current_sources(rows, *, account, epoch, cycle_id, now):
 
 
 def _capital(rows, *, account, epoch, now, config):
-    balance = rows["balance"]
-    detail = cost._one(demo._only(balance.payload)["details"], "ccy", "USDC")
-    value = cost._money(detail.get("availEq"), positive=True)
-    _need(value >= demo._BUDGET_USDC, "BTC_TESTNET_DECLARED_BUDGET_UNCOVERED")
-    age = acquisition.acquisition_age_seconds_v1(
-        acquired_at_utc=balance.acquired_at_utc, now_utc=now
-    )
-    scope = dict(
-        bound_account_identity=account,
-        bound_venue_identity="okx",
-        bound_td_mode="cross",
-        decision_epoch=epoch,
-    )
-    margin = CurrentProductiveUsdcFreeMarginObservationV1(
-        **scope,
-        fact_id=OBSERVATION_FACT_ID,
-        surface=OBSERVATION_SURFACE,
-        value=detail["availEq"],
-        settlement_currency="USDC",
-        selected_ccy="USDC",
-        observed_at_as_of=balance.acquired_at_utc,
-        age_seconds=age,
-        freshness_max_age=str(acquisition.NUMERIC_EQUITY_TTL_SECONDS),
-        provenance_digest=balance.body_sha256,
-        already_net_of_in_use="true",
-        account_level_avail_eq_used="false",
-        fallback_chain_used="false",
-    )
-    p01 = bind_current_productive_p01_fact_for_ct_sizing_produce_v1(
-        base=margin, age_seconds=age, freshness_max_age=margin.freshness_max_age
-    )
-    eligibility = build_current_productive_u01_eligibility_fact_v1(
-        **scope,
-        adaptation=adapt_current_productive_u01_account_mode_v1(config["acctLv"]),
-        provenance_digest=rows["account"].body_sha256,
-    )
-    output = produce_current_productive_29p_risk_capital_v1(
-        observation=margin, p01=p01, eligibility=eligibility
-    )
-    _need(
-        output.produced == "true" and Decimal(output.value) >= demo._BUDGET_USDC,
-        "BTC_TESTNET_CAPITAL_NOT_ADMISSIBLE",
-    )
-    return margin, output
+    from src.ops.btc_demo_entry_financial_inputs_v1 import build_btc_demo_capital_inputs_v1
+
+    return build_btc_demo_capital_inputs_v1(
+        rows, account=account, epoch=epoch, now=now, config=config
+    )[:2]
 
 
 def _sizing(cycle, bound, instruments, equity, observed_at, policy, source_digest):
-    replay = cycle.replay
-    reference = Decimal(str(replay.intermediate.market_context.mark_price))
-    distance, _ = resolve_current_productive_live_29p_adverse_exit_distance_v1(replay)
-    stop = derive_protective_stop_price_from_adverse_exit_v0(
-        selected_side=resolve_protective_stop_sizing_side_for_live_29p_join_v1(replay),
-        reference_price=reference,
-        adverse_exit_distance=distance,
-    )
-    _need(stop is not None, "BTC_TESTNET_ORIGINAL_STOP_REQUIRED")
-    meta = produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
-        venue_native_id=bound.venue_native_id,
-        instruments_payload=instruments,
-        observed_at_as_of=observed_at,
-        bound_instrument_id=bound.instrument_id,
-    )
-    _need(meta.produced and meta.constraints is not None, "BTC_TESTNET_NATIVE_METADATA_REQUIRED")
-    money_args = dict(
-        decision_epoch=replay.intermediate.market_context.decision_time,
-        observed_at=observed_at,
-        fresh_pretrade_get_status="TRUSTED_PRESENT",
-        native_reference_price=reference,
-        native_protective_stop_price=stop,
-        instruments_payload=instruments,
-        venue_native_id=bound.venue_native_id,
-        index_tickers_payload=None,
-        conversion_pair_instruments_payload=None,
-    )
-    money = build_capital_risk_sizing_monetary_context_v1(
-        **money_args, account_equity_amount=equity, account_equity_currency="USDC"
-    )
-    source = build_sizing_monetary_source_v1(
-        **money_args,
-        canonical_instrument_id=bound.instrument_id,
-        account_equity_usdc=equity,
-        normalization_digest=money.normalization_digest,
-    )
-    amount, price, protection = crs_operands_from_monetary_context_v1(money)
-    context = default_offline_replay_capital_context_v0(
-        instrument_id=bound.instrument_id,
-        reference_price=price,
-        protective_stop_price=protection,
-        account_equity=amount,
-        scope_capital_limit=min(amount, policy.per_entry_notional_limit),
-        per_trade_risk_limit=amount,
-        total_capital_limit=min(amount, policy.aggregate_reserved_notional_limit),
-        daily_loss_remaining_budget=amount,
-        instrument=meta.constraints,
-        config_digest=source_digest,
+    from src.ops.btc_demo_entry_financial_inputs_v1 import build_btc_demo_sizing_inputs_v1
+
+    return build_btc_demo_sizing_inputs_v1(
+        cycle,
+        bound,
+        instruments,
+        equity,
+        observed_at,
+        policy,
+        source_digest,
         capital_risk_mode="OFFLINE_TESTNET_ACCOUNT_BOUND",
+        native_price_currency="USDC",
     )
-    sizing, reasons = build_capital_risk_sizing_input_from_decision_v0(
-        decision=replay.evidence, capital_context=context
-    )
-    _need(sizing is not None, "BTC_TESTNET_SIZING_INPUT_REQUIRED:" + ",".join(reasons))
-    return sizing, source
 
 
 def require_fixture_journal_source_v1(owner, *, checksum, slot, decision, cycle, evaluated_at):
@@ -416,102 +335,156 @@ class BtcDemoBudgetOwnerV2(PortfolioCapitalReservationBudgetOwnerV1):
                 },
                 "BTC_TESTNET_ORIGINAL_SOURCE_MISMATCH",
             )
-            _need(
-                self.local_commitment_readback_v1().generation_digest == local_generation,
-                "LOCAL_COMMITMENT_GENERATION_CHANGED_BEFORE_RESERVE",
-            )
-            applied = apply_capital_context_facts_v1(
-                sizing_input, capital_context_facts_v1(self, slot_id=slot_id)
-            )
-            decision = evaluate_capital_risk_sizing_v1(applied)
-            _need(decision.outcome is CapitalRiskSizingOutcome.PASS, "BTC_TESTNET_SIZING_DENIED")
-            args = dict(
-                applied_input=applied,
-                decision=decision,
-                monetary_source=monetary_source,
-                evaluated_at_utc=offline_testnet_evaluated_at,
-            )
-            opening = cost.bind_entry_execution_cost_v1(
-                opening_cost_observation,
-                account_identity=account_identity,
+            return reserve_btc_demo_costed_hold_locked_v1(
+                self,
+                output=output,
+                observation=observation,
                 slot_id=slot_id,
+                decision_id=decision_id,
                 cycle_id=cycle_id,
-                **args,
-            )
-            close = cost.bind_closing_execution_cost_v1(opening, **args)
-            funding = cost.bind_next_funding_cost_v1(
-                funding_cost_observation, entry_binding=opening, close_binding=close, **args
-            )
-            native = bind_native_initial_margin_v1(
-                native_initial_margin_observation,
-                original_margin=observation,
-                entry_binding=opening,
-                **args,
-            )
-            sizing = ReservationSizingBindingV1(
-                request_digest=request_digest_v1(sizing_input),
-                applied_input=applied,
-                decision=decision,
+                account_identity=account_identity,
+                sizing_input=sizing_input,
+                local_generation=local_generation,
                 monetary_source=monetary_source,
-                entry_cost_binding=opening,
-                close_cost_binding=close,
-                funding_cost_binding=funding,
-                native_initial_margin_binding=native,
-                offline_testnet_source_digest=offline_testnet_source_digest,
-            )
-            movement = bind_absolute_movement_cost_v1(
-                absolute_movement_cost_observation,
-                sizing=sizing,
+                opening_cost_observation=opening_cost_observation,
+                funding_cost_observation=funding_cost_observation,
+                native_initial_margin_observation=native_initial_margin_observation,
+                absolute_movement_cost_observation=absolute_movement_cost_observation,
                 evaluated_at_utc=offline_testnet_evaluated_at,
+                fixture_source_digest=offline_testnet_source_digest,
+                reason_code="BTC_TESTNET_OFFLINE_RESERVED",
             )
-            sizing = ReservationSizingBindingV1.from_dict_v1(
-                replace(sizing, absolute_movement_cost_binding=movement).to_dict_v1()
-            )
-            amount = decision.canonical_position_sizing.resulting_notional
-            sizing.validate_v1(amount=amount, decision_id=decision_id)
-            require_native_margin_locked_v1(
-                self, sizing, evaluated_at_utc=offline_testnet_evaluated_at
-            )
-            closing_and_funding = cost.reserved_closing_cost_v1(
-                sizing
-            ) + cost.reserved_funding_cost_v1(sizing)
-            opening_cost = Decimal(json.loads(opening.receipt_json)["total_opening_cost_usdc"])
-            denial = self._entry_budget_denial_locked(slot_id, amount)
-            _need(not denial, denial)
-            _need(
-                decision.post_sizing_risk.resulting_max_loss + opening_cost + closing_and_funding
-                <= remaining_loss(self, slot_id),
-                "TEST_SLOT_REMAINING_LOSS_BUDGET_EXCEEDED",
-            )
-            _need(
-                amount + cost.reserved_opening_fee_v1(sizing) + closing_and_funding
-                <= min(self._budget, applied.total_capital_limit, demo._BUDGET_USDC),
-                "ENTRY_COST_CAPITAL_WITH_FEES_EXCEEDED",
-            )
-            key = _reservation_key(
-                slot_id=slot_id, decision_id=decision_id, cycle_id=cycle_id, observation_id=observed
-            )
-            hold = CapitalReservationV1(
-                ReservationId(key),
-                SlotId(slot_id),
-                decision_id,
-                cycle_id,
-                observed,
-                amount,
-                ReservationStateV1.RESERVED,
-                ("REQUESTED", "RESERVED"),
-                "",
-            )
-            self._by_key[key] = hold
-            self._by_id[key] = key
-            self._reservation_bindings[key] = dict(self._lane_bindings[slot_id])
-            self._sizing_bindings[key] = sizing
-            return self._result_locked(
-                disposition=ReserveDispositionV1.ADMITTED,
-                reservation=hold,
-                reason_codes=("BTC_TESTNET_OFFLINE_RESERVED",),
-                mutated=True,
-            )
+
+
+def reserve_btc_demo_costed_hold_locked_v1(
+    owner,
+    *,
+    output,
+    observation,
+    slot_id,
+    decision_id,
+    cycle_id,
+    account_identity,
+    sizing_input,
+    local_generation,
+    monetary_source,
+    opening_cost_observation,
+    funding_cost_observation,
+    native_initial_margin_observation,
+    absolute_movement_cost_observation,
+    evaluated_at_utc,
+    fixture_source_digest=None,
+    reason_code,
+):
+    """Reuse typed risk, cost and journal primitives after source-specific admission."""
+    from src.ops.portfolio_capital_reservation_budget_v1.sizing_binding_v1 import (
+        ReservationSizingBindingV1,
+        request_digest_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.native_initial_margin_v1 import (
+        bind_native_initial_margin_v1,
+        require_native_margin_locked_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.absolute_movement_cost_v1 import (
+        bind_absolute_movement_cost_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.slot_loss_budget_v1 import remaining_loss
+
+    observed = observation_identity_v1(output)
+    _need(
+        owner.local_commitment_readback_v1().generation_digest == local_generation,
+        "LOCAL_COMMITMENT_GENERATION_CHANGED_BEFORE_RESERVE",
+    )
+    applied = apply_capital_context_facts_v1(
+        sizing_input, capital_context_facts_v1(owner, slot_id=slot_id)
+    )
+    decision = evaluate_capital_risk_sizing_v1(applied)
+    _need(decision.outcome is CapitalRiskSizingOutcome.PASS, "BTC_TESTNET_SIZING_DENIED")
+    args = dict(
+        applied_input=applied,
+        decision=decision,
+        monetary_source=monetary_source,
+        evaluated_at_utc=evaluated_at_utc,
+    )
+    opening = cost.bind_entry_execution_cost_v1(
+        opening_cost_observation,
+        account_identity=account_identity,
+        slot_id=slot_id,
+        cycle_id=cycle_id,
+        **args,
+    )
+    close = cost.bind_closing_execution_cost_v1(opening, **args)
+    funding = cost.bind_next_funding_cost_v1(
+        funding_cost_observation, entry_binding=opening, close_binding=close, **args
+    )
+    native = bind_native_initial_margin_v1(
+        native_initial_margin_observation,
+        original_margin=observation,
+        entry_binding=opening,
+        **args,
+    )
+    sizing = ReservationSizingBindingV1(
+        request_digest=request_digest_v1(sizing_input),
+        applied_input=applied,
+        decision=decision,
+        monetary_source=monetary_source,
+        entry_cost_binding=opening,
+        close_cost_binding=close,
+        funding_cost_binding=funding,
+        native_initial_margin_binding=native,
+        offline_testnet_source_digest=fixture_source_digest,
+    )
+    movement = bind_absolute_movement_cost_v1(
+        absolute_movement_cost_observation,
+        sizing=sizing,
+        evaluated_at_utc=evaluated_at_utc,
+    )
+    sizing = ReservationSizingBindingV1.from_dict_v1(
+        replace(sizing, absolute_movement_cost_binding=movement).to_dict_v1()
+    )
+    amount = decision.canonical_position_sizing.resulting_notional
+    sizing.validate_v1(amount=amount, decision_id=decision_id)
+    require_native_margin_locked_v1(owner, sizing, evaluated_at_utc=evaluated_at_utc)
+    closing_and_funding = cost.reserved_closing_cost_v1(sizing) + cost.reserved_funding_cost_v1(
+        sizing
+    )
+    opening_cost = Decimal(json.loads(opening.receipt_json)["total_opening_cost_usdc"])
+    denial = owner._entry_budget_denial_locked(slot_id, amount)
+    _need(not denial, denial)
+    _need(
+        decision.post_sizing_risk.resulting_max_loss + opening_cost + closing_and_funding
+        <= remaining_loss(owner, slot_id),
+        "TEST_SLOT_REMAINING_LOSS_BUDGET_EXCEEDED",
+    )
+    _need(
+        amount + cost.reserved_opening_fee_v1(sizing) + closing_and_funding
+        <= min(owner._budget, applied.total_capital_limit, demo._BUDGET_USDC),
+        "ENTRY_COST_CAPITAL_WITH_FEES_EXCEEDED",
+    )
+    key = _reservation_key(
+        slot_id=slot_id, decision_id=decision_id, cycle_id=cycle_id, observation_id=observed
+    )
+    hold = CapitalReservationV1(
+        ReservationId(key),
+        SlotId(slot_id),
+        decision_id,
+        cycle_id,
+        observed,
+        amount,
+        ReservationStateV1.RESERVED,
+        ("REQUESTED", "RESERVED"),
+        "",
+    )
+    owner._by_key[key] = hold
+    owner._by_id[key] = key
+    owner._reservation_bindings[key] = dict(owner._lane_bindings[slot_id])
+    owner._sizing_bindings[key] = sizing
+    return owner._result_locked(
+        disposition=ReserveDispositionV1.ADMITTED,
+        reservation=hold,
+        reason_codes=(reason_code,),
+        mutated=True,
+    )
 
 
 def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_revision, clock):

@@ -227,9 +227,24 @@ def assess_native_initial_margin_v1(
         raise ValueError("NATIVE_INITIAL_MARGIN_CONTRACT_VALUE_UNIT_UNPROVEN")
     if (
         currency not in {"USDT", "USDC"}
-        or identity.quote_currency != currency
-        or context.native_reference_price.currency != currency
-        or entry["quote_currency"] != currency
+        or (
+            context.contract_settlement_rule is None
+            and (
+                identity.quote_currency != currency
+                or context.native_reference_price.currency != currency
+                or entry["quote_currency"] != currency
+            )
+        )
+        or (
+            context.contract_settlement_rule is not None
+            and (
+                context.contract_settlement_rule.settlement_currency != currency
+                or identity.quote_currency != "USD"
+                or context.native_reference_price.currency != "USD"
+                or entry["quote_currency"] != "USD"
+                or entry.get("contract_settlement_rule") != asdict(context.contract_settlement_rule)
+            )
+        )
     ):
         raise ValueError("NATIVE_INITIAL_MARGIN_SETTLEMENT_ROUTE_UNPROVEN")
     balance, leverage = (parsed[k] for k in ("balance", "leverage"))
@@ -293,6 +308,12 @@ def assess_native_initial_margin_v1(
         raise ValueError("NATIVE_INITIAL_MARGIN_EXECUTABLE_DEPTH_INSUFFICIENT")
     quote_value = max(quote_value, Fraction(decision.final_quantity) * Fraction(reference))
     notional = quote_value * Fraction(identity.ct_val)
+    if context.contract_settlement_rule is not None:
+        notional *= Fraction(
+            context.contract_settlement_rule.cash_multiplier_v1(
+                context.native_reference_price.currency
+            )
+        )
     required = notional / Fraction(lever)
     if required > Fraction(available):
         raise ValueError("NATIVE_INITIAL_MARGIN_INSUFFICIENT")
@@ -324,6 +345,9 @@ def assess_native_initial_margin_v1(
         native_cost_cover_proven=False,
         runtime_authorization_effect="NONE",
     )
+    if context.contract_settlement_rule is not None:
+        result["quoted_price_currency"] = "USD"
+        result["contract_settlement_rule"] = asdict(context.contract_settlement_rule)
     if _POSITION_TIERS_SOURCE in parsed:
         result["xperp_position_maintenance"] = _xperp_maintenance_component(
             parsed[_POSITION_TIERS_SOURCE],

@@ -291,11 +291,21 @@ def assess_opening_execution_cost_v1(
     if levels["bids"][0][0] >= levels["asks"][0][0]:
         raise ValueError("ENTRY_COST_LOCKED_OR_CROSSED_BOOK")
     context = monetary_source.validate_sizing_v1(applied_input)
+    contract_rule = context.contract_settlement_rule
+    if contract_rule is not None:
+        rule_sources = json.loads(monetary_source.contract_settlement_sources_json)
+        if any(rule_sources[key] != sources[key] for key in ("account", "instruments")):
+            raise ValueError("ENTRY_COST_SETTLEMENT_RULE_ORIGINAL_MISMATCH")
     if (
         applied_input.instrument.contract_kind != "LINEAR"
         or instrument.get("ctType") != "linear"
         or _money(instrument.get("ctMult"), positive=True) != 1
-        or instrument.get("settleCcy") != context.native_reference_price.currency
+        or instrument.get("settleCcy")
+        != (
+            contract_rule.settlement_currency
+            if contract_rule is not None
+            else context.native_reference_price.currency
+        )
     ):
         raise ValueError("ENTRY_COST_SUPPORTED_LINEAR_CONTRACT_REQUIRED")
     if context.usdt_usdc_edge is not None:
@@ -347,6 +357,8 @@ def assess_opening_execution_cost_v1(
         evaluated_at_utc=observation.evaluated_at_utc,
         observation_digest=digest(observation.to_dict_v1()),
     )
+    if contract_rule is not None:
+        result["contract_settlement_rule"] = asdict(contract_rule)
     return dict(**result, digest=digest(result))
 
 

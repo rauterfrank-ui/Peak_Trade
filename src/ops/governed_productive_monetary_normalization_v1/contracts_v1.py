@@ -107,6 +107,7 @@ class CapitalRiskSizingMonetaryContextV1:
     usdt_usdc_edge: ConversionEdgeV1 | None
     usdc_identity_edge: ConversionEdgeV1
     normalization_digest: str
+    contract_settlement_rule: object | None = None
 
 
 def _sha256_mapping(payload: Mapping[str, Any]) -> str:
@@ -187,4 +188,8 @@ def monetary_context_digest_v1(ctx: CapitalRiskSizingMonetaryContextV1) -> str:
     }
     if ctx.usdt_usdc_edge is not None:
         material["usdt_usdc"] = conversion_edge_digest_v1(ctx.usdt_usdc_edge)
+    if ctx.contract_settlement_rule is not None:
+        from dataclasses import asdict
+
+        material["contract_settlement_rule"] = asdict(ctx.contract_settlement_rule)
     return _sha256_mapping(material)

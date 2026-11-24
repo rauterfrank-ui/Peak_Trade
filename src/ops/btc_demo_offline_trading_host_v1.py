@@ -321,6 +321,86 @@ class BtcDemoOfflineTradingHostV1:
                 budget_revision=revision,
             )
 
+    def inspect_testnet_pretrade_sources_v1(self, *, entry, reads, clock):
+        """Bind uncached Demo costing originals to the unchanged Core and budget head."""
+        lock = self.cursor_root / "first_entry_mark_v2.lock"
+        with exclusive_v1(lock):
+            cycle = self._original_entry_cycle(entry)
+            revision = self.budget.budget_revision_ref_v1()
+            _need(
+                self.budget.owner.active_sum_v1() == 0,
+                "BTC_OFFLINE_EXISTING_OBLIGATION_BLOCKS_NEW_ENTRY",
+            )
+        epoch = cycle.replay.intermediate.market_context.decision_time
+        originals = {}
+        sources = demo.read_btc_demo_pretrade_sources_v1(
+            reads=reads,
+            expected_uid=self.budget.account,
+            decision_epoch=epoch,
+            cycle_id=cycle.cycle_id,
+            clock=clock,
+            original_response_sink=lambda key, body: originals.__setitem__(key, bytes(body).hex()),
+        )
+        with exclusive_v1(lock):
+            self._original_entry_cycle(entry)
+            _need(
+                self.budget.budget_revision_ref_v1() == revision,
+                "BTC_DEMO_ENTRY_BUDGET_HEAD_CHANGED",
+            )
+            now = datetime.fromtimestamp(clock(), timezone.utc).isoformat()
+            pretrade_acquisition_v1.acquisition_age_seconds_v1(
+                acquired_at_utc=epoch,
+                now_utc=now,
+            )
+            for source in sources.values():
+                pretrade_acquisition_v1.acquisition_age_seconds_v1(
+                    acquired_at_utc=source.acquired_at_utc,
+                    now_utc=now,
+                )
+            return dict(
+                sources=sources,
+                original_bodies_hex=originals,
+                budget_revision=revision,
+                decision_id=cycle.replay.evidence.decision_id,
+                cycle_id=cycle.cycle_id,
+                decision_epoch=epoch,
+                execution_environment="TESTNET",
+                lane_id=demo._LANE,
+                instrument_id=self.budget.bound.instrument_id,
+                authority="NONE",
+            )
+
+    def reserve_testnet_entry_v1(self, *, entry, reads, movement_input, clock):
+        """Reserve from this decision's original Demo GETs without submitting an order."""
+        from src.ops.btc_demo_entry_reservation_v1 import reserve_btc_demo_entry_v1
+
+        batch = self.inspect_testnet_pretrade_sources_v1(entry=entry, reads=reads, clock=clock)
+        with exclusive_v1(self.cursor_root / "first_entry_mark_v2.lock"):
+            cycle = self._original_entry_cycle(entry)
+            _need(
+                self.budget.budget_revision_ref_v1() == batch["budget_revision"],
+                "BTC_DEMO_ENTRY_BUDGET_HEAD_CHANGED",
+            )
+            return reserve_btc_demo_entry_v1(
+                self,
+                cycle=cycle,
+                batch=batch,
+                movement_input=movement_input,
+                clock=clock,
+            )
+
+    def plan_testnet_entry_v1(self, *, entry, reservation_id, expected_revision, clock):
+        """Bind the original reserved quantity to a TESTNET plan, without a submit."""
+        from src.ops.btc_demo_entry_plan_v1 import prepare_btc_demo_entry_plan_v1
+
+        return prepare_btc_demo_entry_plan_v1(
+            self,
+            entry=entry,
+            reservation_id=reservation_id,
+            expected_revision=expected_revision,
+            clock=clock,
+        )
+
     @staticmethod
     def _monetary_assessment(report, decision_id):
         instrument = next(

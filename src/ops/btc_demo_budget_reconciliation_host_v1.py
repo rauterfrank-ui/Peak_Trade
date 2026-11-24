@@ -15,6 +15,7 @@ from pathlib import Path
 
 from src.ops import btc_demo_lane3_v2 as demo
 from src.ops.btc_demo_testnet_entry_reservation_v1 import BtcDemoBudgetOwnerV2
+from src.ops.btc_demo_budget_owner_v3 import BtcDemoBudgetOwnerV3
 from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v1
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import NUMERIC_EQUITY_TTL_SECONDS
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
@@ -92,7 +93,12 @@ class BtcDemoBudgetReconciliationHostV1:
 
     def __init__(self, *, owner, bound, account, testnet_root):
         _need(
-            type(owner) in (PortfolioCapitalReservationBudgetOwnerV1, BtcDemoBudgetOwnerV2),
+            type(owner)
+            in (
+                PortfolioCapitalReservationBudgetOwnerV1,
+                BtcDemoBudgetOwnerV2,
+                BtcDemoBudgetOwnerV3,
+            ),
             "BTC_DEMO_ORIGINAL_BUDGET_OWNER_REQUIRED",
         )
         lane = demo._demo_lane_root(testnet_root)

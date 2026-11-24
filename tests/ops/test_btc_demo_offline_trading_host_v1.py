@@ -42,7 +42,16 @@ EXIT_CONFIG = layer_c_derived_exit_policy_adverse_config_digest_v1(
 )
 
 
-def setup_host(tmp_path, monkeypatch, direction=1, *, policy=None, testnet_v2=False):
+def setup_host(
+    tmp_path,
+    monkeypatch,
+    direction=1,
+    *,
+    policy=None,
+    testnet_v2=False,
+    execution_environment="LIVE",
+    allocation=None,
+):
     row = instrument(settlement="USD")
     row["instId"] = demo._NATIVE
     row["expTime"] = str(int(datetime(2031, 3, 28, 8, tzinfo=timezone.utc).timestamp() * 1000))
@@ -54,7 +63,13 @@ def setup_host(tmp_path, monkeypatch, direction=1, *, policy=None, testnet_v2=Fa
     )
     monkeypatch.setattr(budget_fixture, "BOUND", bound)
     monkeypatch.setattr(budget_fixture, "BINDINGS", {"LANE_3": bound})
-    budget, _ = budget_fixture.owner_host(tmp_path, policy=policy, testnet_v2=testnet_v2)
+    budget, _ = budget_fixture.owner_host(
+        tmp_path,
+        policy=policy,
+        testnet_v2=testnet_v2,
+        execution_environment=execution_environment,
+        allocation=allocation,
+    )
     c1 = NOW.timestamp() - 120
     closes = [64000 * (1 + direction * (i - 99) * 0.002) for i in range(100)]
     candles = {
@@ -723,5 +738,60 @@ def test_terminal_partial_entry_publishes_only_executed_contracts_and_trade_fees
             {"trade_id": "98", "currency": "USDC", "signed_amount": "-0.0032"},
         ]
         assert report["reconciliation"]["reservation_released"] is False
+    finally:
+        host.budget.owner.close()
+
+
+@pytest.mark.parametrize("direction", [1, -1])
+@pytest.mark.parametrize("fault", [None, "budget-change", "expired-after"])
+def test_pretrade_cost_sources_remain_bound_to_original_entry(
+    tmp_path, monkeypatch, direction, fault
+):
+    from types import SimpleNamespace
+
+    host, candles, admission, _ = setup_host(tmp_path, monkeypatch, direction)
+    try:
+        entry, _ = enter(host, candles, admission, direction)
+        cycle = entry.cycle
+        epoch = cycle.replay.intermediate.market_context.decision_time
+        stamp = datetime.fromisoformat(epoch.replace("Z", "+00:00")).timestamp()
+        before = load_current_productive_sidestate_confirmation_cursor_v1(host.cursor_root)
+        original_revision = host.budget.budget_revision_ref_v1()
+        source = SimpleNamespace(acquired_at_utc=epoch)
+        calls = []
+
+        def acquire(**args):
+            assert args["expected_uid"] == host.budget.account
+            assert args["decision_epoch"] == epoch
+            assert args["cycle_id"] == cycle.cycle_id
+            calls.append(args["reads"])
+            if fault == "budget-change":
+                monkeypatch.setattr(
+                    host.budget,
+                    "budget_revision_ref_v1",
+                    lambda: (original_revision[0], "changed-head"),
+                )
+            return {"original": source}
+
+        monkeypatch.setattr(demo, "read_btc_demo_pretrade_sources_v1", acquire)
+        args = dict(
+            entry=entry,
+            reads=object(),
+            clock=lambda: stamp + (16 if fault == "expired-after" else 0),
+        )
+        if fault:
+            reason = "BUDGET_HEAD_CHANGED" if fault == "budget-change" else "ACQUISITION_STALE"
+            with pytest.raises(ValueError, match=reason):
+                host.inspect_testnet_pretrade_sources_v1(**args)
+        else:
+            result = host.inspect_testnet_pretrade_sources_v1(**args)
+            assert result["sources"]["original"] is source
+            assert result["decision_id"] == cycle.replay.evidence.decision_id
+            assert result["budget_revision"] == original_revision
+            assert result["execution_environment"] == "TESTNET"
+            assert result["authority"] == "NONE"
+        assert len(calls) == 1
+        assert host.budget.owner.active_sum_v1() == 0
+        assert load_current_productive_sidestate_confirmation_cursor_v1(host.cursor_root) == before
     finally:
         host.budget.owner.close()
