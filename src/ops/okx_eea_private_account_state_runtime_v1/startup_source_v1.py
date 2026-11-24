@@ -256,7 +256,7 @@ class AccountObservationSourceV1:
             or observation.session_id != self.session_id
         ):
             raise AccountObservationSourceError("OBSERVATION_PENDING_SESSION_ACCOUNT_CHANGED")
-        now = time.time()
+        now = self._pending_inspection_clock_v1()
         limit = POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS / 1000
         if not (
             observation.max_age_seconds == limit
@@ -271,10 +271,7 @@ class AccountObservationSourceV1:
         ):
             raise AccountObservationSourceError("OBSERVATION_PENDING_HOST_WINDOW_STALE_OR_FUTURE")
         gets = json.loads(observation.gets_json)
-        endpoints = ["/api/v5/account/config", "/api/v5/trade/orders-pending?instType=SWAP"] + [
-            ALGO_PENDING_PATH + "?" + urlencode({"instType": "SWAP", "ordType": kind})
-            for kind in SUPPORTED_ALGO_TYPES
-        ]
+        endpoints, scope = self._pending_inspection_scope_v1()
         for endpoint in endpoints:
             row = gets.get(endpoint)
             if not isinstance(row, dict) or row.get("pretrade_decision_id") != self.session_id:
@@ -306,9 +303,22 @@ class AccountObservationSourceV1:
             session_id=observation.session_id,
             started_at_unix=observation.started_at_unix,
             completed_at_unix=observation.completed_at_unix,
-            scope="ORIGINAL_ACCOUNT_WIDE_SWAP_ORDINARY_AND_FOUR_ALGO_TYPES",
+            scope=scope,
             endpoints=endpoints,
             source_class=type(self).__name__,
+        )
+
+    def _pending_inspection_clock_v1(self):
+        return time.time()
+
+    def _pending_inspection_scope_v1(self):
+        return (
+            ["/api/v5/account/config", "/api/v5/trade/orders-pending?instType=SWAP"]
+            + [
+                ALGO_PENDING_PATH + "?" + urlencode({"instType": "SWAP", "ordType": kind})
+                for kind in SUPPORTED_ALGO_TYPES
+            ],
+            "ORIGINAL_ACCOUNT_WIDE_SWAP_ORDINARY_AND_FOUR_ALGO_TYPES",
         )
 
     def _assert_current_resource_pair_v1(self):

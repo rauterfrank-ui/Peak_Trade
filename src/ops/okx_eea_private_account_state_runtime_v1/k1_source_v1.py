@@ -298,6 +298,28 @@ class K1AccountObservationSourceV1(AccountObservationSourceV1):
             else SUPPORTED_ALGO_TYPES
         )
 
+    def _pending_inspection_clock_v1(self):
+        return (
+            self.clock() if self.account_inventory_guard else super()._pending_inspection_clock_v1()
+        )
+
+    def _pending_inspection_scope_v1(self):
+        if not self.account_inventory_guard:
+            return super()._pending_inspection_scope_v1()
+        if self.inventory_inst_type == "FUTURES":
+            return (
+                ["/api/v5/account/config", *futures_financial_pending_gets_v1()],
+                "ORIGINAL_ACCOUNT_WIDE_FUTURES_ORDINARY_ALGO_AND_BOT_CUSTODY",
+            )
+        return (
+            ["/api/v5/account/config", "/api/v5/trade/orders-pending"]
+            + [
+                ALGO_PENDING_PATH + "?" + urlencode({"ordType": kind})
+                for kind in self._pending_algo_types_v1()
+            ],
+            "ORIGINAL_ACCOUNT_WIDE_SWAP_ORDINARY_AND_FOUR_ALGO_TYPES",
+        )
+
     def _verified_get_v1(self, path, params):
         if not self.account_inventory_guard or params.get("instType") != "SWAP":
             return super()._verified_get_v1(path, params)

@@ -227,7 +227,14 @@ def collect_host_account_observation_v1(
         is_original_account_observation_source_v1,
     )
 
-    if inventory_source is None and is_original_account_observation_source_v1(private_rest_fetch):
+    demo_futures_pending = (
+        inventory_source is not None
+        and inventory_source.inventory_inst_type == "FUTURES"
+        and inventory_source.credential.execution_environment == "TESTNET"
+    )
+    if (
+        inventory_source is None or demo_futures_pending
+    ) and is_original_account_observation_source_v1(private_rest_fetch):
         private_rest_fetch.bind_completed_host_observation_v1(observation)
         observation = replace(observation, pending_source=private_rest_fetch)
     if startup_port is not None:
