@@ -138,6 +138,82 @@ def test_csop_close_to_flat_then_separately_confirmed_reentry(tmp_path, monkeypa
 def test_csop_slot4_two_switches_on_one_budget(
     tmp_path, monkeypatch, short, prices, total_fees, final_equity
 ):
+    positions = (-5, 0, 5, 0, -5) if short else (5, 0, -5, 0, 5)
+    check_csop_slot4_sequence(tmp_path, monkeypatch, positions, prices, total_fees, final_equity)
+
+
+@pytest.mark.parametrize(
+    "positions, prices, third_switch_fees, total_fees, final_equity",
+    [
+        pytest.param(
+            (5, 0, -5, 0, 5, 0, -5),
+            ("1.842", "1.819", "1.799", "1.823", "1.843", "1.797", "1.777"),
+            "0.0035740",
+            "0.0127000",
+            "9.5287800",
+            id="long-short-long-short",
+        ),
+        pytest.param(
+            (-5, 0, 5, 0, -5, 0, 4),
+            ("1.840", "1.863", "1.883", "1.859", "1.839", "1.885", "1.904"),
+            "0.0034082",
+            "0.0126922",
+            "9.5097878",
+            id="short-long-short-long",
+        ),
+    ],
+)
+def test_csop_slot4_three_switches_on_one_budget(
+    tmp_path, monkeypatch, positions, prices, third_switch_fees, total_fees, final_equity
+):
+    # Continue from the fifth fill. Two observations offer just one contract.
+    # The replenished book has two contracts at the touch and more four ticks away.
+    deep = [(1, "2"), (5, "30")]
+    thin = [(1, "1")]
+    extra_steps = [
+        (D("-0.010"), deep),
+        (D("0.020"), thin),
+        (D("0.030"), thin),
+        (D("0.040"), deep),
+        (D("0.050"), deep),
+        (D("0.060"), deep),
+    ]
+    filled = check_csop_slot4_sequence(
+        tmp_path, monkeypatch, positions, prices, total_fees, final_equity, extra_steps=extra_steps
+    )
+    close, reentry = filled[-2:]
+    purchase = reentry["ranked_shadow_first_purchase"]
+    entry = purchase["entry"]
+    for cycle, receipt in ((close, close["ranked_shadow_exit"]), (reentry, entry)):
+        fill = cycle["fill"]
+        quantity = D(fill["quantity_contracts"])
+        buy = fill["side"] == "BUY"
+        (book,) = json.loads(receipt["fill_book"]["body"])["data"]
+        best, next_level = book["asks" if buy else "bids"][:2]
+        best_price, best_size = D(best[0]), D(best[1])
+        next_price, next_size = D(next_level[0]), D(next_level[1])
+        assert best_size == 2 and 0 < quantity - best_size <= next_size
+        assert next_price - best_price == (D("0.004") if buy else D("-0.004"))
+        vwap = (best_size * best_price + (quantity - best_size) * next_price) / quantity
+        rounded_price = vwap.quantize(D("0.001"), rounding=ROUND_CEILING if buy else ROUND_FLOOR)
+        assert D(fill["fill_price"]) == rounded_price
+    assert D(close["fill"]["fee"]) + D(reentry["fill"]["fee"]) == D(third_switch_fees)
+
+    available = D(close["portfolio_snapshot"]["state"]["cash"])
+    mark = D(purchase["valuation"]["mark_usdt_per_base"])
+    allowance = D(entry["cost_allowance_usdt"])
+    cap = D(purchase["sizing"]["decision"]["pre_sizing_risk"]["capital_cap_quantity"])
+    assert cap == abs(positions[-1])
+    assert cap * mark + allowance <= available
+    if positions[-1] == 4:
+        # Five contracts at the mark would fit, but even the cost allowance for four
+        # takes that five-contract amount over the remaining cash.
+        assert 5 * mark < available < 5 * mark + allowance
+
+
+def check_csop_slot4_sequence(
+    tmp_path, monkeypatch, positions, prices, total_fees, final_equity, *, extra_steps=()
+):
     from copy import deepcopy
     from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.full_economic_reconstruction_verifier_v2 import (
         verify_full_economic_reconstruction_v2,
@@ -163,17 +239,18 @@ def test_csop_slot4_two_switches_on_one_budget(
         config,
         assignment,
         row,
-        short=short,
+        short=positions[0] < 0,
         start=OBSERVED_UNIX,
-        price=D("1.858") if short else D("1.808"),
+        price=D("1.858") if positions[0] < 0 else D("1.808"),
         move=D("0.010"),
         initial_equity=initial_cash,
-        after_opening=steps,
+        after_opening=[*steps, *extra_steps],
         transport=quotes,
     )
     filled = [cycle for cycle in cycles if cycle["fill"]]
     assert [c["fill"] for c in filled] == state.fill_ledger
-    opening, first_close, opposite, second_close, final = filled
+    opening, final = filled[0], filled[-1]
+    assert D(opening["ranked_shadow_first_purchase"]["capacity"]["slot_available_usdc"]) == 10
     assert opening["ranked_shadow_first_purchase"]["entry"]["entry_action"] == "FIRST_PURCHASE"
     assert final is cycles[-1]
     assert all(not c["forced_wiring"] and not c["orders_authorized"] for c in cycles)
@@ -181,10 +258,7 @@ def test_csop_slot4_two_switches_on_one_budget(
         D(c["portfolio_snapshot"]["params"]["initial_equity"]) == initial_cash for c in cycles
     )
 
-    # Golden prices include side-specific tick rounding after consuming 2 + 3 contracts.
-    # Carry cash through both closes and independently charge each of the five fees.
-    sign = -1 if short else 1
-    positions = [sign * q for q in (5, 0, -5, 0, 5)]
+    # Carry cash through each close and charge every fee on the executed quantity.
     cash = initial_cash
     position = 0
     fees = D(0)
@@ -193,9 +267,10 @@ def test_csop_slot4_two_switches_on_one_budget(
         fill = c["fill"]
         price = D(expected_price)
         assert D(fill["fill_price"]) == price
-        assert D(fill["quantity_contracts"]) == D(fill["quantity"]) == 5
+        quantity = abs(next_position - position)
+        assert D(fill["quantity_contracts"]) == D(fill["quantity"]) == quantity
         assert fill["side"] == ("BUY" if next_position > position else "SELL")
-        fee = price * 5 * D("0.0002")
+        fee = price * quantity * D("0.0002")
         assert D(fill["fee"]) == fee
         if position == 0:
             purchase = c["ranked_shadow_first_purchase"]
@@ -205,7 +280,7 @@ def test_csop_slot4_two_switches_on_one_budget(
             )
             assert D(purchase["valuation"]["usdc_per_usdt"]) == 1 / fx
             assert D(purchase["entry"]["entry_limit_usdc"]) == cash * (1 / fx)
-            assert 5 * price + fee <= cash
+            assert quantity * price + fee <= cash
             entry_price = price
         else:
             cash += position * (price - entry_price)
@@ -217,20 +292,24 @@ def test_csop_slot4_two_switches_on_one_budget(
         assert D(account["positions"][scope.canonical_id]["quantity"]) == position
         assert D(account["cumulative_fees"]) == fees
 
-    (blocked,) = [
+    openings = filled[::2]
+    closes = filled[1::2]
+    blocked_exits = [
         c for c in cycles if (c.get("ranked_shadow_exit") or {}).get("status") == "BLOCKED"
     ]
-    assert opposite["cycle_index"] < blocked["cycle_index"] < second_close["cycle_index"]
-    assert blocked["ranked_shadow_exit"]["reason"] == "SHADOW_INSUFFICIENT_EXECUTABLE_DEPTH"
-    assert blocked["fill"] is None and blocked["intended_action"]["intended_side"] == "HOLD"
-    held = blocked["portfolio_snapshot"]["state"]
-    assert D(held["positions"][scope.canonical_id]["quantity"]) == -5 * sign
-    assert held["cash"] == opposite["portfolio_snapshot"]["state"]["cash"]
+    for prior, blocked, close in zip(openings[1:-1], blocked_exits, closes[1:], strict=True):
+        assert prior["cycle_index"] < blocked["cycle_index"] < close["cycle_index"]
+        assert blocked["ranked_shadow_exit"]["reason"] == "SHADOW_INSUFFICIENT_EXECUTABLE_DEPTH"
+        assert blocked["fill"] is None and blocked["intended_action"]["intended_side"] == "HOLD"
+        held = blocked["portfolio_snapshot"]["state"]
+        booked = prior["portfolio_snapshot"]["state"]
+        assert (
+            held["positions"][scope.canonical_id]["quantity"]
+            == booked["positions"][scope.canonical_id]["quantity"]
+        )
+        assert held["cash"] == booked["cash"]
 
-    for prior, close, reentry in (
-        (opening, first_close, opposite),
-        (opposite, second_close, final),
-    ):
+    for prior, close, reentry in zip(openings[:-1], closes, openings[1:], strict=True):
         assert close["ranked_shadow_exit"]["opening_fill_id"] == prior["fill_id"]
         assert close["ranked_shadow_position_scope"]["anchor_after"] is None
         receipt = reentry["ranked_shadow_first_purchase"]
@@ -253,25 +332,25 @@ def test_csop_slot4_two_switches_on_one_budget(
 
     proof = reconstruct(cycles)
     assert proof.ok, proof.blockers
-    assert proof.reconstructed_fill_count == 5
+    assert proof.reconstructed_fill_count == len(positions)
 
-    # A genuine fill ID from the first switch cannot stand in for the second switch.
+    # A genuine fill from the preceding switch must not validate the last switch.
+    last_close = closes[-1]
     wrong_close = deepcopy(cycles)
-    wrong_close[second_close["cycle_index"] - 1]["ranked_shadow_exit"]["opening_fill_id"] = opening[
-        "fill_id"
-    ]
+    exit_receipt = wrong_close[last_close["cycle_index"] - 1]["ranked_shadow_exit"]
+    exit_receipt["opening_fill_id"] = openings[-3]["fill_id"]
     assert (
-        f"RANKED_SHADOW_EXIT_LINKAGE_BREAK_{second_close['cycle_index']}"
+        f"RANKED_SHADOW_EXIT_LINKAGE_BREAK_{last_close['cycle_index']}"
         in reconstruct(wrong_close).blockers
     )
     wrong_reentry = deepcopy(cycles)
-    wrong_reentry[-1]["ranked_shadow_first_purchase"]["entry"]["previous_exit_fill_id"] = (
-        first_close["fill_id"]
-    )
+    entry = wrong_reentry[-1]["ranked_shadow_first_purchase"]["entry"]
+    entry["previous_exit_fill_id"] = closes[-2]["fill_id"]
     assert (
         f"RANKED_REENTRY_LINKAGE_BREAK_{final['cycle_index']}"
         in reconstruct(wrong_reentry).blockers
     )
+    return filled
 
 
 class RecordedQuotes:

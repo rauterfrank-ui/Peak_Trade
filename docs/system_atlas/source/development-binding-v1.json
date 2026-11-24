@@ -5944,7 +5944,7 @@
     {
       "path": "tests/ops/test_ranked_shadow_first_purchase_v1.py",
       "before_sha256": null,
-      "sha256": "cbf15325612ae94dbbc15829eb04f5306ddb8f1a2d5a492e924f9d96d13b46df"
+      "sha256": "43bc73ef736a63fcf8c9606f6568c16e5cfd741f70b36fb974cb2dc742ffbce1"
     },
     {
       "path": "tests/ops/test_ranked_shadow_slot4_pre_tick_v1.py",
