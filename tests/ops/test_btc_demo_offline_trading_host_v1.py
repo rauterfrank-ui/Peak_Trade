@@ -180,7 +180,13 @@ def test_original_btc_core_and_g17_reach_real_first_fill_publication(
             host.budget.root, episode.identity.episode_id
         )
         assert research["decision_id"] == entry.cycle.replay.evidence.decision_id
-        assert research["opening_fill"]["entry_price_usd"] == "64000"
+        fill = research["opening_fill"]
+        identity = result["identity"]
+        assert research["decision_outcome"] == ("ENTER_LONG" if direction == 1 else "ENTER_SHORT")
+        assert fill["attempt"] == episode.identity.episode_id
+        assert fill["entry_price_usd"] == "64000"
+        assert fill["filled_quantity"] == identity["final_quantity"]
+        assert fill["fees"] == [{"trade_id": "98", "currency": "USDC", "signed_amount": "-0.0032"}]
     finally:
         host.budget.owner.close()
 
@@ -636,5 +642,51 @@ def test_testnet_entry_reads_bound_to_original_decision_and_budget(
         if fault != "budget-change":
             assert host.budget.budget_revision_ref_v1() == before
         assert host.budget.owner.active_sum_v1() == 0
+    finally:
+        host.budget.owner.close()
+
+
+@pytest.mark.parametrize("direction", [1, -1])
+def test_terminal_partial_entry_publishes_only_executed_contracts_and_trade_fees(
+    tmp_path, monkeypatch, direction
+):
+    host, candles, admission, _ = setup_host(tmp_path, monkeypatch, direction)
+    try:
+        entry, obs = enter(host, candles, admission, direction)
+        _, rid, identity = budget_fixture.seed_attempt(
+            tmp_path,
+            existing_host=host.budget,
+            decision_id=entry.cycle.replay.evidence.decision_id,
+            cycle_id=obs.cycle_id + ":LANE_3",
+            quantity_cap="0.0003",
+            side="LONG" if direction == 1 else "SHORT",
+        )
+        assert identity.final_quantity == "0.0003"
+
+        class PartialReads(MatchingReads):
+            def read(self, path, **query):
+                payload, stamp = super().read(path, **query)
+                if path == demo._FILLS:
+                    last = dict(payload["data"][0], fillSz="0.0001", fee="-0.0032")
+                    first = dict(last, tradeId="97", fee="0.0001", feeCcy="USD")
+                    payload["data"] = [last, first]
+                return payload, stamp
+
+        episode, publication, report = host.reconcile_confirmed_entry_v1(
+            reads=PartialReads(identity, state="canceled", quantity="0.0002"),
+            reservation_id=rid,
+            clock=NOW.timestamp,
+        )
+        retained = demo.read_btc_demo_first_fill_for_research_v1(
+            host.budget.root, episode.identity.episode_id
+        )
+        assert publication["status"] == "PUBLISHED_RETAINED_CURSOR"
+        assert retained["decision_id"] == identity.canonical_decision_id
+        assert retained["opening_fill"]["filled_quantity"] == "0.0002"
+        assert retained["opening_fill"]["fees"] == [
+            {"trade_id": "97", "currency": "USD", "signed_amount": "0.0001"},
+            {"trade_id": "98", "currency": "USDC", "signed_amount": "-0.0032"},
+        ]
+        assert report["reconciliation"]["reservation_released"] is False
     finally:
         host.budget.owner.close()

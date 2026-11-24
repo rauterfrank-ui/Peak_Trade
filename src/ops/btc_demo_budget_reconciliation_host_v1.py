@@ -188,6 +188,11 @@ class BtcDemoBudgetReconciliationHostV1:
 
     def reconcile_attempt_v1(self, *, reads, reservation_id, clock):
         """Persist exact exchange reconciliation before any V2 first-fill handoff."""
+        sizing = self.owner.risk_snapshot_v1()["state"]["sizing_bindings"].get(reservation_id)
+        _need(
+            sizing is None or sizing.get("offline_testnet_source_digest") is None,
+            "OFFLINE_TESTNET_RESERVATION_HAS_NO_EXECUTION_AUTHORITY",
+        )
         self._fence_budget_v1()
         revision = self.budget_revision_ref_v1()
         identity, _, _ = demo._read_original_attempt(

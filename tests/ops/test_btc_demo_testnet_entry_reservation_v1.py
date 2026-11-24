@@ -286,3 +286,20 @@ def test_invalid_source_or_journal_cannot_create_hold(case, fault, reason, monke
     assert owner.stored_reservation_count_v1() == 0
     assert owner.local_commitment_readback_v1().active_commitment_sum == 0
     assert not owner.risk_snapshot_v1()["state"]["execution_links"]
+
+
+@pytest.mark.parametrize("case", [1, -1], indirect=True)
+def test_fixture_reservation_cannot_be_reconciled_as_a_submit(case):
+    host, kwargs = case
+    rid, _ = host.reserve_offline_testnet_entry_v1(**kwargs)
+    revision = host.budget.budget_revision_ref_v1()
+    commitments = host.budget.owner.local_commitment_readback_v1()
+    for _ in range(2):
+        with pytest.raises(ValueError, match="NO_EXECUTION_AUTHORITY"):
+            host.reconcile_confirmed_entry_v1(reads=None, reservation_id=rid, clock=None)
+    assert host.budget.budget_revision_ref_v1() == revision
+    assert host.budget.owner.local_commitment_readback_v1() == commitments
+    assert rid not in host.budget.owner.execution_links_v1()
+    lane = btc.demo._demo_lane_root(host.budget.root)
+    assert not (lane / "confirmed-first-fills").exists()
+    assert not (lane / "position-episodes").exists()
