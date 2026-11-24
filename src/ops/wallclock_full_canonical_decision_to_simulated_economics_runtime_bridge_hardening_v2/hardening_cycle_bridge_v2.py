@@ -1100,6 +1100,7 @@ def run_hardened_bridge_cycle_v2(
         key = card_acceptance.observation_identity.instrument_key()
 
     swap_acceptance = None
+    manage_ranked_position = ranked_entry is not None and ranked_entry.manages_position
     if ranked_entry is not None:
         if ranked_swap_observation is None:
             raise ValueError("SHADOW_FIRST_PURCHASE_SWAP_SOURCE_REQUIRED")
@@ -1620,45 +1621,68 @@ def run_hardened_bridge_cycle_v2(
     carried_scope = None
     prior_scope = state.card_position_scope
     if instrument_card_market is not None:
+        replay_input = replace(replay_input, **capital_inputs)
+    if manage_ranked_position:
+        from src.ops.integrated_offline_economic_evidence_v1.productive_offline_simulated_portfolio_position_truth_v1 import (
+            capture_productive_offline_simulated_portfolio_position_observation_v1,
+        )
+
+        observation = capture_productive_offline_simulated_portfolio_position_observation_v1(
+            portfolio=state.portfolio.model,
+            instrument_id=state.instrument_id,
+            mark_price=Decimal(str(mark)),
+            feedback_source_bar_epoch=state.trading_epoch - 1,
+        )
+        if observation.venue_flat != (prior_scope is None):
+            raise ValueError("SHADOW_POSITION_SCOPE_MISMATCH")
+        if not observation.venue_flat and entry_side_state != SideState.KILL_ALL:
+            # A proposed switch can advance while depth prevents the exit. Orient
+            # the trailing reference to the position that actually remains booked.
+            held = (
+                SideState.LONG_ACTIVE if observation.signed_quantity > 0 else SideState.SHORT_ACTIVE
+            )
+            if scope_direction_from_side_state_v1(
+                entry_side_state
+            ) != scope_direction_from_side_state_v1(held):
+                entry_side_state = held
+    geometry_acceptance = swap_acceptance if manage_ranked_position else card_acceptance
+    if geometry_acceptance is not None:
+        from .analytical_card_scope_v1 import AnalyticalCardGeometryV1
+
+        if market_context.canonical_volatility_estimate is not None:
+            card_geometry = AnalyticalCardGeometryV1.from_context(
+                key=key,
+                context=market_context,
+                position=observation,
+                acceptance=geometry_acceptance,
+            )
+            if prior_scope is not None:
+                carried_scope = card_geometry.advance(prior_scope, mark)
+        replay_input = replace(
+            replay_input,
+            side_state=entry_side_state,
+            direction_state=_side_state_to_entry_exit_direction(entry_side_state),
+            scope_direction_state=scope_direction_from_side_state_v1(entry_side_state),
+            runtime_scope_state=carried_scope,
+            runtime_scope_bound_instrument_id=key.canonical_instrument_id
+            if carried_scope is not None
+            else None,
+            existing_position_side=ExistingPositionSide(observation.existing_position_side.value),
+            position_state=PositionState(observation.position_state.value),
+            position_management_context=PositionManagementContext(
+                observation.position_management_context.value
+            ),
+            venue_flat=observation.venue_flat,
+            scope_confirmation_state=state.card_scope_confirmation
+            or ScopeConfirmationStateV1(
+                candidate_kind=None,
+                candidate_count=0,
+                last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
+            ),
+        )
+    if instrument_card_market is not None:
         from src.ops.instrument_card_input_observation_v1 import record_instrument_card_input_v1
 
-        replay_input = replace(replay_input, **capital_inputs)
-        if card_acceptance is not None:
-            from .analytical_card_scope_v1 import AnalyticalCardGeometryV1
-
-            if market_context.canonical_volatility_estimate is not None:
-                card_geometry = AnalyticalCardGeometryV1.from_context(
-                    key=key,
-                    context=market_context,
-                    position=observation,
-                    acceptance=card_acceptance,
-                )
-                if prior_scope is not None:
-                    carried_scope = card_geometry.advance(prior_scope, mark)
-            replay_input = replace(
-                replay_input,
-                side_state=entry_side_state,
-                direction_state=_side_state_to_entry_exit_direction(entry_side_state),
-                scope_direction_state=scope_direction_from_side_state_v1(entry_side_state),
-                runtime_scope_state=carried_scope,
-                runtime_scope_bound_instrument_id=key.canonical_instrument_id
-                if carried_scope is not None
-                else None,
-                existing_position_side=ExistingPositionSide(
-                    observation.existing_position_side.value
-                ),
-                position_state=PositionState(observation.position_state.value),
-                position_management_context=PositionManagementContext(
-                    observation.position_management_context.value
-                ),
-                venue_flat=observation.venue_flat,
-                scope_confirmation_state=state.card_scope_confirmation
-                or ScopeConfirmationStateV1(
-                    candidate_kind=None,
-                    candidate_count=0,
-                    last_evaluated_trading_epoch=state.last_evaluated_trading_epoch,
-                ),
-            )
         record_instrument_card_input_v1(replay_input)
     ddo_capture = None
     if ddo_capture_binding is not None and ddo_repository_sha is not None:
@@ -1674,7 +1698,7 @@ def run_hardened_bridge_cycle_v2(
             session_id=session_id,
             cycle_index=state.cycle_index,
             event_ts_unix=event_ts_unix,
-            observation_acceptance_result=card_acceptance,
+            observation_acceptance_result=geometry_acceptance,
             features=features,
             confirmation_binding=None,
         )
@@ -1782,15 +1806,35 @@ def run_hardened_bridge_cycle_v2(
         quantity_projection["portfolio_quantity_base"] = "0"
 
     swap_purchase = None
+    swap_exit = None
     book_fill_price = None
     if ranked_swap_observation is not None:
-        intended_dict.update(
-            intended_side="HOLD",
-            intended_quantity="0",
-            intent_action="NONE",
-            quantity_source="ranked_swap_shadow_no_fill",
-            reason_codes=[*intended_dict["reason_codes"], "SHADOW_OBSERVATION_NO_FILL"],
-        )
+        if (
+            manage_ranked_position
+            and not observation.venue_flat
+            and intended_dict["decision_outcome"] in {"exit", "reduce"}
+            and intended_dict["intended_side"] in {"BUY", "SELL"}
+        ):
+            swap_exit = ranked_entry.prepare_exit(
+                state=state,
+                market=ranked_swap_observation,
+                action=intended_dict,
+                replay=replay,
+            )
+        if swap_exit is not None and swap_exit["status"] == "PRICED":
+            book_fill_price = Decimal(swap_exit["price"])
+            intended_dict.update(
+                intended_quantity_unit=ranked_entry.assignment.instrument.base_currency,
+                intent_action=intended_dict["decision_outcome"].upper(),
+            )
+        else:
+            intended_dict.update(
+                intended_side="HOLD",
+                intended_quantity="0",
+                intent_action="NONE",
+                quantity_source="ranked_swap_shadow_no_fill",
+                reason_codes=[*intended_dict["reason_codes"], "SHADOW_OBSERVATION_NO_FILL"],
+            )
         if (
             ranked_entry is not None
             and replay.intermediate is not None
@@ -1816,7 +1860,7 @@ def run_hardened_bridge_cycle_v2(
                     intended_side=swap_purchase["envelope"]["side"].upper(),
                     intended_quantity=swap_purchase["quantity_base"],
                     intended_quantity_unit=swap_purchase["base_currency"],
-                    intent_action="FIRST_PURCHASE",
+                    intent_action=entry["entry_action"],
                     quantity_source="bound_simulated_first_purchase_plan",
                     reason_codes=["RANKED_SHADOW_SLOT_BUDGET_BOUND"],
                     safety_blocked=False,
@@ -1978,17 +2022,34 @@ def run_hardened_bridge_cycle_v2(
                 opening_envelope_digest=swap_purchase["envelope"]["envelope_digest"],
             )
             swap_purchase.update(status="FILLED", fill_id=fill_id)
+        if swap_exit is not None and swap_exit["status"] == "PRICED":
+            contracts = Decimal(swap_exit["quantity_contracts"])
+            booked_position = state.portfolio.snapshot()["state"]["positions"][state.instrument_id]
+            remaining = Decimal(booked_position["quantity"]) / Decimal(
+                ranked_entry.assignment.instrument.contract_value
+            )
+            fill_dict.update(
+                quantity_contracts=str(contracts),
+                quote_currency="USDT",
+                quantity_unit=ranked_entry.assignment.instrument.base_currency,
+                closing_opening_fill_id=swap_exit["opening_fill_id"],
+            )
+            swap_exit.update(
+                status="FILLED", fill_id=fill_id, position_after_contracts=str(remaining)
+            )
+            if remaining == 0:
+                state.ranked_confirmed_entry_budget = None
         state.fill_ledger.append(dict(fill_dict))
 
-    if card_acceptance is not None:
-        if card_acceptance.strategy_advance_allowed:
+    if geometry_acceptance is not None:
+        if geometry_acceptance.strategy_advance_allowed:
             state.card_observations = commit_observation_acceptance_v1(
-                current_state=card_acceptance.state_before, result=card_acceptance
+                current_state=geometry_acceptance.state_before, result=geometry_acceptance
             )
         inter = replay.intermediate
         state.card_confirmation = (
             inter.directional_confirmation_progress_after
-            if inter is not None and observation.venue_flat
+            if inter is not None and (observation.venue_flat or manage_ranked_position)
             else None
         )
         _, after_side, _ = _portfolio_position_fields_v2(state)
@@ -2014,7 +2075,7 @@ def run_hardened_bridge_cycle_v2(
                 current_hysteresis_band=carried_scope.current_hysteresis_band,
             )
             state.card_scope_confirmation = inter.scope_event.next_confirmation_state
-    if swap_acceptance is not None:
+    if swap_acceptance is not None and not manage_ranked_position:
         state.card_observations = commit_observation_acceptance_v1(
             current_state=swap_acceptance.state_before, result=swap_acceptance
         )
@@ -2024,13 +2085,15 @@ def run_hardened_bridge_cycle_v2(
             else None
         )
     _update_session_state_from_replay(state, result=replay)
-    if (
-        (card_acceptance is not None or swap_acceptance is not None)
-        and fill_obj is not None
-        and state.side_state != SideState.KILL_ALL
-    ):
+    if (card_acceptance is not None or swap_acceptance is not None) and fill_obj is not None:
         _, new_side, _ = _portfolio_position_fields_v2(state)
-        if new_side != position_side:
+        if manage_ranked_position and new_side == "none":
+            # A protection-only replay can return without an intermediate state.
+            state.venue_flat = True
+            state.position_state = PositionState.FLAT_RECONCILED
+            state.existing_position_side = ExistingPositionSide.NONE
+            state.position_management_context = PositionManagementContext.FLAT
+        if new_side != position_side and state.side_state != SideState.KILL_ALL:
             state.side_state = {
                 "long": SideState.LONG_ACTIVE,
                 "short": SideState.SHORT_ACTIVE,
@@ -2095,6 +2158,24 @@ def run_hardened_bridge_cycle_v2(
         ),
         "selected_side": str(replay.evidence.selected_side),
         "risk_sizing_result": (swap_purchase or {}).get("sizing_result", sizing_result),
+        **({"ranked_shadow_exit": swap_exit} if swap_exit is not None else {}),
+        **(
+            {
+                "ranked_shadow_position_scope": {
+                    "anchor_before": prior_scope.anchor_price if prior_scope else None,
+                    "anchor_used": carried_scope.anchor_price if carried_scope else None,
+                    "anchor_after": state.card_position_scope.anchor_price
+                    if state.card_position_scope
+                    else None,
+                    "distance": card_geometry.distance if card_geometry else None,
+                    "event": replay.intermediate.scope_event.event_type.value
+                    if replay.intermediate
+                    else None,
+                }
+            }
+            if manage_ranked_position
+            else {}
+        ),
         **(
             {
                 "ranked_shadow_first_purchase": swap_purchase,

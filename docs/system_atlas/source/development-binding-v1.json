@@ -3419,7 +3419,7 @@
     {
       "path": "src/ops/instrument_card_stream_v1.py",
       "before_sha256": null,
-      "sha256": "bdcff158d4b4bf9b01c2e54715858c217d31d2266be569aa8cd91a5e8550a867"
+      "sha256": "2a9764a46ad5e88f188b23d27ac9fb13f381c283875be59f7d1867a138e39d97"
     },
     {
       "path": "src/ops/integrated_offline_economic_evidence_v1/productive_replay_baseline_v1.py",
@@ -3934,7 +3934,7 @@
     {
       "path": "src/ops/ranked_shadow_first_purchase_v1.py",
       "before_sha256": null,
-      "sha256": "c68799f02f138a423d5400d5b44660be0731894f5fd9aab4cb6212a98ad1c62d"
+      "sha256": "66f314534e049c32981c3c33330869a5cdb00df6010a63e5a13dd87843b9fe5f"
     },
     {
       "path": "src/ops/ranked_shadow_slot4_nomination_v1.py",
@@ -4084,12 +4084,12 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/full_economic_reconstruction_verifier_v2.py",
       "before_sha256": "33344a4173ff57954a38374d09645b1cbd20bfe84d084c6ef54184a5485a406d",
-      "sha256": "0b6d398a3905ed7d807404d2968380bde14615fd39de7b752982a17a81c4a397"
+      "sha256": "189f3d892f53c4f24d6ff20de600d217478d76db14c5a3d28050b0e965cfe4ac"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "a5cd99fd04d637dfd9dd27de87ad017bcb26f614994b3f4905a83cfbad286b23"
+      "sha256": "5c02fc267f497c33b35bb99023ed2ebea4fce5eaa7c475a299ac74a23707d290"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/idempotent_portfolio_v2.py",
@@ -5944,7 +5944,7 @@
     {
       "path": "tests/ops/test_ranked_shadow_first_purchase_v1.py",
       "before_sha256": null,
-      "sha256": "731c053bc845f8100b2faff1f3c422d924e5fa5e094cfc8703811039e44e726a"
+      "sha256": "8176c719a3a878f19aca5362226a8461c83346796febabae3b887cffb9bd0085"
     },
     {
       "path": "tests/ops/test_ranked_shadow_slot4_pre_tick_v1.py",

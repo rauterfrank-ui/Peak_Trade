@@ -204,6 +204,8 @@ def verify_full_economic_reconstruction_v2(
         blockers.append("CARD_PORTFOLIO_MODEL_DIGEST_MISMATCH")
     model = IdempotentPortfolioV2.from_params(params)
     reconstructed_fills = 0
+    active_book_opening = None
+    last_book_exit = None
     for i, cycle in enumerate(cycle_ledger, start=1):
         action = cycle.get("intended_action") or {}
         side = str(action.get("intended_side") or "HOLD")
@@ -221,6 +223,57 @@ def verify_full_economic_reconstruction_v2(
         if mark <= 0:
             blockers.append("MARK_PRICE_MISSING_FOR_RECONSTRUCTION")
             continue
+        exit_receipt = cycle.get("ranked_shadow_exit")
+        recorded_fill = cycle.get("fill") or {}
+        if (
+            exit_receipt is not None
+            or recorded_fill.get("closing_opening_fill_id")
+            or active_book_opening is not None
+            and recorded_fill
+        ):
+            from src.ops.ranked_shadow_first_purchase_v1 import verified_exit_price_v1
+
+            if (exit_receipt or {}).get("status") == "BLOCKED":
+                if (
+                    recorded_fill
+                    or side != "HOLD"
+                    or qty != 0
+                    or fill_id
+                    or not exit_receipt.get("reason")
+                ):
+                    blockers.append(f"RANKED_EXIT_BLOCKED_WITH_ACTION_{i}")
+            else:
+                try:
+                    book_fill_prices[i] = verified_exit_price_v1(
+                        cycle, active_book_opening, model.snapshot(), last_book_exit
+                    )
+                    last_book_exit = exit_receipt
+                    if Decimal(exit_receipt["position_after_contracts"]) == 0:
+                        active_book_opening = None
+                except (TypeError, KeyError, ValueError, ArithmeticError, IndexError):
+                    blockers.append(f"RANKED_SHADOW_EXIT_LINKAGE_BREAK_{i}")
+        purchase = cycle.get("ranked_shadow_first_purchase") or {}
+        entry = purchase.get("entry") or {}
+        if purchase.get("status") == "FILLED" and "fill_book" in entry:
+            if active_book_opening is not None:
+                blockers.append(f"RANKED_ENTRY_WITH_OPEN_POSITION_{i}")
+            if last_book_exit is not None or entry.get("entry_action") == "REENTRY":
+                from src.ops.ranked_shadow_first_purchase_v1 import _require_new_book
+
+                try:
+                    prior_opening = cycle_ledger[last_book_exit["opening_cycle_index"] - 1]
+                    if (
+                        entry["entry_action"] != "REENTRY"
+                        or entry["previous_exit_fill_id"] != last_book_exit["fill_id"]
+                        or entry["n5_assignment"]
+                        != prior_opening["ranked_shadow_first_purchase"]["entry"]["n5_assignment"]
+                    ):
+                        raise ValueError("REENTRY_PARENT_CHANGED")
+                    _require_new_book(last_book_exit["fill_book"], entry["fill_book"])
+                except (TypeError, KeyError, ValueError, IndexError):
+                    blockers.append(f"RANKED_REENTRY_LINKAGE_BREAK_{i}")
+            active_book_opening = cycle
+            last_book_exit = None
         fill = model.apply_intended_action(
             instrument_id=str(cycle.get("instrument_id") or ""),
             side=side,
