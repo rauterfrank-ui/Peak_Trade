@@ -66,6 +66,21 @@ def _need(value, reason):
 
 
 @dataclass(frozen=True)
+class BtcDemoEntryCapitalReadV1:
+    """Decision-bound TESTNET observation. It carries no admitted sizing capital."""
+
+    account_identity: str
+    instrument_id: str
+    decision_id: str
+    cycle_id: str
+    decision_epoch: str
+    observed_usdc_available: str | None
+    balance_acquired_at: str
+    coverage_digest: str
+    budget_revision: tuple[int, str]
+
+
+@dataclass(frozen=True)
 class BtcDemoMarketObservationV1:
     native_price_currency: str
     cycle_id: str
@@ -163,6 +178,82 @@ class BtcDemoOfflineTradingHostV1:
         cursor = parse_current_productive_sidestate_confirmation_cursor_v1(raw)
         frame = read_current_core_entry_assessment_frame_v1(cursor)
         report = validate_btc_demo_coverage_v1(coverage, account=self.budget.account, now=now)
+        return self._monetary_assessment(report, frame["parent"]["decision_id"])
+
+    def inspect_testnet_entry_v1(self, *, entry, reads, clock):
+        """Read Demo coverage for this still-current ENTER. A read creates no obligation."""
+        lock = self.cursor_root / "first_entry_mark_v2.lock"
+        with exclusive_v1(lock):
+            cycle = self._original_entry_cycle(entry)
+            revision = self.budget.budget_revision_ref_v1()
+            _need(
+                self.budget.owner.active_sum_v1() == 0,
+                "BTC_OFFLINE_EXISTING_OBLIGATION_BLOCKS_NEW_ENTRY",
+            )
+        epoch = cycle.replay.intermediate.market_context.decision_time
+        started = clock()
+        pretrade_acquisition_v1.acquisition_age_seconds_v1(
+            acquired_at_utc=epoch, now_utc=datetime.fromtimestamp(started, timezone.utc).isoformat()
+        )
+        report = demo.read_btc_demo_coverage_v2(reads=reads, expected_uid=self.budget.account)
+        with exclusive_v1(lock):
+            self._original_entry_cycle(entry)
+            _need(
+                self.budget.budget_revision_ref_v1() == revision,
+                "BTC_DEMO_ENTRY_BUDGET_HEAD_CHANGED",
+            )
+            finished = clock()
+            _need(finished >= started, "BTC_DEMO_ENTRY_CLOCK_REVERSED")
+            pretrade_acquisition_v1.acquisition_age_seconds_v1(
+                acquired_at_utc=epoch,
+                now_utc=datetime.fromtimestamp(finished, timezone.utc).isoformat(),
+            )
+            validated = validate_btc_demo_coverage_v1(
+                report, account=self.budget.account, now=finished
+            )
+            _need(
+                all(
+                    datetime.fromisoformat(row["acquired_at"]).timestamp() >= started
+                    for row in validated["source_observations"]
+                ),
+                "BTC_DEMO_ENTRY_READ_PREDATES_REQUEST",
+            )
+            capital_read = BtcDemoEntryCapitalReadV1(
+                account_identity=validated["account_identity"],
+                instrument_id=self.budget.bound.instrument_id,
+                decision_id=cycle.replay.evidence.decision_id,
+                cycle_id=cycle.cycle_id,
+                decision_epoch=epoch,
+                observed_usdc_available=validated["available_equity"].get("USDC"),
+                balance_acquired_at=next(
+                    row["acquired_at"]
+                    for row in validated["source_observations"]
+                    if row["path"] == demo._BALANCE
+                ),
+                coverage_digest=validated["coverage_digest"],
+                budget_revision=revision,
+            )
+            return dict(
+                **self._monetary_assessment(validated, cycle.replay.evidence.decision_id),
+                demo_capital_read=capital_read,
+                execution_environment=validated["execution_environment"],
+                lane_id=demo._LANE,
+                instrument_id=self.budget.bound.instrument_id,
+                venue_native_id=self.budget.bound.venue_native_id,
+                cycle_id=cycle.cycle_id,
+                decision_epoch=epoch,
+                decision_outcome=cycle.decision_outcome,
+                coverage_observed_at=validated["coverage_observed_at"],
+                coverage_position_mode=validated["position_mode"],
+                taker_fee_rate_signed=validated["taker_fee_rate_signed"],
+                available_usdc_covers_declared_budget=validated[
+                    "available_usdc_covers_declared_budget"
+                ],
+                budget_revision=revision,
+            )
+
+    @staticmethod
+    def _monetary_assessment(report, decision_id):
         instrument = next(
             row["payload"]
             for row in report["source_observations"]
@@ -184,7 +275,7 @@ class BtcDemoOfflineTradingHostV1:
         return dict(
             status="BLOCKED",
             authority="NONE",
-            decision_id=frame["parent"]["decision_id"],
+            decision_id=decision_id,
             native_price_currency="USD",
             capital_currency="USDC",
             canonical_risk_numeraire=CANONICAL_INTERNAL_RISK_NUMERAIRE,
@@ -209,7 +300,7 @@ class BtcDemoOfflineTradingHostV1:
             reason_codes=tuple(reasons),
         )
 
-    def _original_rehearsal_cycle(self, entry):
+    def _original_entry_cycle(self, entry):
         _need(
             type(entry) is FirstEntryMarkCycleV2
             and entry.status == "ENTRY_DECIDED"
@@ -258,6 +349,22 @@ class BtcDemoOfflineTradingHostV1:
         )
         return cycle
 
+    def reserve_offline_testnet_entry_v1(
+        self, *, entry, sources, movement_input, expected_revision, clock
+    ):
+        from src.ops.btc_demo_testnet_entry_reservation_v1 import _reserve_fixture_entry_v1
+
+        with exclusive_v1(self.cursor_root / "first_entry_mark_v2.lock"):
+            cycle = self._original_entry_cycle(entry)
+            return _reserve_fixture_entry_v1(
+                self,
+                cycle,
+                sources=sources,
+                movement_input=movement_input,
+                expected_revision=expected_revision,
+                clock=clock,
+            )
+
     def rehearse_entry_reservation_v1(self, *, entry, injected, recovery):
         """Apply the private linear settlement contract in a separate simulation journal.
 
@@ -302,7 +409,7 @@ class BtcDemoOfflineTradingHostV1:
             "BTC_REHEARSAL_USDC_COST_POLICY_REQUIRED",
         )
         with exclusive_v1(self.cursor_root / "first_entry_mark_v2.lock"):
-            cycle = self._original_rehearsal_cycle(entry)
+            cycle = self._original_entry_cycle(entry)
             replay = cycle.replay
             epoch = replay.intermediate.market_context.decision_time
             _need(
@@ -346,9 +453,14 @@ class BtcDemoOfflineTradingHostV1:
                     demo._LANE, replay.evidence.decision_id, cycle.cycle_id
                 ),
                 host_budget_recovery=recovery,
+                reservation_only=True,
             )
             _need(
                 result.status == "PASS", result.first_blocker or "BTC_REHEARSAL_RESERVATION_DENIED"
+            )
+            _need(
+                result.venue_plan_authorized is False and result.replay is None,
+                "BTC_REHEARSAL_RESERVATION_ONLY_RESULT_REQUIRED",
             )
             journal = host.owner.local_commitment_readback_v1()
             (hold,) = journal.commitments

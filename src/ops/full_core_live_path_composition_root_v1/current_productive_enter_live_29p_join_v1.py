@@ -828,9 +828,28 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     restrictive_risk: object | None = None,
     handoff_journal: object | None = None,
     double_play: CurrentProductiveDoublePlay29PInputV1 | None = None,
+    reservation_only: bool = False,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
     """Consume Live-29P on ENTER or assess and optionally reserve a simulated reversal."""
     reject_direct_avail_eq_29p_claim_v1(claimed="producer")
+    if type(reservation_only) is not bool or (
+        reservation_only
+        and (
+            current_productive_decision_class_v1(replay) != DECISION_ENTER
+            or injected is None
+            or portfolio_budget_owner is None
+            or portfolio_slot is None
+            or host_budget_recovery is None
+            or double_play is not None
+            or handoff_journal is not None
+        )
+    ):
+        return _denied_result(
+            status=STATUS_FAIL,
+            blocker="RESERVATION_ONLY_ORIGINAL_ENTER_CONTEXT_REQUIRED",
+            replay=None,
+            get_count=0,
+        )
     native_decision = None
     if double_play is not None:
         try:
@@ -1755,7 +1774,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         called=True,
         get_count=get_count,
         status=STATUS_PASS,
-        venue_plan_authorized=True,
+        venue_plan_authorized=not reservation_only,
         first_blocker="",
         producer_output_value=str(output.value),
         producer_output_status="PRODUCED",
@@ -1763,7 +1782,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
         used_offline_default_equity=FALSE_TOKEN,
         sizing_outcome=sizing_outcome,
-        replay=rebound,
+        replay=None if reservation_only else rebound,
         portfolio_reservation_id=portfolio_reservation_id,
         portfolio_reservation_disposition=portfolio_reservation_disposition,
         reason_codes=(JOIN_SEAM_ID, STATUS_PASS, PRODUCER_IDENTITY),

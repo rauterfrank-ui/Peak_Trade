@@ -13,15 +13,13 @@ from dataclasses import dataclass
 from typing import Tuple
 
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
-    CapitalAdmissionClaimV1,
     CapitalAdmissionEvidenceV1,
-    evaluate_capital_admission_v1,
+    evaluate_productive_29p_capital_output_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     NUMERIC_EQUITY_TTL_SECONDS,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
-    ADMISSION_CONTEXT_LIVE,
     CAPITAL_AUTHORITY_NONE,
     CAPITAL_SOURCE_OBSERVED_VENUE,
     CapitalAdmissionStatusV1,
@@ -139,6 +137,10 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
     clear_treasury_idempotency: bool = True,
 ) -> CurrentProductiveTreasurySingleSourceCapitalHandoffV1:
     """Delegate one margin observation through Treasury/E4/C08 then B05 29P produce."""
+    if type(margin_observation) is not CurrentProductiveUsdcFreeMarginObservationV1:
+        return _fail_closed(
+            reasons=("PRODUCTIVE_USDC_MARGIN_OBSERVATION_REQUIRED",), treasury_class=""
+        )
     if clear_treasury_idempotency:
         clear_treasury_reconciliation_idempotency_cache_v1()
     if u04_p01_host_inputs is None:
@@ -211,19 +213,10 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
             reasons=("FREE_MARGIN_PRODUCER_INPUTS_OR_OUTPUT_MISSING",),
             treasury_class=str(host.treasury_join.reconciliation.reconciliation_class),
         )
-    capital = evaluate_capital_admission_v1(
-        claim=CapitalAdmissionClaimV1(
-            source_class=CAPITAL_SOURCE_OBSERVED_VENUE,
-            account_identity=str(margin_observation.bound_account_identity),
-            instrument_id=str(instrument_id),
-            observed_capital_raw=output.value,
-            observed_field_name=PRODUCER_IDENTITY,
-            evidence_class="LIVE_TYPED",
-            evidence_id=str(margin_observation.decision_epoch),
-        ),
-        expected_account_identity=str(margin_observation.bound_account_identity),
-        expected_instrument_id=str(instrument_id),
-        admission_context=ADMISSION_CONTEXT_LIVE,
+    capital = evaluate_productive_29p_capital_output_v1(
+        output=output,
+        account_identity=margin_observation.bound_account_identity,
+        instrument_id=instrument_id,
     )
     claim = bind_step_29p_typed_equity_from_risk_capital_v1(
         output=output,

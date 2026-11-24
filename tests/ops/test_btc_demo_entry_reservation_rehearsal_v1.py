@@ -215,3 +215,35 @@ def test_bounded_policy_rejects_testnet_host_before_opening_store(tmp_path):
             entry_budget_policy=financial.policy(),
         )
     assert not (tmp_path / "testnet").exists()
+
+
+@pytest.mark.parametrize("scenario", [1], indirect=True)
+@pytest.mark.parametrize(
+    "missing", ["replay", "injected", "portfolio_slot", "host_budget_recovery"]
+)
+def test_reservation_only_denies_incomplete_entry_before_acquisition(scenario, missing):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+        CurrentProductiveEnterLive29PPortfolioSlotContextV1,
+        join_current_productive_enter_live_29p_before_venue_plan_v1,
+    )
+
+    demo, sim, entry, injected, recovery = scenario
+    before = sim.owner.risk_snapshot_v1()["durable_head"]
+    cycle = entry.cycle
+    inputs = dict(
+        replay=cycle.replay,
+        bound_instrument=demo.budget.bound,
+        decision_epoch=cycle.replay.intermediate.market_context.decision_time,
+        injected=injected,
+        portfolio_budget_owner=sim.owner,
+        portfolio_slot=CurrentProductiveEnterLive29PPortfolioSlotContextV1(
+            "LANE_3", cycle.replay.evidence.decision_id, cycle.cycle_id
+        ),
+        host_budget_recovery=recovery,
+        reservation_only=True,
+    )
+    inputs[missing] = None
+    result = join_current_productive_enter_live_29p_before_venue_plan_v1(**inputs)
+    assert result.first_blocker == "RESERVATION_ONLY_ORIGINAL_ENTER_CONTEXT_REQUIRED"
+    assert result.venue_plan_authorized is False and result.replay is None
+    assert result.get_count == 0 and sim.owner.risk_snapshot_v1()["durable_head"] == before

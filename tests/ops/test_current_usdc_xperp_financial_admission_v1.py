@@ -133,6 +133,7 @@ def prepare(
     host_context=None,
     extra_bindings=None,
     slot_entry=None,
+    fixture_transport="EXPLICIT_SYNTHETIC_USDC_FINANCIAL_SOURCE",
 ):
     if slot_entry is None:
         bound = xperp_bound(asset)
@@ -180,7 +181,10 @@ def prepare(
         context = host.observe_v1({slot: bound, **(extra_bindings or {})})
     else:
         host, context = host_context
-    payload = _balance_payload(avail_eq="1000")
+    demo_fixture = fixture_transport == "OKX_EEA_TESTNET_OFFLINE_FIXTURE"
+    payload = _balance_payload(avail_eq="25" if demo_fixture else "1000")
+    if demo_fixture:
+        payload["data"][0]["uid"] = ACCOUNT
     if fault == "wrong-underlying":
         row["uly"] = "ETH-USD"
     elif fault == "wrong-contract-unit":
@@ -217,11 +221,12 @@ def prepare(
             200,
             payload,
             private,
-            "EXPLICIT_SYNTHETIC_USDC_FINANCIAL_SOURCE",
+            f"{fixture_transport}:{ACCOUNT}" if private and demo_fixture else fixture_transport,
             False,
             False,
             "",
             cost.digest(payload),
+            data_safety_source_kind="SYNTHETIC" if demo_fixture else None,
             pretrade_decision_id=acquisition,
             acquired_at_utc=epoch,
         )

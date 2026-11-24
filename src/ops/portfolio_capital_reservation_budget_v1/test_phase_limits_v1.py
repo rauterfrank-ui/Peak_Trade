@@ -33,6 +33,12 @@ class BoundedSlotEntryBudgetV1(EntryBudgetPolicyV1):
     require_xperp_liquidation_projection: bool = False
     require_original_public_movement_facts: bool = False
 
+    def constrain_offline_testnet_entry_v1(self, context):
+        self.validate_v1()
+        if context.capital_risk_mode != "OFFLINE_TESTNET_ACCOUNT_BOUND":
+            raise EntryBudgetPolicyError("OFFLINE_TESTNET_ACCOUNT_BOUND_CONTEXT_REQUIRED")
+        return self._apply_entry_limits_v1(context)
+
     def validate_v1(self):
         super().validate_v1()
         limit, slots = self.per_slot_reserved_notional_limit, self.allowed_slot_ids

@@ -136,6 +136,7 @@ class BtcDemoBudgetReconciliationHostV1:
     def admit_budget_v1(self, *, coverage, output, observed, reconciliation, now):
         """Feed typed USDC capital to the original recovery gate; do not mint it."""
         self._fence_budget_v1()
+        _, head = self.budget_revision_ref_v1()
         report = validate_btc_demo_coverage_v1(coverage, account=self.account, now=now)
         _need(report["position_mode"] == "net_mode", "BTC_DEMO_NET_POSITION_MODE_REQUIRED")
         _need(
@@ -175,6 +176,7 @@ class BtcDemoBudgetReconciliationHostV1:
             lane_bindings={"LANE_3": self.bound},
             now_unix=now,
             capital_max_age_seconds=NUMERIC_EQUITY_TTL_SECONDS,
+            expected_durable_head=head,
         )
 
     def reconcile_attempt_v1(self, *, reads, reservation_id, clock):

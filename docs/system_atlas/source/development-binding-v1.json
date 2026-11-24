@@ -2664,7 +2664,7 @@
     {
       "path": "src/ops/btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "244eb9ede6e20ae6b59e0f71b68b41afd02c64df15f7895492f47997b2b80968"
+      "sha256": "129fb341f9cbdad272b5892d8fbd0af32c9b1a437982fa372d4ffe5317088cd6"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
@@ -2674,7 +2674,12 @@
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "022b9f7496b4cd046559259d63c3fb2b6dcc28f6eadb0f56383381da56153f13"
+      "sha256": "134d30d34ba345fac45cfa3f458f89a4901895661d6c9ae94d3f2c3c84567bc8"
+    },
+    {
+      "path": "src/ops/btc_demo_testnet_entry_reservation_v1.py",
+      "before_sha256": null,
+      "sha256": "08d8d3ca1bae41aaebbcc3f9478398a4f0ff19990cc02e30cf5df5b063467a2c"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -3037,6 +3042,11 @@
       "sha256": "6e74b0d1b48ffccd61a37e7220cfe85a3cd3c48e41880d3537c8c9235b547fec"
     },
     {
+      "path": "src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py",
+      "before_sha256": "b68cb7f9a43a2ecc2daf8920b1a61c571949dd170606fb3e714c91eeb58cd7c2",
+      "sha256": "a09b27078b0f8557e06136b6f66a84af26225709a0fe795dd252fa20fd80ff33"
+    },
+    {
       "path": "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py",
       "before_sha256": "529551416e1f280ef5904fd83b27ef413cd542d3f4ef514f20e3034a32f0597e",
       "sha256": "4c4376b631dabd5dbaffe7396cdb48ddf467bee9f9e768d4cace74c3fe30976d"
@@ -3094,7 +3104,12 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
       "before_sha256": "3bead0ffe7fb27b486d4198986fcfff6584abef7f3a8e3ce85da31c8b8943bbe",
-      "sha256": "12590786da448e581512dd2e33a2faad3e12ac10d75ca915277737cfb82a398e"
+      "sha256": "8d05655abc2a9b0c12aed02e397d444fc955d991fdd8dd84f02341036cad38bb"
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_entry_budget_policy_v1.py",
+      "before_sha256": "1d84af66376d3b8c7b17785ada945a6f9b3d76287fc04a1bf3327b68dfa6212d",
+      "sha256": "08791a658d43a64662399f0bf24ff8dc010bf99e2294c06aeaa9911129c693a7"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_future_identity_semantics_v1.py",
@@ -3229,7 +3244,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
       "before_sha256": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
-      "sha256": "4d0b445b374370c7b600ef3a9786a2fa1f724d1e0a599df48639a94a62dcb92b"
+      "sha256": "6fef669dc5d0f4f38fa3857081db5e29f606a866c5a8c8af01a05fe15cdeb032"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
@@ -3774,7 +3789,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
       "before_sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
-      "sha256": "25c76eb8ec00b1e5e0d33d116ad7c19ed32be9014fa667e67697569a34dc13fd"
+      "sha256": "9678286907e7a22f7a7cca8999bd404e24ae535975373808e52a6c9858f59b15"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/core_confirmation_source_v1.py",
@@ -3799,7 +3814,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
       "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
-      "sha256": "0b1e29bde37de3c667daa913a5d7d20a75bc451c66f38880bef339ae23fba665"
+      "sha256": "dcd11312db7f122fa10d7f60f5fb2a300dac60b267649e8cd73bf1e5ccaea9c5"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
@@ -3854,7 +3869,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
       "before_sha256": "b80d33ad3b74064834ec27325921e22aec2a049ab6d228ec56fbfdc1ec4b3f28",
-      "sha256": "e1ea5ecf468af71e1d2f0d76ecde3118f95bc3a5e8a75eb7f8d058f624132150"
+      "sha256": "56e93364fba8f75267468afe8f27bfea594d4aeb9c1f614c5dde6443aeeee38d"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/slot_economic_source_v1.py",
@@ -3869,7 +3884,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py",
       "before_sha256": null,
-      "sha256": "10e10eb8b1bf2ad862033fc61776e95b57451b7d7b5dacb104f0daaa73373ce5"
+      "sha256": "0f98c56f664326473287ebadf6b75f9fb3a9246f0892dbcdcb3a487602970ad4"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/xperp_liquidation_projection_v1.py",
@@ -5054,12 +5069,12 @@
     {
       "path": "tests/ops/test_btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "c117f282ae1b6227b6a24e45b210936cdf89395ca7984a78bdebdab2eb5cd84a"
+      "sha256": "09e7074bc99ddf68bdc5dd6de62852cc411cd07a52d87df09fddef4820f87d23"
     },
     {
       "path": "tests/ops/test_btc_demo_entry_reservation_rehearsal_v1.py",
       "before_sha256": null,
-      "sha256": "e6ab6381dc65f9e18a883ad997b5c122754b6ccd41d95fdf982f653724ab4d86"
+      "sha256": "b8d57054b7f749fb4f1dad61988ca55195b51f7833a84afb91f39542f39dd7d8"
     },
     {
       "path": "tests/ops/test_btc_demo_lane3_v2.py",
@@ -5074,12 +5089,17 @@
     {
       "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "35b513348eaf4cad977b09b5180f0d77d6c4c2cbb66622b1c54650ad916ccba4"
+      "sha256": "405bcc2386831b4d4df612142edf06b12a3cec9af671fe8f632fe2524a76e90e"
     },
     {
       "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
       "before_sha256": null,
       "sha256": "f98f6137104d0b259cdcdaa7942ebfb0d5b90fa2a3a754ed418cfac5e1b7729a"
+    },
+    {
+      "path": "tests/ops/test_btc_demo_testnet_entry_reservation_v1.py",
+      "before_sha256": null,
+      "sha256": "174de68d4b83cb2f6b7b7813023c0419bc4abb66fbc96b745210b4bc1f03e338"
     },
     {
       "path": "tests/ops/test_canonical_i17_productive_shadow_contract_readiness_v1.py",
@@ -5414,7 +5434,7 @@
     {
       "path": "tests/ops/test_current_usdc_xperp_financial_admission_v1.py",
       "before_sha256": null,
-      "sha256": "2537573df9fe17ff4b6bcff02f3f1539aacadc655d7e377bcc4785f5d04c0969"
+      "sha256": "44918ed96628079b29a661978574bde3f31e5df2cefd5e605048bf4ac4202d49"
     },
     {
       "path": "tests/ops/test_current_venue_plan_original_decision_parent_v1.py",

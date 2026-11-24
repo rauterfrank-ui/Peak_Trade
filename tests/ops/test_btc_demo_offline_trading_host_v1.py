@@ -42,7 +42,7 @@ EXIT_CONFIG = layer_c_derived_exit_policy_adverse_config_digest_v1(
 )
 
 
-def setup_host(tmp_path, monkeypatch, direction=1):
+def setup_host(tmp_path, monkeypatch, direction=1, *, policy=None):
     row = instrument(settlement="USD")
     row["instId"] = demo._NATIVE
     row["expTime"] = str(int(datetime(2031, 3, 28, 8, tzinfo=timezone.utc).timestamp() * 1000))
@@ -54,7 +54,7 @@ def setup_host(tmp_path, monkeypatch, direction=1):
     )
     monkeypatch.setattr(budget_fixture, "BOUND", bound)
     monkeypatch.setattr(budget_fixture, "BINDINGS", {"LANE_3": bound})
-    budget, _ = budget_fixture.owner_host(tmp_path)
+    budget, _ = budget_fixture.owner_host(tmp_path, policy=policy)
     c1 = NOW.timestamp() - 120
     closes = [64000 * (1 + direction * (i - 99) * 0.002) for i in range(100)]
     candles = {
@@ -510,5 +510,128 @@ def test_existing_hold_blocks_new_flat_entry(tmp_path, monkeypatch):
                 observation=observation(candles, 62, 64000), reconciliation=reconciliation
             )
         assert host.budget.owner.active_sum_v1() > 0
+    finally:
+        host.budget.owner.close()
+
+
+@pytest.mark.parametrize("direction", [1, -1])
+@pytest.mark.parametrize(
+    "fault",
+    [None, "expired-before", "expired-after", "older-reads", "budget-change", "wrong-account"],
+)
+def test_testnet_entry_reads_bound_to_original_decision_and_budget(
+    tmp_path, monkeypatch, direction, fault
+):
+    from datetime import timedelta
+
+    host, candles, admission, row = setup_host(tmp_path, monkeypatch, direction)
+    try:
+        entry, _ = enter(host, candles, admission, direction)
+        epoch = entry.cycle.replay.intermediate.market_context.decision_time
+        start = datetime.fromisoformat(epoch.replace("Z", "+00:00"))
+        captured = start - timedelta(milliseconds=1) if fault == "older-reads" else start
+        data = coverage_source()
+        data[demo._INSTRUMENTS] = [dict(row, settleCcy="USDC")]
+        data[demo._FX][0]["ts"] = str(int(captured.timestamp() * 1000))
+        if fault == "wrong-account":
+            data[demo._CONFIG][0]["uid"] = "999"
+
+        class Reads(CoverageReads):
+            def read(self, path, **query):
+                if fault == "budget-change" and path == demo._FX:
+                    host.budget.owner.restart_fail_closed_v1()
+                return super().read(path, **query)
+
+        reads = Reads(rows=data, times={key: captured for key in data})
+        clock = iter(
+            [
+                start.timestamp() + (6 if fault == "expired-before" else 0),
+                start.timestamp() + (6 if fault == "expired-after" else 0),
+            ]
+        )
+        before = host.budget.budget_revision_ref_v1()
+        if fault:
+            reason = {
+                "expired-before": "ACQUISITION_STALE",
+                "expired-after": "ACQUISITION_STALE",
+                "older-reads": "READ_PREDATES_REQUEST",
+                "budget-change": "BUDGET_HEAD_CHANGED",
+                "wrong-account": "DEMO_ACCOUNT_MISMATCH",
+            }[fault]
+            with pytest.raises(ValueError, match=reason):
+                host.inspect_testnet_entry_v1(entry=entry, reads=reads, clock=clock.__next__)
+            if fault == "expired-before":
+                assert not reads.calls
+        else:
+            report = host.inspect_testnet_entry_v1(entry=entry, reads=reads, clock=clock.__next__)
+            assert report["execution_environment"] == "TESTNET" and report["lane_id"] == "LANE_3"
+            assert report["decision_id"] == entry.cycle.replay.evidence.decision_id
+            assert report["decision_epoch"] == epoch and report["cycle_id"] == entry.cycle.cycle_id
+            assert report["decision_outcome"] == ("enter_long" if direction == 1 else "enter_short")
+            assert report["venue_native_id"] == demo._NATIVE
+            assert report["budget_revision"] == before
+            read = report["demo_capital_read"]
+            assert (
+                read.observed_usdc_available == "30"
+                and read.account_identity == host.budget.account
+            )
+            assert read.balance_acquired_at == captured.isoformat()
+            assert (
+                read.budget_revision == before and read.coverage_digest == report["coverage_digest"]
+            )
+            assert (read.decision_id, read.cycle_id, read.decision_epoch) == (
+                report["decision_id"],
+                entry.cycle.cycle_id,
+                epoch,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_treasury_single_source_capital_handoff_v1 import (
+                execute_current_productive_treasury_single_source_capital_handoff_v1,
+            )
+            from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+                admit_sized_slot_reservation_v1,
+            )
+
+            treasury = execute_current_productive_treasury_single_source_capital_handoff_v1(
+                margin_observation=read,
+                instrument_id=read.instrument_id,
+                body_sha256=read.coverage_digest,
+                fresh_pretrade_get_status="TRUSTED_PRESENT",
+                live_account_bound_status="TRUSTED_PRESENT",
+            )
+            assert (
+                treasury.fail_closed
+                and "PRODUCTIVE_USDC_MARGIN_OBSERVATION_REQUIRED" in treasury.reason_codes
+            )
+            reserved = admit_sized_slot_reservation_v1(
+                host.budget.owner,
+                observation=read,
+                p01=None,
+                eligibility=None,
+                slot_id="LANE_3",
+                decision_id=read.decision_id,
+                cycle_id=read.cycle_id,
+                instrument_id=read.instrument_id,
+                account_identity=read.account_identity,
+                sizing_input=None,
+                fresh_pretrade_get_status="TRUSTED_PRESENT",
+                live_account_bound_status="TRUSTED_PRESENT",
+                fresh_evidence_fetched=True,
+                fresh_evidence_validated=True,
+            )
+            assert reserved.disposition.value == "FAIL_CLOSED" and reserved.reservation is None
+            assert reserved.reason_codes == ("PRODUCTIVE_USDC_MARGIN_OBSERVATION_REQUIRED",)
+            assert report["available_usdc_covers_declared_budget"] is True
+            assert report["taker_fee_rate_signed"] == "-0.0005"
+            assert [path for path, _ in reads.calls] == [
+                demo._CONFIG,
+                demo._BALANCE,
+                demo._INSTRUMENTS,
+                demo._FEE,
+                demo._FX,
+            ]
+            assert report["status"] == "BLOCKED" and report["canonical_sizing_operands"] is None
+        if fault != "budget-change":
+            assert host.budget.budget_revision_ref_v1() == before
+        assert host.budget.owner.active_sum_v1() == 0
     finally:
         host.budget.owner.close()
