@@ -1,7 +1,7 @@
 # Fachbereiche, Außenkanten und Dateizuordnung
 
 Stand der Außenkanten `898bc69b25981edb67569689789ee8667f7ea639` · Obsidian-Basis `e6994ec60d357576c0c42aef3e4733fe60c25e91`.
-Dateizuordnung für 22.963 Pfade am Repo-Stand `d500fb6d83dcf199a5232596de608001792133ab`.
+Dateizuordnung für 22.965 Pfade am Repo-Stand `11c910f0b3a716ff06ffd3096b0298ec591a37ac`.
 Die Karte führt die Außenstruktur des Obsidian-Registers und die Fachowner aus dem Repo zusammen.
 Die Zuordnung hat Autorität NONE. Dokumentierte, historische, offene und offline ausgeführte Kanten behalten ihren Belegstatus.
 
@@ -303,7 +303,7 @@ Ausgehende Übergaben: GRENZE-P01, GRENZE-P02, GRENZE-P07, GRENZE-P16, GRENZE-P5
 
 ### EXEC · Intent Ausführungsgrenze und Lifecycle
 
-324 zugeordnete Dateien.
+325 zugeordnete Dateien.
 
 - EXEC-FG01 · CanonicalIntent · [canonical_order_intent_v1.py](../../../src/governance/canonical_order_intent_v1.py).
 - EXEC-FG02 · Venueplan und Envelope · [final_order_envelope_v1.py](../../../src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py).
@@ -356,7 +356,7 @@ Eingehende Übergaben: GRENZE-P44, GRENZE-P45.
 
 ### ENG · Entwicklung Tests CI und Auslieferung
 
-6776 zugeordnete Dateien.
+6777 zugeordnete Dateien.
 
 - ENG-FG01 · Delivery-/Policygrenzen · Modulfamilie ci.
 

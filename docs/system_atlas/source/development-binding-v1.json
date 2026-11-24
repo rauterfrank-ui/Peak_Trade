@@ -979,7 +979,7 @@
     {
       "path": "docs/ops/specs/BTC_DEMO_USD_PRICE_USDC_SETTLEMENT_BINDING_V1.md",
       "before_sha256": null,
-      "sha256": "8f88d9fb7c915403c2797da550258dbca5d7f05ee855bfcb21752f03465ecb7c"
+      "sha256": "a06eb47144eaeb05b8b50d2a0e94890759675284c45daf8515d639430c8e94a5"
     },
     {
       "path": "docs/ops/specs/BTC_OCCUPIED_RECONCILIATION_AND_MONETARY_SCOPE_V1.md",
@@ -2687,6 +2687,11 @@
       "sha256": "2657e0d829b0ac1480345c7f928b29fa7bc7857f7d0d56ccd277200448ec896c"
     },
     {
+      "path": "src/ops/btc_demo_entry_plan_v1.py",
+      "before_sha256": null,
+      "sha256": "3310fa0383eace1ba99946bbd0b7e6d5768b90ca991ff35bd446233312ac21bd"
+    },
+    {
       "path": "src/ops/btc_demo_entry_reservation_v1.py",
       "before_sha256": null,
       "sha256": "8b1b535d1a3781e4d696a38b8a7254a70be7ff3e79c811a3b754114296a33818"
@@ -2699,7 +2704,7 @@
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "dcfc2228c3523d81143123005a1d67d71418169b99322cce8034cfa0a0de7950"
+      "sha256": "7f6bf2593eb388ebce4f7ef3e4e1b35e266fc815acf2227f69e7424edee36929"
     },
     {
       "path": "src/ops/btc_demo_testnet_entry_reservation_v1.py",
@@ -5102,6 +5107,11 @@
       "sha256": "0dc00fbc0ca7f4e22f884bdb402930c27734e855b4cf4aff7ace1681fa85d665"
     },
     {
+      "path": "tests/ops/test_btc_demo_entry_plan_v1.py",
+      "before_sha256": null,
+      "sha256": "00a981dff522f3a06a220020a5d9b74c0cc0ba8cd2b7a315d7d1dbe0bf01a42c"
+    },
+    {
       "path": "tests/ops/test_btc_demo_entry_reservation_rehearsal_v1.py",
       "before_sha256": null,
       "sha256": "88f7906a01c71b1f5329c324ebba7c2e0aadfb3c0b9446ef7103750d15993423"
@@ -6413,10 +6423,10 @@
   "ranked_nonlive_slots_scope": "Paper can associate the occupied L10 decision with its confirmed simulated net reversal. Ranked USDT swap Shadow reads the N5 selection, Cap23 admission, analytical positions in native contracts and Cap24 result. DDO and GVEF retain original instrument, slot and measured unit. Virtual first purchase requires a separate sizing amount and slot budget binding. The BTC offline host retains pending reversals for reconciliation. Runtime authority effect NONE.",
   "up_paper_confirmation_and_shadow_entry_scope": "The ranked Shadow entry carries native sizing, FX and costs to the virtual slot budget. UP Paper reuses its validated DDO index and timestamps the confirmed reversal. Parallel public depth observation and retrospective liquidity checks are bounded to the selected UP Paper session. The historical rank-six OL handoff remains unbound. The bounded Paper and Shadow preparations pair GVEF with authenticated session inputs and closed episodes or the Shadow DDO outcome.",
   "artifact_assignments": {
-    "repo_commit": "d500fb6d83dcf199a5232596de608001792133ab",
+    "repo_commit": "11c910f0b3a716ff06ffd3096b0298ec591a37ac",
     "obsidian_register": "08 Register/Repo-Dateien.jsonl",
     "obsidian_register_sha256": "a714e113cee9c4869cd37649cbcc3484c99df38dcc54d90782b97de3ab658988",
-    "records_sha256": "d263f87318bb71402dcd425702b2455da0b969cf51ad4bf9acd0ee7897a1670d",
+    "records_sha256": "a1910793389f1b51c21d28672f15bc81f248bb9b9406d37a9a19342c95261dcc",
     "additions": [
       {
         "path": "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json",
@@ -6509,7 +6519,7 @@
         ],
         "basis": "slot3_demo_usd_usdc_contract_review",
         "mode": "100644",
-        "repo_blob": "fc1649d07fe806a1c6e64850175a950f03d79a88",
+        "repo_blob": "3b61726cc935c98d0d3b582b8f41b2eba3429134",
         "zuordnungsbasis_blob": "fc1649d07fe806a1c6e64850175a950f03d79a88"
       },
       {
@@ -6895,6 +6905,20 @@
         "zuordnungsbasis_blob": "7ff63034f4b261b28885e336a38cf51009d709ff"
       },
       {
+        "path": "src/ops/btc_demo_entry_plan_v1.py",
+        "area": "EXEC",
+        "role": "source",
+        "related_areas": [
+          "BUDGET",
+          "CORE",
+          "HOST"
+        ],
+        "basis": "slot3_demo_usd_usdc_contract_review",
+        "mode": "100644",
+        "repo_blob": "02caa9df46bdf00dfc49d3bd59f11c2298f17680",
+        "zuordnungsbasis_blob": "02caa9df46bdf00dfc49d3bd59f11c2298f17680"
+      },
+      {
         "path": "src/ops/btc_demo_entry_reservation_v1.py",
         "area": "BUDGET",
         "role": "source",
@@ -6923,7 +6947,7 @@
         "role": "source",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "cc328f9d99434af6d34c9df005d78e1c18276bd5",
+        "repo_blob": "1bcd03cf66cba9189ad4de5a4b3b53e1fc2532ea",
         "zuordnungsbasis_blob": "f21b4e73c9ad3086effa1581cc735d95cd81e4da"
       },
       {
@@ -7628,6 +7652,19 @@
         "zuordnungsbasis_blob": "7d344957ea9b0d9793275fdd4a92c3695a9a6185"
       },
       {
+        "path": "tests/ops/test_btc_demo_entry_plan_v1.py",
+        "area": "ENG",
+        "role": "test",
+        "related_areas": [
+          "EXEC",
+          "BUDGET"
+        ],
+        "basis": "slot3_demo_usd_usdc_contract_review",
+        "mode": "100644",
+        "repo_blob": "9c03ecccda6b79a49ac7d1e6908c04ec7f11f020",
+        "zuordnungsbasis_blob": "9c03ecccda6b79a49ac7d1e6908c04ec7f11f020"
+      },
+      {
         "path": "tests/ops/test_btc_demo_entry_reservation_rehearsal_v1.py",
         "area": "ENG",
         "role": "test",
@@ -8232,5 +8269,6 @@
   "btc_entry_reservation_rehearsal_scope": "Slot 3 offline first-entry rehearsal binds the BTC Core decision, its stored USD mark and effective Scope to the existing private linear USDC costing and simulated 25 USDC budget. Both sides retain a sized obligation with opening, closing and funding provisions after cold read. The bounded policy continues to reject a TESTNET host. Runtime authority is NONE.",
   "btc_testnet_offline_reservation_review": "The isolated Slot 3 TESTNET V2 budget owner binds the synthetic BTC entry and source clock before sizing and journaling a first hold. It reuses the original durable writer and recovery format. Both directions use separate 25 USDC budgets. The simulated rehearsal consumes the sealed 29P entry behind a reservation-only return. The protected productive sources match main. Runtime authority is NONE. The isolated book replay consumes the same reservation, decision and journal revision and retains signed opening fees per synthetic fill. A fixture hold cannot enter venue reconciliation.",
   "testnet_capital_environment_draft_scope": "The earlier shared-owner environment draft is superseded. The generic budget contract and host are byte-identical to target main. The isolated V3 Demo specialization retains its TESTNET envelope over the original durable writer; generic reopen and Live attempt identity are rejected. No runtime authority is granted.",
-  "btc_demo_usd_usdc_reservation_scope": "Original decision-bound Demo GET bodies feed a V3 TESTNET first-entry hold. Explicit EEA linear X-Perp selected-margin interpretation retains USD quote and USDC cash units without a spot FX parity assumption or source-row projection. Monetary source v2 retains the same private account and instrument observations for cold reconstruction. Both Core directions, once-funded 25 USDC despite larger observed balance, depth, fees and wrong-source refusals pass offline. Confirmed venue payments, full dispatch/reversal and five-lane scheduling remain open. Runtime authority is NONE."
+  "btc_demo_usd_usdc_reservation_scope": "Original decision-bound Demo GET bodies feed a V3 TESTNET first-entry hold. Explicit EEA linear X-Perp selected-margin interpretation retains USD quote and USDC cash units without a spot FX parity assumption or source-row projection. Monetary source v2 retains the same private account and instrument observations for cold reconstruction. Both Core directions, once-funded 25 USDC despite larger observed balance, depth, fees and wrong-source refusals pass offline. Confirmed venue payments, full dispatch/reversal and five-lane scheduling remain open. Runtime authority is NONE.",
+  "btc_demo_testnet_plan_scope": "The original canonical intent, composition, venue-plan and envelope producers consume the actual retained sizing binding for TESTNET, with original decision and current entry-frame custody. Offline bilateral tests prove exact reserved quantity, no Core cursor rewrite, same plan after cold read, and refusal before mutation for stale observations including expiry during composition. No permit, submit attempt or transport is created. Full Demo send/reversal and bounded five-lane dispatch remain open."
 }
