@@ -1792,6 +1792,11 @@
       "sha256": "94772d04b697f6a7f90856fc0c6bdf78bd8d719d9ba2a0faaf05405ae18393be"
     },
     {
+      "path": "scripts/ops/inspect_btc_demo_account_v1.py",
+      "before_sha256": null,
+      "sha256": "2b71240349abbd151cfb5d2b57d65b6735a9a25b3b51dd16c521b64cbe0805a5"
+    },
+    {
       "path": "scripts/ops/inspect_shadow_slot4_rotation_v1.py",
       "before_sha256": null,
       "sha256": "ddb5ebf6ce8435d6a43dd9c1f18c3969276293725e267f994f33f6d415a24068"
@@ -5617,6 +5622,11 @@
       "sha256": "aeba8967c6a6358a875140ef051882a678c5b8b3653cc2629a6ac367293dc8b5"
     },
     {
+      "path": "tests/ops/test_inspect_btc_demo_account_v1.py",
+      "before_sha256": null,
+      "sha256": "d10ea77fade7367ae15da8bc00cc78352a4065131af3b65b17a0cbf0904134c3"
+    },
+    {
       "path": "tests/ops/test_instrument_card_budget_assessment_v1.py",
       "before_sha256": null,
       "sha256": "b055b84ea9c1661cbf02e2990305f0e409aca5d6808d0e20ed93ece32ed03f68"
@@ -6338,10 +6348,10 @@
   "ranked_nonlive_slots_scope": "Paper can associate the occupied L10 decision with its confirmed simulated net reversal. Ranked USDT swap Shadow reads the N5 selection, Cap23 admission, analytical positions in native contracts and Cap24 result. DDO and GVEF retain original instrument, slot and measured unit. Virtual first purchase requires a separate sizing amount and slot budget binding. The BTC offline host retains pending reversals for reconciliation. Runtime authority effect NONE.",
   "up_paper_confirmation_and_shadow_entry_scope": "The ranked Shadow entry carries native sizing, FX and costs to the virtual slot budget. UP Paper reuses its validated DDO index and timestamps the confirmed reversal. Parallel public depth observation and retrospective liquidity checks are bounded to the selected UP Paper session. The historical rank-six OL handoff remains unbound. The bounded Paper and Shadow preparations pair GVEF with authenticated session inputs and closed episodes or the Shadow DDO outcome.",
   "artifact_assignments": {
-    "repo_commit": "5a1acfc6e32034c9a60e5d683c8714b816a4740f",
+    "repo_commit": "81f93f33ed1272dbd52c5f28182dbb24330a55f4",
     "obsidian_register": "08 Register/Repo-Dateien.jsonl",
-    "obsidian_register_sha256": "37e92d1bcc7591c7cebca1640c4c9c4ab50f5c21a6493976763563d6b4b204fb",
-    "records_sha256": "37e92d1bcc7591c7cebca1640c4c9c4ab50f5c21a6493976763563d6b4b204fb",
+    "obsidian_register_sha256": "747bcb69b341c2822c1e1bb438adeffcbec36c46b24bcd0635e2eaced44bbf5c",
+    "records_sha256": "747bcb69b341c2822c1e1bb438adeffcbec36c46b24bcd0635e2eaced44bbf5c",
     "additions": [
       {
         "path": "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json",
@@ -6502,6 +6512,17 @@
         "basis": "obsidian_navigation_2026_11_18",
         "mode": "100644",
         "repo_blob": "de72a46eb9e3d6aa7773e13dbd2c0c4043e32258"
+      },
+      {
+        "path": "scripts/ops/inspect_btc_demo_account_v1.py",
+        "area": "VIEW",
+        "role": "tool",
+        "basis": "slot3_demo_account_read_review",
+        "related_areas": [
+          "ACCOUNTING"
+        ],
+        "mode": "100644",
+        "repo_blob": "cc05045617055597142899fdabc69b84d8230401"
       },
       {
         "path": "scripts/ops/inspect_shadow_slot4_rotation_v1.py",
@@ -6808,7 +6829,7 @@
         "role": "source",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "57858de0e41d16885e2237b49dfb9eed150d81aa",
+        "repo_blob": "36f1fc91b5b4ed3e47b2447f6015e78f29b8ceff",
         "zuordnungsbasis_blob": "64ab36670895db282c4647e08c75a2e240f10bf5"
       },
       {
@@ -6939,7 +6960,7 @@
         "role": "source",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "830982f7c0c7b6ebbdd4043e31af4475b219cd47",
+        "repo_blob": "9ed7fa067f9b62889071970aaafa649423fe34ee",
         "zuordnungsbasis_blob": "debdbb9ec527d501b72f4e1eeb26d23eeb246f85"
       },
       {
@@ -7428,6 +7449,17 @@
         "repo_blob": "956c04caa593497dc1dd72f04dcb26106df74ad9"
       },
       {
+        "path": "tests/ops/test_inspect_btc_demo_account_v1.py",
+        "area": "ENG",
+        "role": "test",
+        "basis": "slot3_demo_account_read_review",
+        "related_areas": [
+          "ACCOUNTING"
+        ],
+        "mode": "100644",
+        "repo_blob": "70defce6f9a50f134cbe95d99cc5439753a516c1"
+      },
+      {
         "path": "tests/ops/test_instrument_card_budget_assessment_v1.py",
         "area": "ENG",
         "role": "test",
@@ -7521,7 +7553,8 @@
         "role": "test",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "c0a6c7f80e4d44837ea93eef542879ec24e9e93d"
+        "repo_blob": "f6bdba8d06e05a7028875bcf12e33d784d37263a",
+        "zuordnungsbasis_blob": "c0a6c7f80e4d44837ea93eef542879ec24e9e93d"
       },
       {
         "path": "tests/ops/test_ranked_shadow_slot4_pre_tick_v1.py",
