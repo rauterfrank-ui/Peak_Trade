@@ -1,0 +1,107 @@
+{
+  "schema": "peaktrade.n1_testnet_session_close_source_acceptance.v1",
+  "state": "OFFLINE_REVIEWED_SOURCE_SUCCESSOR_PREPARED",
+  "created_at_utc": "2026-11-24T16:49:01.568398+00:00",
+  "parent_main": "fdbd10c22d7af81a02763ea84a54a4adb0c07126",
+  "runtime_authorization_effect": "NONE",
+  "user_authorization": {
+    "source": "Current conversation",
+    "quote": "Demoposition schlie\u00dfen und den Abschluss best\u00e4tigen lassen (empfohlen)",
+    "scope": "Prepare original TESTNET session-end close after 60 minutes; no start or actual order"
+  },
+  "sources": {
+    "src/ops/btc_demo_budget_owner_v3.py": "adb0479f5a6e10ab5da5f5b20ad5d780e62b92a17ccdfe393727c509f3911375",
+    "src/ops/btc_demo_session_close_reconciliation_v1.py": "ddd250faed59e74ce9d731f715a296ce2a29c9ef134ca835d48ef710ff7d09ad",
+    "src/ops/btc_demo_session_close_submit_v1.py": "812cccc1eb848ec40bfd577057fc547d29e8eac7bd4fc82f383283218ff1e8f4",
+    "src/ops/btc_demo_session_close_v1.py": "b3f15a2cc4870385e6405417fa442573ef7eef3091c7ebed076258fbf3d6ec8f",
+    "src/ops/btc_demo_session_control_v1.py": "b125b0a64391818a0be2206724d0bd9d94bde49dad782e29eaeaab47217660c8",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": "43bba39e45dfe8f5ef9744531959c8524ea957488375799cc9c2094bd78db708",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py": "49e02ef30bc58a8ba4e15d375ef87c59e1f6e8c08b626bfa3abd29940b1aedf5",
+    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py": "5df84aa61774e52ff8ab88a5898cfb75525dfa5b37a91ecd9edd2bfc0f48e512",
+    "src/ops/portfolio_capital_reservation_budget_v1/position_close_quote_v1.py": "92a388ca9f4e70702fc55a916c30b12fe4e6dd33af04a909c4a67c6f69e0d773",
+    "tests/ops/test_btc_demo_entry_submit_v1.py": "557409db3b44fc16e42dd3e6ea0d1e7441aacfee09d88be946e08035b19104d0",
+    "tests/ops/test_btc_demo_session_close_v1.py": "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c",
+    "tests/ops/test_btc_demo_session_control_v1.py": "f273dc4d860fb78dc3bfae1e14e5ba02af3f76dc1cf995d3de1867604c06bd49"
+  },
+  "source_deltas": {
+    "src/ops/btc_demo_budget_owner_v3.py": [
+      "3dbf24c4ef153ea24391f1a22f574183809e4d0b7be66df2633c6645fe06148f",
+      "adb0479f5a6e10ab5da5f5b20ad5d780e62b92a17ccdfe393727c509f3911375"
+    ],
+    "src/ops/btc_demo_session_close_reconciliation_v1.py": [
+      null,
+      "ddd250faed59e74ce9d731f715a296ce2a29c9ef134ca835d48ef710ff7d09ad"
+    ],
+    "src/ops/btc_demo_session_close_submit_v1.py": [
+      null,
+      "812cccc1eb848ec40bfd577057fc547d29e8eac7bd4fc82f383283218ff1e8f4"
+    ],
+    "src/ops/btc_demo_session_close_v1.py": [
+      null,
+      "b3f15a2cc4870385e6405417fa442573ef7eef3091c7ebed076258fbf3d6ec8f"
+    ],
+    "src/ops/btc_demo_session_control_v1.py": [
+      null,
+      "b125b0a64391818a0be2206724d0bd9d94bde49dad782e29eaeaab47217660c8"
+    ],
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": [
+      "bd553c70644d8bece02fe36cb6f82d39c9870c17aff6477d33d3ba58727c546a",
+      "43bba39e45dfe8f5ef9744531959c8524ea957488375799cc9c2094bd78db708"
+    ],
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py": [
+      "95d399e03b5f5c6f029b24d05dbb2e9354a2d7fee6898e853a862f85abcbbc27",
+      "49e02ef30bc58a8ba4e15d375ef87c59e1f6e8c08b626bfa3abd29940b1aedf5"
+    ],
+    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py": [
+      "23cc26d4b91072dbe11b529c03cbb1ff1b42bee024b9bdc753afb836468f85c1",
+      "5df84aa61774e52ff8ab88a5898cfb75525dfa5b37a91ecd9edd2bfc0f48e512"
+    ],
+    "src/ops/portfolio_capital_reservation_budget_v1/position_close_quote_v1.py": [
+      null,
+      "92a388ca9f4e70702fc55a916c30b12fe4e6dd33af04a909c4a67c6f69e0d773"
+    ],
+    "tests/ops/test_btc_demo_entry_submit_v1.py": [
+      "660ef17cf27176a716f1d7ffd4604a60b83f10170897ebcd647e2f072ad0975c",
+      "557409db3b44fc16e42dd3e6ea0d1e7441aacfee09d88be946e08035b19104d0"
+    ],
+    "tests/ops/test_btc_demo_session_close_v1.py": [
+      null,
+      "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c"
+    ],
+    "tests/ops/test_btc_demo_session_control_v1.py": [
+      null,
+      "f273dc4d860fb78dc3bfae1e14e5ba02af3f76dc1cf995d3de1867604c06bd49"
+    ]
+  },
+  "contract_checks": [
+    {
+      "tests": 252,
+      "result": "PASS",
+      "exit_code": 0,
+      "xml_sha256": "e9f1c5bbc1e4c26a5f5f7052d673766fa3d03c15f4eb1006e63e3f7aed86506c"
+    }
+  ],
+  "actual_orders_sent": 0,
+  "real_credential_access": false,
+  "activation_authorized": false,
+  "not_proven": [
+    "60 minute runtime host",
+    "Session completion without an entry",
+    "New separately authorized remainder after a terminal partial close",
+    "Five-slot same-session DDO/GVEF and staggered-start integration",
+    "Actual venue execution or full start readiness"
+  ],
+  "target_base_gate": "Original target-branch seal remains authoritative; this source record and checksum update do not bypass it.",
+  "review_guard_sources": {
+    "docs/system_atlas/policy_projection.py": "87a61077c6ee6c3aa0eba5f54011c1a5f08e5f1ab2ae418e3773d91521937223",
+    "docs/system_atlas/tests/test_policy_projection.py": "a9cd2fabca8e02ce8484e34644eced218dc20bbe7b5e9aa77c45cf0ac9682343"
+  },
+  "review_guard_checks": [
+    {
+      "tests": 103,
+      "result": "PASS",
+      "exit_code": 0,
+      "xml_sha256": "90dde0fcd2f398f7e73f24921df69ad65e3fb2f43aac5c2cd5f146d5b45fa617"
+    }
+  ]
+}

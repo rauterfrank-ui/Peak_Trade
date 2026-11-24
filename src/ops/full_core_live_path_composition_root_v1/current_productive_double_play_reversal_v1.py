@@ -793,6 +793,10 @@ class CurrentPostNetReversalContextV1:
         ):
             raise ValueError("POST_AUTHORITY_ORIGINAL_REVERSAL_CONTEXT_REQUIRED")
         host = recovery.host
+        from src.ops.btc_demo_budget_owner_v3 import BtcDemoBudgetOwnerV3
+
+        if type(host.owner) is BtcDemoBudgetOwnerV3:
+            host.owner.require_bounded_demo_risk_window_v1()
         proof = self.authenticated_entry.proof
         reversal, envelope = self.reversal, self.envelope
         scope = read_occupied_scope_mark_snapshot_v1(Path(slot.lane_state_root))

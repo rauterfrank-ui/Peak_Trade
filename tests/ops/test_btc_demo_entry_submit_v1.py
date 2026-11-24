@@ -54,8 +54,24 @@ from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bou
 
 
 @pytest.fixture
-def entry_send(demo_entry, monkeypatch, tmp_path):
+def entry_send(demo_entry, monkeypatch, tmp_path, request):
     host, entry, reads, movement, instant, payloads = demo_entry
+    if getattr(request, "param", None) == "bounded-session":
+        from src.ops.btc_demo_session_control_v1 import BoundedDemoSessionRegistrationV1
+        from src.ops.full_core_live_path_composition_root_v1 import pretrade_acquisition_v1
+
+        monkeypatch.setattr(pretrade_acquisition_v1, "utc_now_iso_v1", instant.isoformat)
+        host.budget.owner.register_bounded_demo_session_v1(
+            BoundedDemoSessionRegistrationV1(
+                session_id=host.writer_session_id,
+                account_identity=host.budget.account,
+                instrument_id=host.budget.bound.instrument_id,
+                started_at_utc=instant.isoformat(),
+                operator_start_digest="a" * 64,
+            ),
+            expected_head=host.budget.budget_revision_ref_v1()[1],
+            now_utc=instant.isoformat(),
+        )
     result, _ = host.reserve_testnet_entry_v1(
         entry=entry, reads=reads, movement_input=movement, clock=instant.timestamp
     )

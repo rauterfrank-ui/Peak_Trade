@@ -893,10 +893,64 @@ TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS = {
 }
 
 
+TESTNET_SESSION_CLOSE_REVIEW_DELTAS = {
+    "src/ops/btc_demo_budget_owner_v3.py": (
+        "3dbf24c4ef153ea24391f1a22f574183809e4d0b7be66df2633c6645fe06148f",
+        "adb0479f5a6e10ab5da5f5b20ad5d780e62b92a17ccdfe393727c509f3911375",
+    ),
+    "src/ops/btc_demo_session_close_reconciliation_v1.py": (
+        None,
+        "ddd250faed59e74ce9d731f715a296ce2a29c9ef134ca835d48ef710ff7d09ad",
+    ),
+    "src/ops/btc_demo_session_close_submit_v1.py": (
+        None,
+        "812cccc1eb848ec40bfd577057fc547d29e8eac7bd4fc82f383283218ff1e8f4",
+    ),
+    "src/ops/btc_demo_session_close_v1.py": (
+        None,
+        "b3f15a2cc4870385e6405417fa442573ef7eef3091c7ebed076258fbf3d6ec8f",
+    ),
+    "src/ops/btc_demo_session_control_v1.py": (
+        None,
+        "b125b0a64391818a0be2206724d0bd9d94bde49dad782e29eaeaab47217660c8",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": (
+        "bd553c70644d8bece02fe36cb6f82d39c9870c17aff6477d33d3ba58727c546a",
+        "43bba39e45dfe8f5ef9744531959c8524ea957488375799cc9c2094bd78db708",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py": (
+        "95d399e03b5f5c6f029b24d05dbb2e9354a2d7fee6898e853a862f85abcbbc27",
+        "49e02ef30bc58a8ba4e15d375ef87c59e1f6e8c08b626bfa3abd29940b1aedf5",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py": (
+        "23cc26d4b91072dbe11b529c03cbb1ff1b42bee024b9bdc753afb836468f85c1",
+        "5df84aa61774e52ff8ab88a5898cfb75525dfa5b37a91ecd9edd2bfc0f48e512",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/position_close_quote_v1.py": (
+        None,
+        "92a388ca9f4e70702fc55a916c30b12fe4e6dd33af04a909c4a67c6f69e0d773",
+    ),
+    "tests/ops/test_btc_demo_entry_submit_v1.py": (
+        "660ef17cf27176a716f1d7ffd4604a60b83f10170897ebcd647e2f072ad0975c",
+        "557409db3b44fc16e42dd3e6ea0d1e7441aacfee09d88be946e08035b19104d0",
+    ),
+    "tests/ops/test_btc_demo_session_close_v1.py": (
+        None,
+        "6ad7f2fd172c134abbbbc59b9f9804b0cea701999503bc8946712eea5701e21c",
+    ),
+    "tests/ops/test_btc_demo_session_control_v1.py": (
+        None,
+        "f273dc4d860fb78dc3bfae1e14e5ba02af3f76dc1cf995d3de1867604c06bd49",
+    ),
+}
+
+
 def _reviewed_testnet_successor(root, parent):
     expected = _exact_double_play_successor(parent, TESTNET_PREPARATION_REVIEW_DELTAS)
     if (root / "src/ops/btc_demo_entry_submit_v1.py").is_file():
         expected = _exact_double_play_successor(expected, TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS)
+    if (root / "src/ops/btc_demo_session_close_v1.py").is_file():
+        expected = _exact_double_play_successor(expected, TESTNET_SESSION_CLOSE_REVIEW_DELTAS)
     return expected
 
 
@@ -956,6 +1010,10 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             for path, (before, _) in TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS.items():
                 expected.setdefault(path, before)
             expected = _exact_double_play_successor(expected, TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS)
+        if (root / "src/ops/btc_demo_session_close_v1.py").is_file():
+            for path, (before, _) in TESTNET_SESSION_CLOSE_REVIEW_DELTAS.items():
+                expected.setdefault(path, before)
+            expected = _exact_double_play_successor(expected, TESTNET_SESSION_CLOSE_REVIEW_DELTAS)
     actual = {}
     for path in expected:
         source = root / path

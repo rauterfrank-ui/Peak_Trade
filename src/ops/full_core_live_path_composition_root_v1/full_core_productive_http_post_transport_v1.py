@@ -224,6 +224,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         post_net_reversal_context=None,
         shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
         testnet_entry_context=None,
+        testnet_session_close_context=None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
@@ -237,6 +238,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         self._post_net_reversal_context = post_net_reversal_context
         self._shared_post_owner_claim = shared_post_owner_claim
         self._testnet_entry_context = testnet_entry_context
+        self._testnet_session_close_context = testnet_session_close_context
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -300,6 +302,12 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         from .current_productive_double_play_reversal_v1 import DIRECT_DOUBLE_PLAY_REVERSAL
 
         if (
+            self._testnet_session_close_context is not None
+            or self._post_safety_context.envelope.path_kind == "BOUNDED_SESSION_CLOSE"
+        ):
+            self._check_current_session_close_v1(stage=stage or "HTTP_SESSION_CLOSE")
+            return
+        if (
             self._post_safety_context.envelope.path_kind == DIRECT_DOUBLE_PLAY_REVERSAL
             or self._post_net_reversal_context is not None
         ):
@@ -311,6 +319,39 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             )
             return
         self._check_current_entry_v1(stage=stage)
+
+    def _check_current_session_close_v1(self, *, stage):
+        from src.ops.btc_demo_session_close_v1 import BtcDemoSessionCloseContextV1
+
+        try:
+            context = self._testnet_session_close_context
+            if (
+                type(context) is not BtcDemoSessionCloseContextV1
+                or context.envelope != self._post_safety_context.envelope
+                or Path(self._transport_attempt.store_root) != context.store_root_v1()
+                or type(self._shared_post_owner_claim) is not SharedPostOwnerClaimV1
+                or any(
+                    item is not None
+                    for item in (
+                        self._testnet_entry_context,
+                        self._post_position_close_context,
+                        self._post_net_reversal_context,
+                        self._post_budget_context,
+                    )
+                )
+            ):
+                raise ValueError("ORIGINAL_SESSION_CLOSE_CONTEXT_REQUIRED")
+            mandate = load_durable_post_owner_go_consume_v1(store_root=context.store_root_v1())
+            if (
+                mandate["record"]["baseline_origin_main_sha"]
+                != context.recovery.host.repository_sha
+            ):
+                raise ValueError("SESSION_CLOSE_MANDATE_REVISION_MISMATCH")
+            context.inspect_v1(
+                signing_handle=self._signing_handle, claim=self._shared_post_owner_claim
+            )
+        except (ValueError, RuntimeError, OSError, KeyError) as exc:
+            raise FullCoreCurrentPostOwnerGrantVetoError(f"SESSION_CLOSE:{stage}:{exc}") from exc
 
     def _check_shared_post_owner_binding_v1(self) -> None:
         attempt_root = Path(self._transport_attempt.store_root)
@@ -470,9 +511,13 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             raise FullCoreProductiveHttpPostError("WWW_OKX_FORBIDDEN")
         body = serialize_canonical_okx_post_body_v1(payload)
         builder = build_k1_okx_venue_auth_headers_v1
-        if self._testnet_entry_context is not None or (
-            self._post_net_reversal_context is not None
-            and self._post_net_reversal_context.recovery.host.execution_environment == "TESTNET"
+        if (
+            self._testnet_entry_context is not None
+            or self._testnet_session_close_context is not None
+            or (
+                self._post_net_reversal_context is not None
+                and self._post_net_reversal_context.recovery.host.execution_environment == "TESTNET"
+            )
         ):
             from .checkout_independent_credential_okx_venue_auth_headers_v1 import (
                 build_k1_okx_demo_auth_headers_v1,
