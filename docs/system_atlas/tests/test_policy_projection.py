@@ -27,6 +27,9 @@ def test_frozen_policy_sources_and_reference_targets_are_valid():
 @pytest.mark.parametrize(
     "source",
     [
+        "src/ops/btc_demo_entry_submit_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_post_budget_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
         "src/ops/btc_demo_net_reversal_financials_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py",
         "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",

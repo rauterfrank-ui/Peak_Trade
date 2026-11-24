@@ -5,6 +5,10 @@ from datetime import datetime, timedelta
 import json
 
 import pytest
+from tests.ops.test_btc_demo_entry_submit_v1 import entry_send as entry_send
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 
 from tests.ops.test_btc_testnet_original_execution_receipt_v1 import (
     original_testnet_entry as original_testnet_entry,

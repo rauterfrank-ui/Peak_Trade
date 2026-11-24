@@ -265,6 +265,8 @@ class _DurableConsumeThenK1HttpTransportV1:
         permit=None,
         post_position_close_context=None,
         shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
+        testnet_entry_context=None,
+        testnet_signing_handle=None,
     ) -> None:
         self._envelope = envelope
         self._store_root = store_root
@@ -281,8 +283,21 @@ class _DurableConsumeThenK1HttpTransportV1:
         self._execution_identity = execution_identity
         self._permit = permit
         self._post_position_close_context = post_position_close_context
+        self._testnet_entry_context = testnet_entry_context
+        self._testnet_signing_handle = testnet_signing_handle
 
     def _inspect_order_v1(self, attempt):
+        if self._testnet_entry_context is not None:
+            try:
+                self._testnet_entry_context.inspect_v1(
+                    envelope=self._envelope,
+                    signing_handle=self._testnet_signing_handle,
+                    claim=self._shared_post_owner_claim,
+                    stage="BEFORE_K1",
+                )
+            except (ValueError, RuntimeError, OSError) as exc:
+                attempt.abort_before_transport_v1(reason_code=str(exc))
+                raise FullCoreCurrentPostOwnerGrantVetoError(str(exc)) from exc
         if self._post_position_close_context is not None:
             try:
                 inspect_current_post_position_close_v1(
@@ -300,7 +315,12 @@ class _DurableConsumeThenK1HttpTransportV1:
                 self._post_quantity_context, envelope=self._envelope, stage="BEFORE_K1"
             )
             inspect_current_post_pending_v1(
-                self._post_pending_context, envelope=self._envelope, stage="BEFORE_K1"
+                self._post_pending_context,
+                envelope=self._envelope,
+                stage="BEFORE_K1",
+                execution_environment="TESTNET"
+                if self._testnet_entry_context is not None
+                else "LIVE",
             )
         except (CurrentPostVenueQuantityError, CurrentPostPendingObservationError) as exc:
             attempt.abort_before_transport_v1(reason_code=str(exc))
@@ -376,10 +396,18 @@ class _DurableConsumeThenK1HttpTransportV1:
                     self._shared_post_owner_claim.recheck_v1()
                 except SharedPostOwnerAuthorityError as exc:
                     raise FullCoreCurrentPostOwnerGrantVetoError(str(exc)) from exc
-            with open_current_productive_k1_opaque_signing_handle_session_v1(
-                owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
-                backend=self._k1_backend,
-            ) as session:
+            from contextlib import nullcontext
+            from types import SimpleNamespace
+
+            session_source = (
+                nullcontext(SimpleNamespace(signing_handle=self._testnet_signing_handle))
+                if self._testnet_entry_context is not None
+                else open_current_productive_k1_opaque_signing_handle_session_v1(
+                    owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
+                    backend=self._k1_backend,
+                )
+            )
+            with session_source as session:
                 self._probe.events.append("K1_BOUND")
                 self._probe.events.append("HTTP_POST_ENTER")
                 http = FullCoreProductiveHttpTradeOrderTransportV1(
@@ -393,6 +421,7 @@ class _DurableConsumeThenK1HttpTransportV1:
                     post_budget_context=budget_context,
                     post_position_close_context=self._post_position_close_context,
                     shared_post_owner_claim=self._shared_post_owner_claim,
+                    testnet_entry_context=self._testnet_entry_context,
                 )
                 try:
                     result = http.post_trade_order(
@@ -455,6 +484,8 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     post_pending_context=None,
     post_position_close_context=None,
     shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
+    testnet_entry_context=None,
+    testnet_signing_handle=None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -483,6 +514,31 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     if envelope.issued_for_exact_action != ISSUED_FOR_EXACT_ACTION:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError("ISSUED_FOR_EXACT_ACTION_MISMATCH")
+    execution_environment = "LIVE"
+    if testnet_entry_context is not None:
+        from src.ops.btc_demo_entry_submit_v1 import BtcDemoEntryPostContextV1
+
+        if (
+            type(testnet_entry_context) is not BtcDemoEntryPostContextV1
+            or type(shared_post_owner_claim) is not SharedPostOwnerClaimV1
+            or post_position_close_context is not None
+            or testnet_entry_context.host.budget.owner is not portfolio_budget_owner
+            or testnet_entry_context.reservation_id != portfolio_reservation_id
+            or testnet_entry_context.plan_context != execution_plan_context
+            or testnet_entry_context.pending_context is not post_pending_context
+            or testnet_entry_context.quantity_context is not post_quantity_context
+            or testnet_entry_context.store_root_v1() != Path(store_root)
+        ):
+            raise CurrentProductiveOneShotFreshEnvelopeJoinError("BTC_DEMO_ENTRY_CONTEXT_MISMATCH")
+        testnet_entry_context.inspect_v1(
+            envelope=envelope,
+            signing_handle=testnet_signing_handle,
+            claim=shared_post_owner_claim,
+            stage="BEFORE_DEMO_PERMIT",
+        )
+        execution_environment = "TESTNET"
+    elif testnet_signing_handle is not None:
+        raise CurrentProductiveOneShotFreshEnvelopeJoinError("SIGNER_ENVIRONMENT_MISMATCH")
     original_context = None
     if post_position_close_context is None:
         try:
@@ -492,7 +548,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
                 portfolio_reservation_id=portfolio_reservation_id,
                 execution_identity=execution_identity,
                 execution_plan_context=execution_plan_context,
-                required_execution_environment="LIVE",
+                required_execution_environment=execution_environment,
             )
         except FullCoreEnvelopeBoundSendSeamError as exc:
             raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
@@ -536,6 +592,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
                 expected_account=original_context["account"]
                 if original_context is not None
                 else None,
+                execution_environment=execution_environment,
             )
             account = pending["account"]
             action = "ENTER"
@@ -554,6 +611,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
                 attempt_root=Path(store_root),
                 account=account,
                 action=action,
+                execution_environment=execution_environment,
             )
         except SharedPostOwnerAuthorityError as exc:
             raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
@@ -604,6 +662,8 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         permit=permit,
         post_position_close_context=post_position_close_context,
         shared_post_owner_claim=shared_post_owner_claim,
+        testnet_entry_context=testnet_entry_context,
+        testnet_signing_handle=testnet_signing_handle,
     )
     try:
         seam = attempt_envelope_bound_external_effect_send_v1(
@@ -619,6 +679,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
             post_safety_context=safety,
             post_quantity_context=post_quantity_context,
             post_pending_context=post_pending_context,
+            execution_environment=execution_environment,
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc

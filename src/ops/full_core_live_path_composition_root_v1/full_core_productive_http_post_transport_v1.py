@@ -223,6 +223,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         post_position_close_context=None,
         post_net_reversal_context=None,
         shared_post_owner_claim: SharedPostOwnerClaimV1 | None = None,
+        testnet_entry_context=None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
@@ -235,6 +236,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         self._post_position_close_context = post_position_close_context
         self._post_net_reversal_context = post_net_reversal_context
         self._shared_post_owner_claim = shared_post_owner_claim
+        self._testnet_entry_context = testnet_entry_context
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -329,6 +331,32 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             raise FullCoreCurrentPostOwnerGrantVetoError("POST_OWNER_GO_SHARED_CLAIM_MISMATCH")
 
     def _check_current_entry_v1(self, *, stage=None):
+        if self._testnet_entry_context is not None:
+            from src.ops.btc_demo_entry_submit_v1 import BtcDemoEntryPostContextV1
+
+            try:
+                if type(self._testnet_entry_context) is not BtcDemoEntryPostContextV1:
+                    raise ValueError("ORIGINAL_DEMO_ENTRY_CONTEXT_REQUIRED")
+                if self._shared_post_owner_claim is None:
+                    raise ValueError("DEMO_ENTRY_GRANT_REQUIRED")
+                context = self._testnet_entry_context
+                if (
+                    context.quantity_context is not self._post_quantity_context
+                    or context.pending_context is not self._post_pending_context
+                    or self._post_budget_context is None
+                    or self._post_budget_context.owner is not context.host.budget.owner
+                    or self._post_budget_context.reservation_id != context.reservation_id
+                    or Path(self._transport_attempt.store_root) != context.store_root_v1()
+                ):
+                    raise ValueError("ORIGINAL_DEMO_ENTRY_TRANSPORT_CONTEXT_MISMATCH")
+                self._testnet_entry_context.inspect_v1(
+                    envelope=self._post_safety_context.envelope,
+                    signing_handle=self._signing_handle,
+                    claim=self._shared_post_owner_claim,
+                    stage=stage or "HTTP_DEMO_ENTRY",
+                )
+            except (ValueError, RuntimeError, OSError) as exc:
+                raise FullCoreCurrentPostOwnerGrantVetoError(str(exc)) from exc
         try:
             inspect_current_post_venue_quantity_v1(
                 self._post_quantity_context,
@@ -342,6 +370,9 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
                 self._post_pending_context,
                 envelope=self._post_safety_context.envelope,
                 stage=stage or "HTTP_PENDING",
+                execution_environment="TESTNET"
+                if self._testnet_entry_context is not None
+                else "LIVE",
             )
         except CurrentPostPendingObservationError as exc:
             raise FullCoreCurrentPostPendingVetoError(str(exc)) from exc
@@ -439,7 +470,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             raise FullCoreProductiveHttpPostError("WWW_OKX_FORBIDDEN")
         body = serialize_canonical_okx_post_body_v1(payload)
         builder = build_k1_okx_venue_auth_headers_v1
-        if (
+        if self._testnet_entry_context is not None or (
             self._post_net_reversal_context is not None
             and self._post_net_reversal_context.recovery.host.execution_environment == "TESTNET"
         ):

@@ -843,6 +843,63 @@ TESTNET_PREPARATION_REVIEW_DELTAS = {
 }
 
 
+# Exact additional source successor for the requested Slot-3 Demo entry dispatch.
+# Offline preparation only; no standing credential, order or runtime grant.
+TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS = {
+    "src/ops/btc_demo_entry_submit_v1.py": (
+        None,
+        "3857f18ab9974005c2161eefd70de419c5dfee69df0fab59cb91b1fca28a6899",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": (
+        "26f4b6e83369cf364d8b5b83e33ad1ea0fb337fc401584d58dfa8945284cd014",
+        "926a67fc072a20f1919de9d22da332236981a420ae2bbd625c0b310b7dde5dd4",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_budget_admission_v1.py": (
+        "6c97451d8b6e3456af7e108088022e566236a5c8dfd98c70d1c02e6df27341e4",
+        "70c8732d0458a4caf085e61ad2a4642579166d6a218c48c0ee01fb856bc81875",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py": (
+        "c68b956e578251c5861bcdb27d208d422f13b83ee525b3cb4422123927fd8d3c",
+        "68a8ae8cd7bb24a9937407ce2a20889b0d9b7ec8df99ef574f180c9414d21956",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py": (
+        "972571f3bc6d6856c719d218d2a9c2059a2c6dea44bdcc13df8f4d195d37d5f6",
+        "23cc26d4b91072dbe11b529c03cbb1ff1b42bee024b9bdc753afb836468f85c1",
+    ),
+    "tests/ops/test_btc_demo_entry_submit_v1.py": (
+        None,
+        "660ef17cf27176a716f1d7ffd4604a60b83f10170897ebcd647e2f072ad0975c",
+    ),
+    "tests/ops/test_btc_demo_first_entry_pending_v1.py": (
+        "38c36b93e2bbeb144cd4353afdd568573d85b4212cd5141cf8dc4b6f7484b4f7",
+        "1d513804feb575b46ce3d23ead6e48f0c234a238ceb5f719a395c220d516aa5a",
+    ),
+    "tests/ops/test_btc_testnet_original_execution_receipt_v1.py": (
+        "757164ea4251bad9127f85535eb26cea421ddb4043caef5f1e9a0b3a80e24e26",
+        "866d5252eee933d865401d3fc3b1606b49fd3a737cf4d54d67a346ba0cf84053",
+    ),
+    "tests/ops/test_btc_testnet_original_net_reversal_v1.py": (
+        "df93a7d2477a86cddb0140e1340a085da5e68544db573027866871fe8cfe5f1b",
+        "d13c3db5bc5120344adb2cb31ea1b553b4deabd2c8e7f8d004a73b38080df833",
+    ),
+    "tests/ops/test_btc_testnet_original_net_submit_v1.py": (
+        "77aba8f7a21152eb6c6c11719c7ec8c2d927e90ef402f104dc8e5a9f32cbf1f1",
+        "1755ebdc4e08c0a3cc2418bc0af8f4ed3c510c14dca7f51484eff52a7618fdee",
+    ),
+    "tests/ops/test_btc_testnet_original_occupied_core_v1.py": (
+        "945fe1f83272521047b48726fd62854b3cdc01892e50b8eb81e50aaea5698491",
+        "54074571d3445f212f2f5a74f4a419ffc5ad6d8e61135c80a21fa85661b2bdc2",
+    ),
+}
+
+
+def _reviewed_testnet_successor(root, parent):
+    expected = _exact_double_play_successor(parent, TESTNET_PREPARATION_REVIEW_DELTAS)
+    if (root / "src/ops/btc_demo_entry_submit_v1.py").is_file():
+        expected = _exact_double_play_successor(expected, TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS)
+    return expected
+
+
 def _is_testnet_preparation_candidate(root):
     return any(
         (root / path).is_file() and hashlib.sha256((root / path).read_bytes()).hexdigest() == after
@@ -895,6 +952,10 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
         for path, (before, _) in TESTNET_PREPARATION_REVIEW_DELTAS.items():
             expected.setdefault(path, before)
         expected = _exact_double_play_successor(expected, TESTNET_PREPARATION_REVIEW_DELTAS)
+        if (root / "src/ops/btc_demo_entry_submit_v1.py").is_file():
+            for path, (before, _) in TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS.items():
+                expected.setdefault(path, before)
+            expected = _exact_double_play_successor(expected, TESTNET_ENTRY_SUBMIT_REVIEW_DELTAS)
     actual = {}
     for path in expected:
         source = root / path
@@ -1021,7 +1082,7 @@ def validate_reserved_slot_rotation_bundle(
         accepted = (before, after, protected_after, scope_bound_after)
     if double_play and _is_testnet_preparation_candidate(root):
         accepted = tuple(
-            _exact_double_play_successor(parent, TESTNET_PREPARATION_REVIEW_DELTAS)
+            _reviewed_testnet_successor(root, parent)
             for parent in accepted
             if all(
                 parent[path] == TESTNET_PREPARATION_REVIEW_DELTAS[path][0]
@@ -1050,7 +1111,7 @@ def validate_ordered_funding_episode_bundle(
     if double_play:
         expected = _double_play_bundle_successor(root, expected)
         if _is_testnet_preparation_candidate(root):
-            expected = _exact_double_play_successor(expected, TESTNET_PREPARATION_REVIEW_DELTAS)
+            expected = _reviewed_testnet_successor(root, expected)
     for path, digest in expected.items():
         if actual[path] != digest:
             raise ValueError("ORDERED_FUNDING_EPISODE_REVIEWED_BUNDLE_REQUIRED:" + path)
