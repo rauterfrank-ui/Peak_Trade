@@ -116,11 +116,171 @@ def test_csop_close_to_flat_then_separately_confirmed_reentry(tmp_path, monkeypa
     assert not check(bad).ok
 
 
+@pytest.mark.parametrize(
+    "short, prices, total_fees, final_equity",
+    [
+        pytest.param(
+            False,
+            ("1.842", "1.819", "1.799", "1.823", "1.843"),
+            "0.009126",
+            "9.742354",
+            id="long-short-long",
+        ),
+        pytest.param(
+            True,
+            ("1.840", "1.863", "1.883", "1.859", "1.839"),
+            "0.009284",
+            "9.772196",
+            id="short-long-short",
+        ),
+    ],
+)
+def test_csop_slot4_two_switches_on_one_budget(
+    tmp_path, monkeypatch, short, prices, total_fees, final_equity
+):
+    from copy import deepcopy
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.full_economic_reconstruction_verifier_v2 import (
+        verify_full_economic_reconstruction_v2,
+    )
+
+    scope = next(s for s in RANKED_SWAP_SCOPES if s.base == "CSOPSKHYNIX2L")
+    row = dict(_perp(scope.native_id, base=scope.base, ct_val="1"), tickSz="0.001", maxMktSz="1000")
+    config, assignment = ranked_config(tmp_path, monkeypatch, row, scope)
+    fx = D("1.001148")  # USDT per USDC
+    quotes = RecordedQuotes(assignment.instrument, OBSERVED_UNIX)
+    quotes.usdt_per_usdc = str(fx)
+    # Archived opening mark 1.838, best bid 1.840 and ask 1.842.
+    quotes.book_mid_offset = D("0.003")
+    offsets_in_ticks = [2, 10, 20, 30, 40, 50, 60, 50, 40, 30, 20, 10, 0]
+    two_levels = [(1, "2"), (2, "30")]
+    steps = [
+        (ticks * D("0.001"), [(1, "1")] if observation in (9, 10) else two_levels)
+        for observation, ticks in enumerate(offsets_in_ticks, 1)
+    ]
+    initial_cash = D(10) * fx
+    cycles, state, _ = exercise_ranked_entry(
+        tmp_path,
+        config,
+        assignment,
+        row,
+        short=short,
+        start=OBSERVED_UNIX,
+        price=D("1.858") if short else D("1.808"),
+        move=D("0.010"),
+        initial_equity=initial_cash,
+        after_opening=steps,
+        transport=quotes,
+    )
+    filled = [cycle for cycle in cycles if cycle["fill"]]
+    assert [c["fill"] for c in filled] == state.fill_ledger
+    opening, first_close, opposite, second_close, final = filled
+    assert opening["ranked_shadow_first_purchase"]["entry"]["entry_action"] == "FIRST_PURCHASE"
+    assert final is cycles[-1]
+    assert all(not c["forced_wiring"] and not c["orders_authorized"] for c in cycles)
+    assert all(
+        D(c["portfolio_snapshot"]["params"]["initial_equity"]) == initial_cash for c in cycles
+    )
+
+    # Golden prices include side-specific tick rounding after consuming 2 + 3 contracts.
+    # Carry cash through both closes and independently charge each of the five fees.
+    sign = -1 if short else 1
+    positions = [sign * q for q in (5, 0, -5, 0, 5)]
+    cash = initial_cash
+    position = 0
+    fees = D(0)
+    entry_price = D(0)
+    for c, expected_price, next_position in zip(filled, prices, positions, strict=True):
+        fill = c["fill"]
+        price = D(expected_price)
+        assert D(fill["fill_price"]) == price
+        assert D(fill["quantity_contracts"]) == D(fill["quantity"]) == 5
+        assert fill["side"] == ("BUY" if next_position > position else "SELL")
+        fee = price * 5 * D("0.0002")
+        assert D(fill["fee"]) == fee
+        if position == 0:
+            purchase = c["ranked_shadow_first_purchase"]
+            assert (purchase["lane_id"], purchase["entry"]["venue_native_id"]) == (
+                "LANE_4",
+                scope.native_id,
+            )
+            assert D(purchase["valuation"]["usdc_per_usdt"]) == 1 / fx
+            assert D(purchase["entry"]["entry_limit_usdc"]) == cash * (1 / fx)
+            assert 5 * price + fee <= cash
+            entry_price = price
+        else:
+            cash += position * (price - entry_price)
+        cash -= fee
+        fees += fee
+        position = next_position
+        account = c["portfolio_snapshot"]["state"]
+        assert D(account["cash"]) == cash
+        assert D(account["positions"][scope.canonical_id]["quantity"]) == position
+        assert D(account["cumulative_fees"]) == fees
+
+    (blocked,) = [
+        c for c in cycles if (c.get("ranked_shadow_exit") or {}).get("status") == "BLOCKED"
+    ]
+    assert opposite["cycle_index"] < blocked["cycle_index"] < second_close["cycle_index"]
+    assert blocked["ranked_shadow_exit"]["reason"] == "SHADOW_INSUFFICIENT_EXECUTABLE_DEPTH"
+    assert blocked["fill"] is None and blocked["intended_action"]["intended_side"] == "HOLD"
+    held = blocked["portfolio_snapshot"]["state"]
+    assert D(held["positions"][scope.canonical_id]["quantity"]) == -5 * sign
+    assert held["cash"] == opposite["portfolio_snapshot"]["state"]["cash"]
+
+    for prior, close, reentry in (
+        (opening, first_close, opposite),
+        (opposite, second_close, final),
+    ):
+        assert close["ranked_shadow_exit"]["opening_fill_id"] == prior["fill_id"]
+        assert close["ranked_shadow_position_scope"]["anchor_after"] is None
+        receipt = reentry["ranked_shadow_first_purchase"]
+        assert receipt["entry"]["entry_action"] == "REENTRY"
+        assert receipt["entry"]["previous_exit_fill_id"] == close["fill_id"]
+        progress = receipt["confirmation"]["progress"]
+        assert progress["candidate_started_at_epoch"]["value"] > close["trading_epoch"]
+        assert progress["distinct_confirmation_observation_count"] >= 2
+
+    assert fees == D(total_fees)
+    assert D(state.portfolio.snapshot()["state"]["equity"]) == D(final_equity)
+
+    def reconstruct(journal):
+        return verify_full_economic_reconstruction_v2(
+            cycle_ledger=journal,
+            fill_ledger=state.fill_ledger,
+            final_portfolio_snapshot=state.portfolio.snapshot(),
+            economic_metrics=state.portfolio.economic_metrics().to_dict(),
+        )
+
+    proof = reconstruct(cycles)
+    assert proof.ok, proof.blockers
+    assert proof.reconstructed_fill_count == 5
+
+    # A genuine fill ID from the first switch cannot stand in for the second switch.
+    wrong_close = deepcopy(cycles)
+    wrong_close[second_close["cycle_index"] - 1]["ranked_shadow_exit"]["opening_fill_id"] = opening[
+        "fill_id"
+    ]
+    assert (
+        f"RANKED_SHADOW_EXIT_LINKAGE_BREAK_{second_close['cycle_index']}"
+        in reconstruct(wrong_close).blockers
+    )
+    wrong_reentry = deepcopy(cycles)
+    wrong_reentry[-1]["ranked_shadow_first_purchase"]["entry"]["previous_exit_fill_id"] = (
+        first_close["fill_id"]
+    )
+    assert (
+        f"RANKED_REENTRY_LINKAGE_BREAK_{final['cycle_index']}"
+        in reconstruct(wrong_reentry).blockers
+    )
+
+
 class RecordedQuotes:
     def __init__(self, instrument, now):
         self.venue_instrument_id = instrument.venue_native_inst_id
         self.base = instrument.base_currency
         self.tick = D(instrument.tick_size)
+        self.book_mid_offset = D(0)
+        self.usdt_per_usdc = "1.04"
         self.now = now
         self.fx_requests = 0
         self.after_fx = lambda: None
@@ -130,16 +290,17 @@ class RecordedQuotes:
     def get_json(self, path, query):
         row = dict(instId=query["instId"], instType="SWAP", ts=str(int(self.now * 1000)))
         if row["instId"] == "USDC-USDT":
-            row.update(idxPx="1.04")
+            row.update(idxPx=self.usdt_per_usdc)
             self.fx_requests += 1
             self.after_fx()
         elif path.endswith("/books"):
             if self.other_book:
                 row.pop("instId")
                 query = dict(query, instId="OTHER-USDT-SWAP")
+            mid = self.mark + self.book_mid_offset
             row.update(
-                bids=[[str(self.mark - ticks * self.tick), size] for ticks, size in self.depth],
-                asks=[[str(self.mark + ticks * self.tick), size] for ticks, size in self.depth],
+                bids=[[str(mid - ticks * self.tick), size] for ticks, size in self.depth],
+                asks=[[str(mid + ticks * self.tick), size] for ticks, size in self.depth],
             )
         else:
             row.update(
@@ -175,6 +336,7 @@ def exercise_ranked_entry(
     move=None,
     after_opening=(),
     initial_equity=None,
+    transport=None,
 ):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
         prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
@@ -218,7 +380,8 @@ def exercise_ranked_entry(
     state.typed_volatility_cmc_binding_host = (
         CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1(producer=g17.producer)
     )
-    transport = RecordedQuotes(i, start)
+    if transport is None:
+        transport = RecordedQuotes(i, start)
     if i.venue_native_inst_id == "CSOPSKHYNIX2L-USDT-SWAP":
         if fault == "ten":
             transport.depth = [(1, "0.5"), (4, "100000")]
