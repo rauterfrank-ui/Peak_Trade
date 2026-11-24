@@ -1,7 +1,7 @@
 """The two flat ranked Shadow swaps consume a genuine decision and native sized amount."""
 
 from dataclasses import replace
-from decimal import Decimal as D
+from decimal import Decimal as D, ROUND_CEILING, ROUND_FLOOR
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -52,6 +52,8 @@ class RecordedQuotes:
         self.now = now
         self.fx_requests = 0
         self.after_fx = lambda: None
+        self.depth = [(1, "100000")]
+        self.other_book = False
 
     def get_json(self, path, query):
         row = dict(instId=query["instId"], instType="SWAP", ts=str(int(self.now * 1000)))
@@ -60,9 +62,12 @@ class RecordedQuotes:
             self.fx_requests += 1
             self.after_fx()
         elif path.endswith("/books"):
+            if self.other_book:
+                row.pop("instId")
+                query = dict(query, instId="OTHER-USDT-SWAP")
             row.update(
-                bids=[[str(self.mark - self.tick), "100000"]],
-                asks=[[str(self.mark + self.tick), "100000"]],
+                bids=[[str(self.mark - ticks * self.tick), size] for ticks, size in self.depth],
+                asks=[[str(self.mark + ticks * self.tick), size] for ticks, size in self.depth],
             )
         else:
             row.update(
@@ -125,6 +130,12 @@ def exercise_ranked_entry(
         CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1(producer=g17.producer)
     )
     transport = RecordedQuotes(i, start)
+    if i.venue_native_inst_id == "CSOPSKHYNIX2L-USDT-SWAP":
+        if fault == "ten":
+            transport.depth = [(1, "0.5"), (4, "100000")]
+        if fault == "thin":
+            transport.depth = [(1, "0.1")]
+        transport.other_book = fault == "other_book"
     policy = load_slot_entry_budget_v1(
         REPO / "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
     )
@@ -185,11 +196,26 @@ def exercise_ranked_entry(
     return cycles, state, transport.fx_requests
 
 
-@pytest.mark.parametrize("scope", RANKED_SWAP_SCOPES, ids=lambda s: s.native_id)
 @pytest.mark.parametrize("short", [False, True], ids=["long", "short"])
 @pytest.mark.parametrize(
-    "fault",
-    [None, "selection", "stale", "hold", "ten", "below_minimum", "zero", "before_selection"],
+    "scope,fault",
+    [
+        pytest.param(scope, fault, id=f"{scope.native_id}-{fault}")
+        for scope in RANKED_SWAP_SCOPES
+        for fault in (
+            None,
+            "selection",
+            "stale",
+            "hold",
+            "ten",
+            "below_minimum",
+            "zero",
+            "before_selection",
+            "thin",
+            "other_book",
+        )
+        if fault not in {"thin", "other_book"} or scope.native_id == "CSOPSKHYNIX2L-USDT-SWAP"
+    ],
 )
 def test_ranked_analytical_first_purchase(tmp_path, monkeypatch, scope, short, fault):
     row = dict(
@@ -268,6 +294,10 @@ def test_ranked_analytical_first_purchase(tmp_path, monkeypatch, scope, short, f
     purchase = purchases[0]
     if fault and fault != "ten":
         assert purchase["status"] == "BLOCKED" and purchase["reason_codes"]
+        if fault == "thin":
+            assert purchase["reason_codes"] == ["SHADOW_FIRST_PURCHASE_MINIMUM_LOT_NOT_ADMITTED"]
+        if fault == "other_book":
+            assert purchase["reason_codes"] == ["SHADOW_FIRST_PURCHASE_BOOK_SOURCE_MISMATCH"]
         assert not state.fill_ledger and state.ranked_confirmed_entry_budget is None
         return
     assert purchase["status"] == "FILLED", purchase["reason_codes"]
@@ -299,5 +329,45 @@ def test_ranked_analytical_first_purchase(tmp_path, monkeypatch, scope, short, f
     from src.ops.ranked_shadow_first_purchase_v1 import verify_ranked_first_purchase_v1
 
     cycle = deepcopy(next(c for c in cycles if c.get("fill")))
+    if scope.native_id == "CSOPSKHYNIX2L-USDT-SWAP":
+        mark = D(fill["mark_price"])
+        tick = D(assignment.instrument.tick_size)
+        count = D(fill["quantity_contracts"])
+        ticks = D(1)
+        if fault == "ten":
+            assert count > D("0.5")
+            ticks = (D("0.5") + (count - D("0.5")) * 4) / count
+            assert 1 < ticks < 4
+        expected = ((mark / tick) + (-ticks if short else ticks)).to_integral_value(
+            rounding=ROUND_FLOOR if short else ROUND_CEILING
+        ) * tick
+        assert D(fill["fill_price"]) == D(entry["opening_book_usdt_per_base"]) == expected
+        assert state.portfolio.model.state.positions[scope.canonical_id].avg_entry_price == expected
+        notional = count * 2 * expected
+        fee = notional * state.portfolio.model.params.fee_rate_bps / 10000
+        assert D(fill["notional"]) == notional and D(fill["fee"]) == fee
+        assert (
+            (notional + fee) * D(purchase["valuation"]["usdc_per_usdt"])
+            <= D(entry["entry_limit_usdc"])
+            == 10
+        )
+        for key in ("fill_price", "fee_amount"):
+            changed = deepcopy(cycle)
+            changed["fill"][key] = "0"
+            assert not verify_ranked_first_purchase_v1(changed)
+        changed = deepcopy(cycle)
+        changed["ranked_shadow_first_purchase"]["entry"]["fill_book"]["body"] += " "
+        assert not verify_ranked_first_purchase_v1(changed)
+        changed_ledger = [dict(fill, fee="0")]
+        assert not verify_full_economic_reconstruction_v2(
+            cycle_ledger=cycles,
+            fill_ledger=changed_ledger,
+            final_portfolio_snapshot=state.portfolio.snapshot(),
+            economic_metrics=state.portfolio.economic_metrics().to_dict(),
+        ).ok
+    else:
+        assert "fill_book" not in entry
+        slip = state.portfolio.model.params.slippage_bps / 10000
+        assert D(fill["fill_price"]) == D(fill["mark_price"]) * (1 - slip if short else 1 + slip)
     cycle["ranked_shadow_first_purchase"]["entry"]["nominal_usdc"] = "0.01"
     assert not verify_ranked_first_purchase_v1(cycle)

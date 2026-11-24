@@ -217,8 +217,13 @@ class SimulatedPortfolioEconomicsModelV1:
         quantity: Decimal,
         mark_price: Decimal,
         observability_context: SimulatedEconomicsObservabilityContextV1 | None = None,
+        book_fill_price: Decimal | None = None,
     ) -> Optional[SimulatedFillV1]:
         """Apply a simulated intended action. Never emits broker writes."""
+        if book_fill_price is not None and (
+            not book_fill_price.is_finite() or book_fill_price <= 0
+        ):
+            raise PortfolioEconomicsModelError("BOOK_FILL_PRICE_MUST_BE_FINITE_AND_POSITIVE")
         self._last_observability_context = observability_context
         self._last_mark_price = mark_price
         side_u = str(side or "").strip().upper()
@@ -234,15 +239,16 @@ class SimulatedPortfolioEconomicsModelV1:
         if mark_price <= 0:
             raise PortfolioEconomicsModelError("MARK_PRICE_MUST_BE_POSITIVE")
 
-        slip_mult = self.params.slippage_bps / Decimal("10000")
-        fill_price = (
-            mark_price * (Decimal("1") + slip_mult)
-            if side_u == "BUY"
-            else mark_price * (Decimal("1") - slip_mult)
-        )
+        if book_fill_price is None:
+            slip_mult = self.params.slippage_bps / Decimal("10000")
+            fill_price = mark_price * (1 + slip_mult if side_u == "BUY" else 1 - slip_mult)
+            slippage_cost = (fill_price - mark_price).copy_abs() * quantity
+        else:
+            fill_price = book_fill_price
+            adverse_move = fill_price - mark_price if side_u == "BUY" else mark_price - fill_price
+            slippage_cost = max(_ZERO, adverse_move) * quantity
         notional = (quantity * fill_price).copy_abs()
         fee = notional * (self.params.fee_rate_bps / Decimal("10000"))
-        slippage_cost = (fill_price - mark_price).copy_abs() * quantity
         fill = SimulatedFillV1(
             instrument_id=instrument_id,
             side=side_u,

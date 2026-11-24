@@ -3429,7 +3429,7 @@
     {
       "path": "src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py",
       "before_sha256": "7eb3fb441e3a82258c9a4f7653b091a4681bb0485a0c8852c940f67f033ef7a0",
-      "sha256": "93b90c9c2f11801e539d5fa010b0f5c2f70e8e8b8f3c9ed44fa3aab151df5b13"
+      "sha256": "e25c2b68e5adbd644a874d3c7618e1011e5b6692d41eb3e0f8b17d736e8f4770"
     },
     {
       "path": "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/bundle_verifier_v1.py",
@@ -3934,7 +3934,7 @@
     {
       "path": "src/ops/ranked_shadow_first_purchase_v1.py",
       "before_sha256": null,
-      "sha256": "2261b196129135de93e7478e8f2886fc4011e3313eba8329ffd029a9e41c1a19"
+      "sha256": "c68799f02f138a423d5400d5b44660be0731894f5fd9aab4cb6212a98ad1c62d"
     },
     {
       "path": "src/ops/ranked_shadow_slot4_nomination_v1.py",
@@ -4084,12 +4084,17 @@
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/full_economic_reconstruction_verifier_v2.py",
       "before_sha256": "33344a4173ff57954a38374d09645b1cbd20bfe84d084c6ef54184a5485a406d",
-      "sha256": "d7491663a70a06d28c1a62f680c3ca91eec81b1d401a147c623c36fbeb48e33a"
+      "sha256": "0b6d398a3905ed7d807404d2968380bde14615fd39de7b752982a17a81c4a397"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
       "before_sha256": "74190c75dab9f57067d336d2fb6f9e4a6391b6a351f67b75da2d55bf5dd2a96d",
-      "sha256": "b81158ca1adc377ad3c05b1a1c906a6cadc4e847bd4aca46fe3d392b3d52090e"
+      "sha256": "a5cd99fd04d637dfd9dd27de87ad017bcb26f614994b3f4905a83cfbad286b23"
+    },
+    {
+      "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/idempotent_portfolio_v2.py",
+      "before_sha256": "bb576c06146ea738be830dc375204d221c8565c755e70de756f986da5a834f60",
+      "sha256": "9812d353df1ec1329e0a5f2189e7b21bed1ba2b6c0f5df17a5db2f49fec400e4"
     },
     {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/market_data_price_basis_v2.py",
@@ -5939,7 +5944,7 @@
     {
       "path": "tests/ops/test_ranked_shadow_first_purchase_v1.py",
       "before_sha256": null,
-      "sha256": "1dba7a14f8e90eb47cc8ee746c8c438ffd678bd69a33bc11c7586295e3a9330e"
+      "sha256": "731c053bc845f8100b2faff1f3c422d924e5fa5e094cfc8703811039e44e726a"
     },
     {
       "path": "tests/ops/test_ranked_shadow_slot4_pre_tick_v1.py",

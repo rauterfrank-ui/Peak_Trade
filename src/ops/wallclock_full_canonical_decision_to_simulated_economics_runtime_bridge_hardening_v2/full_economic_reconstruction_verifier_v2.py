@@ -79,6 +79,7 @@ def verify_full_economic_reconstruction_v2(
     seen_intents: set[str] = set()
     seen_fills: set[str] = set()
     prev_index = 0
+    book_fill_prices = {}
     for i, cycle in enumerate(cycle_ledger, start=1):
         if cycle.get("orders_authorized") is True:
             blockers.append(f"ORDERS_AUTHORIZED_TRUE_CYCLE_{i}")
@@ -145,6 +146,10 @@ def verify_full_economic_reconstruction_v2(
 
             if not verify_ranked_first_purchase_v1(cycle):
                 blockers.append(f"RANKED_SHADOW_FIRST_PURCHASE_LINKAGE_BREAK_{i}")
+            else:
+                entry = cycle["ranked_shadow_first_purchase"].get("entry") or {}
+                if "fill_book" in entry:
+                    book_fill_prices[i] = Decimal(entry["opening_book_usdt_per_base"])
         elif (
             cycle.get("soph_simulated_first_purchase") is not None
             or action.get("intent_action") == "FIRST_PURCHASE"
@@ -199,7 +204,7 @@ def verify_full_economic_reconstruction_v2(
         blockers.append("CARD_PORTFOLIO_MODEL_DIGEST_MISMATCH")
     model = IdempotentPortfolioV2.from_params(params)
     reconstructed_fills = 0
-    for cycle in cycle_ledger:
+    for i, cycle in enumerate(cycle_ledger, start=1):
         action = cycle.get("intended_action") or {}
         side = str(action.get("intended_side") or "HOLD")
         qty = _dec(action.get("intended_quantity") or "0")
@@ -223,11 +228,21 @@ def verify_full_economic_reconstruction_v2(
             mark_price=mark,
             intent_id=intent_id,
             fill_id=str(fill_id) if fill_id else None,
+            book_fill_price=book_fill_prices.get(i),
         )
         if fill is not None:
             reconstructed_fills += 1
             # Fee / slippage arithmetic checks against cycle fill when present.
             cfill = cycle.get("fill") or {}
+            if (
+                i in book_fill_prices
+                and fill_ledger is not None
+                and (
+                    reconstructed_fills > len(fill_ledger)
+                    or fill_ledger[reconstructed_fills - 1] != cfill
+                )
+            ):
+                blockers.append(f"BOOK_FILL_LEDGER_MISMATCH:{cycle.get('cycle_id')}")
             if cfill:
                 if _dec(cfill.get("fee") or cfill.get("fee_amount") or "0") != fill.fee:
                     blockers.append(f"FEE_ARITHMETIC_MISMATCH:{cycle.get('cycle_id')}")
