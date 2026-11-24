@@ -500,3 +500,11 @@ A durable record still belongs to the
 [canonical SL07 store](CANONICAL_REALITY_GAP_STORE_V1.md) and requires an
 exactly bound complete experiment record. The next research iteration may
 consume a gap after that owner records it under a compatible identity.
+
+### Rückgabe einer späteren gepaarten Messung
+
+Eine neue Forward-Präregistrierung mit Reality-Gap-Policy bindet ihre Ursprungskampagne. Der reguläre I17-Schritt `reality-gap` publiziert nach erfolgreicher Dimensionsprüfung je Profil den SL07-Record. Bei historischen Plänen kann der Aufruf das Ziel mit `--campaign-state` angeben. `--verify` bleibt lesend. Paket, vollständiges Experiment, Parameter, Policy und Wissenszeit identifizieren den Vergleich. Eine Schwellenüberschreitung erzeugt einen gebundenen Failure-Memory-Record. Erst wenn beide Profile vollständig gespeichert sind, wird die Übergabe sichtbar.
+
+Der nächste Forschungsjob friert die verfügbaren Übergaben für seine ausgewählte Experimenthistorie ein. Meta erhält die Originalmessungen und spätere Gap- und Fehlereinträge. Kostenbefunde verwenden die typisierte Kostendimension und ihre Modellidentität. Ein PnL-Gap allein erlaubt keine Attribution an Gebühren. Parameter- und Hypothesenvorschläge werden am Suchkandidaten gebunden. Ein Modelluntersuchungsauftrag trägt den Zielmodelldigest und kann mit dem passenden F2-Szenarioarchiv untersucht werden. Die tatsächliche Auswahl und ihre Messung bleiben am Such- und Ausführungsrecord nachlesbar. Bei einem ausgeschöpften Suchraum bleibt das Ergebnis erschöpft.
+
+Bei einem Meta-Vorschlag zur Kostenuntersuchung speichert der Worker die nächste Forschungshypothese unter `cost-hypotheses` mit Vorschlag, Meta-Identität, Instrument und Lernquelle. Die optionale Kampagnenzuordnung `cost_grids` führt vom Zielmodelldigest zum F2-Archiv (`archive`) und zu dessen `execution_digest`. Sobald ein passendes Archiv vorliegt, berechnet der bestehende F2-Consumer beim Kampagnentick das OOS-Szenarioergebnis. Bis dahin bleibt der gebundene Untersuchungsauftrag offen.

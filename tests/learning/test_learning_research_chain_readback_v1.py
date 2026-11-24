@@ -157,3 +157,67 @@ def test_resealed_locally_valid_packets_cannot_cross_causal_edges(measured_chain
     assert read_v1(completed_path) == completed
     with pytest.raises(ValueError, match=edge):
         read_learning_research_chain_v1(root, digest)
+
+
+@pytest.mark.parametrize("observed,rejected", [(0.0, False), (-0.02, True)])
+def test_late_shadow_gap_enters_next_meta_once(measured_chain, observed, rejected):
+    from datetime import datetime, timedelta, timezone
+
+    from src.experiments.campaign_reality_gap_return_v1 import (
+        known_returns_v1,
+        publish_gap_return_v1,
+        with_returns_v1,
+    )
+    from src.experiments.canonical_native_research_session_v1 import (
+        NativeResearchExecutionArchiveV1,
+    )
+    from src.experiments.canonical_meta_learning_v1 import canonical_meta_learning_policy_v1
+    from src.experiments.canonical_research_result_to_meta_input_v1 import (
+        build_meta_learning_from_research_results_v1,
+    )
+
+    root, run, digest = measured_chain
+    artifact = read_v1(run / "result.json")["next_artifact_id"]
+    execution, measurement = NativeResearchExecutionArchiveV1(run / "native-archive")._read_packet(
+        artifact
+    )
+    unit = execution.next_meta_input
+    profile = {
+        "packet": artifact,
+        "experiment_id": measurement["experiment_id"],
+        "parameters": dict(measurement["parameters"]),
+    }
+    plan = {"learning_digest": digest, "profiles": {"candidate": profile}}
+    dimensions = {
+        "profiles": {
+            "candidate": {
+                "packet": artifact,
+                "gap_dimensions": [
+                    dict(name="pnl", unit="ratio", expected=0.0, observed=observed, threshold=0.001)
+                ],
+            }
+        },
+        "observed_plan_digest": digest_v1(plan),
+        "observed_surface": "SHADOW",
+        "source_data_known_at_utc": "2026-01-01T00:00:00+00:00",
+        "metric_definitions": "NET_RETURN_ON_BEGINNING_EQUITY_V1",
+        "threshold_policy_digest": "a" * 64,
+    }
+    before = datetime.now(timezone.utc) - timedelta(seconds=1)
+    key = publish_gap_return_v1(root, plan, dimensions)
+    assert publish_gap_return_v1(root, plan, dimensions) == key
+    assert not known_returns_v1(root, [digest], before)
+    now = datetime.now(timezone.utc)
+    keys = known_returns_v1(root, [digest], now)
+    assert keys == [key] and not known_returns_v1(root, [], now)
+    updated = with_returns_v1(unit, root, keys)
+    assert len(updated.late_gaps) == 1 and len(updated.late_failures) == int(rejected)
+    result = build_meta_learning_from_research_results_v1(
+        [updated],
+        created_at=now.isoformat().replace("+00:00", "Z"),
+        policy=canonical_meta_learning_policy_v1(),
+    )
+    lineage = result["meta_learning_record"]["input_lineage"]
+    assert updated.late_gaps[0]["reality_gap_record_id"] in lineage["reality_gap_record_ids"]
+    if rejected:
+        assert updated.late_failures[0]["failure_record_id"] in lineage["failure_record_ids"]

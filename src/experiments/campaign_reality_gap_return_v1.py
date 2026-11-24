@@ -162,3 +162,44 @@ def with_returns_v1(unit, root, keys):
                     raise ValueError("GAP_RETURN_WRONG_FAILURE")
                 failures.append(failure)
     return replace(unit, late_gaps=tuple(gaps), late_failures=tuple(failures))
+
+
+def route_cost_hypotheses_v1(workspace, completed, result, grids):
+    """Keep the Meta cost investigation distinct from the strategy parameter search."""
+    from src.experiments.f2_meta_cost_model_follow_up_v1 import (
+        build_f2_meta_cost_model_follow_up_v1,
+    )
+
+    for feedback in (
+        result.get("campaign_meta_feedback"),
+        result.get("meta_feedback"),
+        (result.get("follow_up") or {}).get("meta_feedback"),
+    ):
+        if not feedback:
+            continue
+        meta = feedback["meta_input_binding"]["meta_learning_record"]
+        for proposal in meta["research_proposals"]:
+            if proposal["target_kind"] != "cost_model" or proposal["kind"] != "INVESTIGATE":
+                continue
+            request = dict(
+                learning_digest=completed["learning_digest"],
+                instrument_id=completed["instrument_id"],
+                meta_learning_identity=meta["meta_learning_identity"],
+                proposal=proposal,
+                authority="NONE",
+            )
+            folder = workspace.safe_path_v1(Path("cost-hypotheses") / digest_v1(request))
+            publish_v1(folder / "request.json", request)
+            grid = grids.get(proposal["target"])
+            if grid is None:
+                continue
+            assessment = build_f2_meta_cost_model_follow_up_v1(
+                meta_record=meta,
+                expected_meta_identity=meta["meta_learning_identity"],
+                proposal_id=proposal["proposal_id"],
+                f2_result_path=grid.archive,
+                expected_f2_execution_digest=grid.execution_digest,
+            )
+            if assessment["instrument_id"] != completed["instrument_id"]:
+                raise ValueError("F2_COST_RETURN_INSTRUMENT_MISMATCH")
+            publish_v1(folder / "assessment.json", assessment)

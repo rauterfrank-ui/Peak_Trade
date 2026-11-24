@@ -163,6 +163,11 @@ def _bind_unit(request: ResearchResultMetaInputV1):
         "comparison_identity": comparison["comparison_identity"],
     }
     gap = loop["reality_gap_record"]
+    for item in (*request.late_gaps, *request.late_failures):
+        _require_equal(item["experiment_id"], experiment_id, "late_observation.experiment_id")
+        _require_equal(item["experiment_identity"], identity, "late_observation.identity")
+        if _created_at_key(item["created_at"]) < _created_at_key(loop["created_at"]):
+            raise ResearchResultMetaBindingError("LATE_OBSERVATION_BEFORE_EXPERIMENT")
     if request.late_gaps:
         binding["late_gap_ids"] = [row["reality_gap_record_id"] for row in request.late_gaps]
     return (
