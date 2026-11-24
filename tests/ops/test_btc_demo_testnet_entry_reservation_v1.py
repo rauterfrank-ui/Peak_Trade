@@ -303,3 +303,40 @@ def test_fixture_reservation_cannot_be_reconciled_as_a_submit(case):
     lane = btc.demo._demo_lane_root(host.budget.root)
     assert not (lane / "confirmed-first-fills").exists()
     assert not (lane / "position-episodes").exists()
+
+
+@pytest.mark.parametrize("case", [1, -1], indirect=True)
+def test_reserved_fixture_plan_books_two_levels_once(case):
+    host, args = case
+    now = args["clock"]()
+    finished = (datetime.fromisoformat(now) + timedelta(milliseconds=1)).isoformat()
+    clock = iter([now, finished])
+    rid, checksum = host.reserve_offline_testnet_entry_v1(**dict(args, clock=lambda: next(clock)))
+    revision = host.budget.budget_revision_ref_v1()
+    inputs = dict(entry=args["entry"], reservation_id=rid, expected_revision=revision)
+    with pytest.raises(ValueError, match="HEAD_CHANGED"):
+        host.replay_reserved_entry_fill_v1(
+            **dict(inputs, expected_revision=args["expected_revision"])
+        )
+    with pytest.raises(ValueError, match="ORIGINAL_RESERVATION"):
+        host.replay_reserved_entry_fill_v1(**dict(inputs, reservation_id="other"))
+    result = host.replay_reserved_entry_fill_v1(**inputs)
+    assert result == host.replay_reserved_entry_fill_v1(**inputs)
+    assert result["source_digest"] == checksum and result["revision"] == list(revision)
+    cycle = args["entry"].cycle
+    assert result["decision_id"] == cycle.replay.evidence.decision_id
+    assert result["side"] == cycle.decision_outcome.removeprefix("enter_").upper()
+    assert Decimal(result["contracts"]) == Decimal("0.0003")
+    assert [Decimal(f["contracts"]) for f in result["fills"]] == [
+        Decimal("0.0001"),
+        Decimal("0.0002"),
+    ]
+    mark = Decimal(str(cycle.replay.intermediate.market_context.mark_price))
+    sign = 1 if result["side"] == "LONG" else -1
+    prices = [mark + sign * Decimal("0.1"), mark + sign * Decimal("0.2")]
+    assert [Decimal(f["price"]) for f in result["fills"]] == prices
+    fee = -(prices[0] + 2 * prices[1]) * Decimal("0.0001") * Decimal("0.0005")
+    assert Decimal(result["signed_opening_fee_usdc"]) == fee
+    assert Decimal(result["fixture_budget_after_fee_usdc"]) == Decimal(25) + fee
+    assert host.budget.budget_revision_ref_v1() == revision
+    assert rid not in host.budget.owner.execution_links_v1()
