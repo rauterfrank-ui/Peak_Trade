@@ -459,3 +459,30 @@ while True:
             child.kill()
         child.wait(timeout=5)
         child.stderr.close()
+
+
+def test_testnet_journal_rejects_a_live_submit_link_on_restore(tmp_path):
+    from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+        PortfolioCapitalReservationBudgetOwnerV1,
+        PortfolioCapitalBudgetError,
+    )
+
+    host, rid, identity, _ = seed(tmp_path)
+    try:
+        host.owner.mark_execution_submit_boundary_v1(rid, identity)
+        state = host.owner.risk_snapshot_v1()["state"]
+        state["execution_environment"] = "TESTNET"
+    finally:
+        host.close()
+    owner = PortfolioCapitalReservationBudgetOwnerV1(
+        durable_root=tmp_path / "separate-testnet-owner",
+        durable_account_identity=ACCOUNT,
+        durable_mode="create",
+        durable_lane_bindings={"LANE_1": _bound()},
+        execution_environment="TESTNET",
+    )
+    try:
+        with pytest.raises(PortfolioCapitalBudgetError):
+            owner._restore_locked(state)
+    finally:
+        owner.close()

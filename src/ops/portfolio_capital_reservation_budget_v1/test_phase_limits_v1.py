@@ -372,6 +372,36 @@ def load_slot_entry_budget_v1(path):
         raise EntryBudgetPolicyError("ENTRY_BUDGET_SLOT_POLICY_UNAVAILABLE_OR_INVALID") from exc
 
 
+def require_btc_testnet_slot_scope_v1(policy, bindings=None):
+    """Admit the explicit once-funded Slot 3 Demo policy, without send authority."""
+    from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.constants_v1 import (
+        INSTRUMENT_SCOPE_EXACT,
+    )
+
+    if type(policy) is not BoundedSlotEntryBudgetV1:
+        raise ValueError("BTC_TESTNET_BOUNDED_POLICY_REQUIRED")
+    policy.validate_v1()
+    if not (
+        policy.allowed_slot_ids == ("LANE_3",)
+        and policy.aggregate_reserved_notional_limit
+        == policy.per_slot_reserved_notional_limit
+        == policy.per_entry_notional_limit
+        == policy.per_slot_test_loss_limit
+        == Decimal("25")
+        and policy.require_usdc_settlement
+        and policy.require_native_initial_margin
+        and policy.require_opening_execution_costs
+        and policy.require_closing_execution_costs
+        and policy.require_next_funding_costs
+        and policy.require_absolute_movement_cost_cover
+    ):
+        raise ValueError("BTC_TESTNET_BOUNDED_POLICY_REQUIRED")
+    if bindings is not None and (
+        set(bindings) != {"LANE_3"} or bindings["LANE_3"].venue_native_id != INSTRUMENT_SCOPE_EXACT
+    ):
+        raise ValueError("BTC_TESTNET_BOUND_LANE_AND_INSTRUMENT_REQUIRED")
+
+
 @dataclass(frozen=True)
 class BoundedSlotReconciliationScopeV1:
     """Explicit simulated inventory scope; exact MATCH only, no repair grant."""
@@ -385,7 +415,7 @@ class BoundedSlotReconciliationScopeV1:
 
         if (
             type(self.policy) is not BoundedSlotEntryBudgetV1
-            or self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or self.execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "TESTNET"}
             or type(self.bindings) is not tuple
         ):
             raise ValueError("BOUNDED_RECONCILIATION_SCOPE_INVALID")
@@ -398,4 +428,6 @@ class BoundedSlotReconciliationScopeV1:
         ):
             raise ValueError("BOUNDED_RECONCILIATION_SCOPE_INVALID")
         rows = lane_bindings_v1(bindings)
+        if self.execution_environment == "TESTNET":
+            require_btc_testnet_slot_scope_v1(self.policy, bindings)
         return frozenset(row["bound"]["instrument_id"] for row in rows.values())

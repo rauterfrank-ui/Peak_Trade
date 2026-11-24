@@ -651,6 +651,205 @@ def validate_managed_filegate_owner_bundle(root: Path, policies: list[dict]) -> 
         raise ValueError("MANAGED_FILEGATE_REVIEWED_BUNDLE_REQUIRED")
 
 
+TESTNET_PREPARATION_REVIEW_DELTAS = {
+    "scripts/ops/inspect_btc_demo_account_v1.py": (
+        "610f6027a1cbde47a4e45024e23db6d012a0420e1ba7b6d6e6c8dce0f74e5c7c",
+        "2759cd4fbdd94278887f4d4f4be1f79168916b4ddcc4f1a9507cc1162d322db9",
+    ),
+    "src/ops/btc_demo_budget_owner_v3.py": (
+        "666c1f2dc3126ff5df501a352d734fb9fd3312d1971c019203969f0243b5b8e8",
+        "3dbf24c4ef153ea24391f1a22f574183809e4d0b7be66df2633c6645fe06148f",
+    ),
+    "src/ops/btc_demo_entry_financial_inputs_v1.py": (
+        "2657e0d829b0ac1480345c7f928b29fa7bc7857f7d0d56ccd277200448ec896c",
+        "f2c9e613309e9085444019dd4866c9a27c2ed108d7273ea4e0ed7febf3293996",
+    ),
+    "src/ops/btc_demo_lane3_v2.py": (
+        "1f123f69c879128faf9d8165ddac551f0733d0a21d95c2c358548a21bed7fce6",
+        "27d5d0ed357c9c817392e264eaff6889732da40bad75a12ebb893625aa0051a5",
+    ),
+    "src/ops/btc_demo_net_reversal_financials_v1.py": (
+        None,
+        "4bcb0b53328a42e794fec34b230e90f05afab95609d7c68399462d455b866486",
+    ),
+    "src/ops/btc_demo_net_reversal_pretrade_v1.py": (
+        None,
+        "8d62a270e43ee9850aed5f159f2b915c79945657c7bcfe55ce3f049325f773a1",
+    ),
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": (
+        "2d49dacfe1c5f5f988a0a702a03b6754c65981fec9dfa93ac774ac5e42292cf6",
+        "25913575198dc901956f1abb22ef73b2db2f305fc310cffebf3d1ec060b6185f",
+    ),
+    "src/ops/execution_reconciliation_get_provenance_v1.py": (
+        "bdd5d19298e366a052fc12288f080278ea1a0552dbab18fa3d84e0352fd2923d",
+        "989c2ab52ab634f120bff840d2d6111dd35df0a37007cf9bb3eb56285363eee0",
+    ),
+    "src/ops/execution_reconciliation_proof_store_v1.py": (
+        "d73867f3e46f069f1b3c64e53b06f58619a3844b61506e780b23c3ef162b5adf",
+        "090db83f51bac05461062311ec88a56d84401360afb512d792ecc147ebc25d7f",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py": (
+        "4c4376b631dabd5dbaffe7396cdb48ddf467bee9f9e768d4cace74c3fe30976d",
+        "87706d5a4e7145bcba071934ae51ac6a119129da370794462ed88a35a8488233",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": (
+        "2b62cc9e782f113c731d559ab270b685114e94b57cb87a045afef5b2c0647906",
+        "bd553c70644d8bece02fe36cb6f82d39c9870c17aff6477d33d3ba58727c546a",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": (
+        "12590786da448e581512dd2e33a2faad3e12ac10d75ca915277737cfb82a398e",
+        "1c2b5cf741f390ecfca216cb2517ef994e5206d8a1f432b9ea7af7584076602f",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": (
+        "7acbca9c53e83fdcb44a574618e7010ee78cd4daebd2716ffeafd371ead864da",
+        "d41c7ae159049b45deca6efac5faf8ac7bdc0175a2447f1a1fe2bfe72ae38899",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py": (
+        "98649b127e52d57650eb70bd5f0e1581dedbcfa18eba6c0ef3c5c8fc20a992f8",
+        "fa9c0c32a299ae1d7194204cb04697f106028c98beb54c5c5bcd3061b79d50ca",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py": (
+        "f568c91c37818320bde6142061975bc557cde065c83b0f4fdb55fef196d65b83",
+        "537cbdc3ce5be9320579d57fa9d952425177fc146e880a24b6007910a5ffc364",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_net_reversal_reconciliation_v1.py": (
+        "9cb8cce89fe4784ed0ced1965c79ead8f10cd8991d09e80efbbce62ed39959ff",
+        "6dc77faab538ce75c59aee9ceb1ff2bd8306ce4447750dfdcf8149fad03c6f5c",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": (
+        "7b8fed236443db95ae551f0b9b91ad222883d7a42e1531c175a8789c8df72c1c",
+        "26f4b6e83369cf364d8b5b83e33ad1ea0fb337fc401584d58dfa8945284cd014",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_pending_observation_v1.py": (
+        "1063d82271629b76df49b3d51d4040fb5d46de2ff16b21b6d31db9a626294e84",
+        "ff77d2e67218000b74f56e850ec210c3701ba0333ba4666721e5c039c90582cc",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py": (
+        "55c046ea257ef21a5fdeedd163aee24e8c28ccd6df8e28c037c688fba868492c",
+        "95d399e03b5f5c6f029b24d05dbb2e9354a2d7fee6898e853a862f85abcbbc27",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py": (
+        "004f62a388b4acaf813a31bf6be2224abae3573b24da950fe82893960a79d0a1",
+        "d42c18ae8c8a5b5c41f53b663b1bd5bf0341abdf86b0f90e8332ab3496468fce",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py": (
+        "649d3cda526027fc830e1cbaddcbb4c75988960cfb2ebb69fdc3a339d5885f2e",
+        "972571f3bc6d6856c719d218d2a9c2059a2c6dea44bdcc13df8f4d195d37d5f6",
+    ),
+    "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py": (
+        "2783204b39c31b79588567dce11b947411c7398d02444623180f17c24760a910",
+        "80f2bc998febe351e1e8d50462932c4392ccaa5b9f53c3a8e950fab1f9d7763d",
+    ),
+    "src/ops/okx_eea_private_account_state_runtime_v1/k1_source_v1.py": (
+        "7a9c63c21c9c808f87cca4ccbde6eb219428b934e7dd8f39cc0022333c0cae89",
+        "d966938308b6b6c8dfab113e3fe171c8e1090ec073efbe3c61cc9d1c19411359",
+    ),
+    "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py": (
+        "5d97042b35987d8231887c766f2341c03014e58a0e4795bba117e75f1b8c35ec",
+        "069298b0194890416ba2390df9c8d773abaffb0f04f0b4a96323dc1a0e2b1227",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": (
+        "25c76eb8ec00b1e5e0d33d116ad7c19ed32be9014fa667e67697569a34dc13fd",
+        "4040a0c32f151de2c59b9a52bd044aece2d055f0fc5f01c805dac05112cafc10",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": (
+        "78b413f1dac814623899bd86bf4ec55b4ac782fb27dae8215bb1420c6a122b52",
+        "ee234792e4761bc002f4d777887c7894194421006f5f9778d66fa272df69fd87",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": (
+        "02d1773c0a39a9f71a83a71ea82623e1a790092931af49d091bc330243633267",
+        "58dab10b38772fff3c2f21170e40a68e814063a8c6fd5346c42dcda73885feec",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py": (
+        "f7cb389f154118358dea3a279ead47235056c44ff536419de226a5d75714d835",
+        "1e5b9f56cbacc1c6314356c9635ab29def8857aee2ffb95d9082bdf510117ef5",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/live_net_reversal_booking_v1.py": (
+        "973a0d63554b974f5691a187daca700da66e9aeb35cd72309dc74de410c68d90",
+        "a01694bc6e7e9d5672142ea9130260ab2ab51346a167c95b7392077c07b55902",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": (
+        "7b863bab462d1fef9e4e49d9bc49b9227e3f13f0d72e46e28a0844aa5cab81b9",
+        "e642694e7c1fab8dc299b724cf1b145b71a7cb76e8e187f34bc0d889a47eee8f",
+    ),
+    "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py": (
+        "10e10eb8b1bf2ad862033fc61776e95b57451b7d7b5dacb104f0daaa73373ce5",
+        "0ac480b06ac83280dee4418b4c9402fe8858358be24527e46b2a5aad94ad6d53",
+    ),
+    "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py": (
+        "b574d572c50d523c7825923c7f196181c29f4343ca1ceb9c2d23f0ee73f0d6af",
+        "3d5877bd0b87f491d4695be9b94851581af0ff75d88fabb206509db5378ccd84",
+    ),
+    "tests/ops/test_btc_demo_entry_reservation_v1.py": (
+        "bc4b1293bbdc3ee643f2d8c4e7ce3db0fa8e56fb1065e924fd9a1d05b6d976e0",
+        "e003896cfb836e00b68d64fc6af94f8dd6dbf0e3ebe635075a752345b2b4ec12",
+    ),
+    "tests/ops/test_btc_demo_first_entry_pending_v1.py": (
+        None,
+        "38c36b93e2bbeb144cd4353afdd568573d85b4212cd5141cf8dc4b6f7484b4f7",
+    ),
+    "tests/ops/test_btc_testnet_capital_context_v1.py": (
+        None,
+        "c07d3b28983dd8e4f16d8df8a425c52a5b817a4f5411acbdeac111fba54717ac",
+    ),
+    "tests/ops/test_btc_testnet_net_reversal_cost_v1.py": (
+        None,
+        "7fa5a3648d39bd1f6894b28b2ebd41a9ea31780a9ff1232d7b2bfc47e76774f6",
+    ),
+    "tests/ops/test_btc_testnet_original_budget_host_v1.py": (
+        None,
+        "a00dc6b154f39889a49e27bfcc9f677352ac7ce757e19c994efa40ab9d0411e8",
+    ),
+    "tests/ops/test_btc_testnet_original_execution_receipt_v1.py": (
+        None,
+        "757164ea4251bad9127f85535eb26cea421ddb4043caef5f1e9a0b3a80e24e26",
+    ),
+    "tests/ops/test_btc_testnet_original_get_environment_v1.py": (
+        None,
+        "ec264c06e9ce29032922331e2bdbd9ed457577de5c516910b92f2ecdf54ffda5",
+    ),
+    "tests/ops/test_btc_testnet_original_net_reversal_v1.py": (
+        None,
+        "df93a7d2477a86cddb0140e1340a085da5e68544db573027866871fe8cfe5f1b",
+    ),
+    "tests/ops/test_btc_testnet_original_net_submit_v1.py": (
+        None,
+        "77aba8f7a21152eb6c6c11719c7ec8c2d927e90ef402f104dc8e5a9f32cbf1f1",
+    ),
+    "tests/ops/test_btc_testnet_original_occupied_core_v1.py": (
+        None,
+        "945fe1f83272521047b48726fd62854b3cdc01892e50b8eb81e50aaea5698491",
+    ),
+    "tests/ops/test_current_productive_shared_post_owner_authority_v1.py": (
+        "e3aa71b3ece13c559eae30af8f4567b25882c8d987f857f68450b10c409c59a0",
+        "abffba5b88e1770b6988e736755917442431b2d9a4eca54b94b9efc34486b0eb",
+    ),
+    "tests/ops/test_durable_portfolio_budget_recovery_v1.py": (
+        "12e0f4d576927d96d761a125ead6b982ee73eb0ade9f941b03df778637167a76",
+        "b7636ed30129fef155aa76e6128924c9ed093424795e89bc547a66a682c03803",
+    ),
+    "tests/ops/test_portfolio_budget_host_v1.py": (
+        "dcaba0fafe700831b77443198c62d174ccd55221a1dba4deea1c9653803adc0c",
+        "9224ac1c13a983d30e39179a09ce194580817f9711a4f1ff18f9202818acd32c",
+    ),
+    "tests/ops/test_portfolio_execution_recovery_v1.py": (
+        "d9de400892f0b0247b59b131a29cafcb623f86fe0456cda7a8f1d81f27ea4a79",
+        "9f71f9b79e83c8a1c33b30dab2c8fe7f5589441d1ff466eca269fc490298dec6",
+    ),
+    "tests/ops/test_portfolio_sizing_learning_semantic_join_v1.py": (
+        "3b4a1194b0b29c59a8e4c15dc3b80c0b9bd0a5c01ac1b0e25a1331f42b5b0517",
+        "957281bc9c01a69c419396928584feadb6fc7ef242e3f93ec89aaa291c8a09ab",
+    ),
+}
+
+
+def _is_testnet_preparation_candidate(root):
+    return any(
+        (root / path).is_file() and hashlib.sha256((root / path).read_bytes()).hexdigest() == after
+        for path, (_, after) in TESTNET_PREPARATION_REVIEW_DELTAS.items()
+    )
+
+
 def _uses_double_play_policy_bundle(root: Path) -> bool:
     expected = {path: after for path, (_, after) in DOUBLE_PLAY_POLICY_DELTAS.items()}
     direct = (root / DIRECT_REVERSAL_SOURCE).is_file()
@@ -691,6 +890,11 @@ def _uses_double_play_policy_bundle(root: Path) -> bool:
             )
             expected = _live_initial_slot_budget_successor(root, expected)
             expected = _occupied_n1_runtime_successor(root, expected)
+    # Exact successor reviewed for TESTNET preparation only; no runtime authority.
+    if _is_testnet_preparation_candidate(root):
+        for path, (before, _) in TESTNET_PREPARATION_REVIEW_DELTAS.items():
+            expected.setdefault(path, before)
+        expected = _exact_double_play_successor(expected, TESTNET_PREPARATION_REVIEW_DELTAS)
     actual = {}
     for path in expected:
         source = root / path
@@ -714,7 +918,7 @@ def _exact_double_play_successor(parent, deltas):
 
 
 def _live_initial_slot_budget_successor(root, parent):
-    if any(
+    if _is_testnet_preparation_candidate(root) or any(
         hashlib.sha256((root / path).read_bytes()).hexdigest() == after
         for path, (_, after) in LIVE_INITIAL_SLOT_BUDGET_DELTAS.items()
         if path in parent
@@ -724,7 +928,7 @@ def _live_initial_slot_budget_successor(root, parent):
 
 
 def _occupied_n1_runtime_successor(root, parent):
-    if any(
+    if _is_testnet_preparation_candidate(root) or any(
         hashlib.sha256((root / path).read_bytes()).hexdigest() == after
         for path, (_, after) in OCCUPIED_N1_RUNTIME_DELTAS.items()
         if path in parent
@@ -815,6 +1019,15 @@ def validate_reserved_slot_rotation_bundle(
                     )
     else:
         accepted = (before, after, protected_after, scope_bound_after)
+    if double_play and _is_testnet_preparation_candidate(root):
+        accepted = tuple(
+            _exact_double_play_successor(parent, TESTNET_PREPARATION_REVIEW_DELTAS)
+            for parent in accepted
+            if all(
+                parent[path] == TESTNET_PREPARATION_REVIEW_DELTAS[path][0]
+                for path in parent.keys() & TESTNET_PREPARATION_REVIEW_DELTAS.keys()
+            )
+        )
     if actual not in accepted:
         raise ValueError("RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED")
 
@@ -836,6 +1049,8 @@ def validate_ordered_funding_episode_bundle(
     expected = {path: after for path, (_, after) in ORDERED_FUNDING_EPISODE_DELTAS.items()}
     if double_play:
         expected = _double_play_bundle_successor(root, expected)
+        if _is_testnet_preparation_candidate(root):
+            expected = _exact_double_play_successor(expected, TESTNET_PREPARATION_REVIEW_DELTAS)
     for path, digest in expected.items():
         if actual[path] != digest:
             raise ValueError("ORDERED_FUNDING_EPISODE_REVIEWED_BUNDLE_REQUIRED:" + path)

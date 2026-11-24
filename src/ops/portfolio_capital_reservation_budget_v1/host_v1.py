@@ -227,7 +227,14 @@ def collect_host_account_observation_v1(
         is_original_account_observation_source_v1,
     )
 
-    if inventory_source is None and is_original_account_observation_source_v1(private_rest_fetch):
+    demo_futures_pending = (
+        inventory_source is not None
+        and inventory_source.inventory_inst_type == "FUTURES"
+        and inventory_source.credential.execution_environment == "TESTNET"
+    )
+    if (
+        inventory_source is None or demo_futures_pending
+    ) and is_original_account_observation_source_v1(private_rest_fetch):
         private_rest_fetch.bind_completed_host_observation_v1(observation)
         observation = replace(observation, pending_source=private_rest_fetch)
     if startup_port is not None:
@@ -272,6 +279,21 @@ class HostBudgetRecoveryContextV1:
             raise ValueError("HOST_BUDGET_PENDING_ORDERS_UNRESOLVED")
         if output.bound_account_identity != self.account:
             raise ValueError("HOST_BUDGET_ACCOUNT_MISMATCH")
+        authenticated_update = None
+        if (
+            self.host.execution_environment == "TESTNET"
+            and self.authenticated_reconciliation is not None
+        ):
+            proofs = tuple(self.authenticated_reconciliation.evidence.values())
+            if len(proofs) != 1:
+                raise ValueError("TESTNET_RECOVERY_SINGLE_AUTHENTICATED_POSITION_REQUIRED")
+            proof = proofs[0]
+            row = self.execution_reconciliation[proof.reservation_id]
+            authenticated_update = {
+                "authenticated_net_reversal"
+                if "net_reversal_booking_digest" in row
+                else "authenticated_testnet_entry": (self, proof)
+            }
         result = reconcile_durable_budget_startup_v1(
             owner,
             output=output,
@@ -282,6 +304,7 @@ class HostBudgetRecoveryContextV1:
             repository_sha=self.host.repository_sha,
             now_unix=self.host.clock(),
             capital_max_age_seconds=NUMERIC_EQUITY_TTL_SECONDS,
+            authenticated_position_update=authenticated_update,
             **(
                 {
                     "bounded_reconciliation_scope": BoundedSlotReconciliationScopeV1(
@@ -315,9 +338,10 @@ class HostBudgetRecoveryContextV1:
         host = self.host
         if (
             host.closed
-            or host.execution_environment != "LIVE"
+            or host.execution_environment not in {"LIVE", "TESTNET"}
             or self.pending_orders
             or host.owner is None
+            or host.owner.execution_environment_v1() != host.execution_environment
             or lane_id not in (host.bindings or {})
             or type(proof) is not AuthenticatedExecutionReconciliationProofV1
             or proof.session_id != host.session_id
@@ -412,6 +436,80 @@ class HostBudgetRecoveryContextV1:
         except FileExistsError:
             return open_position_episode_from_authenticated_execution_v1(**args, mode="recover")
 
+    def publish_authenticated_testnet_entry_c1_v1(
+        self, *, lane_id, proof, episode, cursor_root, g17_producer
+    ):
+        """Join the confirmed original fill to the original Mark-to-C1 publisher."""
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+            load_current_productive_sidestate_confirmation_cursor_v1,
+            parse_current_productive_sidestate_confirmation_cursor_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.current_core_entry_assessment_frame_v1 import (
+            read_current_core_entry_assessment_frame_v1,
+        )
+        from src.ops.offline_first_entry_position_v2 import publish_confirmed_first_entry_c1_v2
+        from src.ops.exit_policy_producer_binding_v1.current_cursor_recovery_v1 import (
+            require_current_cursor_continuity_v1,
+        )
+        from src.ops.execution_reconciliation_proof_store_v1 import (
+            read_authenticated_execution_reconciliation_source_v1,
+        )
+
+        host = self.host
+        link = self.inspect_current_authenticated_entry_v1(lane_id=lane_id, proof=proof)
+        source = link.get("plan_origin", {}).get("core_cursor_source", {})
+        if (
+            host.execution_environment != "TESTNET"
+            or episode.identity.account_scope.execution_environment != "TESTNET"
+            or source.get("cursor_root") != str(Path(cursor_root).resolve())
+            or source.get("decision_id") != link["identity"]["canonical_decision_id"]
+            or proof.identity_digest != episode.identity.episode_id
+            or "net_reversal_booking_digest" in link["reconciliation"]
+        ):
+            raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_SCOPE_REQUIRED")
+        raw = load_current_productive_sidestate_confirmation_cursor_v1(Path(cursor_root))
+        if raw is None:
+            raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_CURSOR_REQUIRED")
+        if raw["entry_assessment_frame"] is None:
+            require_current_cursor_continuity_v1(
+                episode=episode, incoming=raw, store_root=Path(cursor_root)
+            )
+            return
+        frame = read_current_core_entry_assessment_frame_v1(
+            parse_current_productive_sidestate_confirmation_cursor_v1(raw)
+        )
+        if frame["parent"]["decision_id"] != source["decision_id"]:
+            # A later occupied Core cycle has its own assessment frame. Its
+            # original Exit-owned publication must match the current cursor;
+            # never replay the opening handoff over that continued state.
+            if episode.binding.current_cursor_publication is not None:
+                require_current_cursor_continuity_v1(
+                    episode=episode, incoming=raw, store_root=Path(cursor_root)
+                )
+                return
+            raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_DECISION_REQUIRED")
+
+        def retain():
+            original = read_authenticated_execution_reconciliation_source_v1(
+                root=self.authenticated_reconciliation.proof_root,
+                budget_owner_root=host.root / "owner",
+                account=self.account,
+                session_id=proof.session_id,
+                reservation_id=proof.reservation_id,
+                revision_ref=proof.revision_ref,
+            )
+            if original.proof != proof:
+                raise ValueError("TESTNET_ENTRY_C1_ORIGINAL_FILL_CHANGED")
+            return proof.snapshot_digest
+
+        return publish_confirmed_first_entry_c1_v2(
+            episode=episode,
+            cursor_root=Path(cursor_root),
+            g17_producer=g17_producer,
+            writer_session_id=host.session_id,
+            retain_opening=retain,
+        )
+
 
 class PortfolioBudgetHostV1:
     """One session, one writer, stable account scope outside lane/run roots."""
@@ -434,6 +532,7 @@ class PortfolioBudgetHostV1:
         execution_incident_state_path: Path | None = None,
         slot_capital_allocation: "SlotCapitalAllocationV1 | None" = None,
         live_slot_capital_allocation: "SlotCapitalAllocationV1 | None" = None,
+        testnet_owner_contract: str | None = None,
     ):
         if (
             not isinstance(expected_account_identity, str)
@@ -467,8 +566,23 @@ class PortfolioBudgetHostV1:
         self.transport_retry_count = 0
         self.reconciliation_transport = reconciliation_transport
         self.execution_environment = execution_environment
+        self._testnet_owner_contract = testnet_owner_contract
+        if testnet_owner_contract is not None:
+            from src.ops.btc_demo_budget_owner_v3 import CONTRACT
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            if execution_environment != "TESTNET" or testnet_owner_contract != CONTRACT:
+                raise ValueError("HOST_TESTNET_OWNER_CONTRACT_MISMATCH")
+            require_btc_testnet_slot_scope_v1(entry_budget_policy)
+        if execution_environment == "TESTNET" and entry_budget_policy is not None:
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            require_btc_testnet_slot_scope_v1(entry_budget_policy)
         self.execution_incident_state_path = execution_incident_state_path
-        if execution_incident_state_path is not None and execution_environment != "LIVE":
+        if execution_incident_state_path is not None and execution_environment not in {
+            "LIVE",
+            "TESTNET",
+        }:
             raise ValueError("HOST_EXECUTION_INCIDENT_LIVE_SCOPE_REQUIRED")
         if entry_budget_policy is not None:
             from .test_phase_limits_v1 import (
@@ -481,12 +595,12 @@ class PortfolioBudgetHostV1:
         if (
             entry_budget_policy is not None
             and entry_budget_policy.per_slot_reserved_notional_limit is not None
-            and execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            and execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "TESTNET"}
         ):
             raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
         if slot_capital_allocation is not None and (
             durable_mode != "create"
-            or execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            or execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "TESTNET"}
             or entry_budget_policy is None
         ):
             raise ValueError("HOST_SLOT_CAPITAL_SIMULATED_BOOTSTRAP_REQUIRED")
@@ -507,11 +621,16 @@ class PortfolioBudgetHostV1:
         )
 
     def _open_budget_owner_v1(self, *, account, bindings):
-        owner = PortfolioCapitalReservationBudgetOwnerV1(
+        if self.execution_environment == "TESTNET" and self.entry_budget_policy is not None:
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            require_btc_testnet_slot_scope_v1(self.entry_budget_policy, bindings)
+        owner_args = dict(
             durable_root=self.root / "owner",
             durable_account_identity=account,
             durable_mode=self.durable_mode,
             durable_lane_bindings=bindings,
+            execution_environment="TESTNET" if self.execution_environment == "TESTNET" else "LIVE",
             entry_budget_policy=self.entry_budget_policy,
             slot_capital_allocation=self._slot_capital_allocation
             if self.durable_mode == "create"
@@ -520,17 +639,35 @@ class PortfolioBudgetHostV1:
                 self._live_slot_capital_allocation if self.durable_mode == "create" else None
             ),
         )
+        if self._testnet_owner_contract is not None:
+            from src.ops.btc_demo_budget_owner_v3 import BtcDemoBudgetOwnerV3
+
+            # Explicit selection, no journal migration or fallback to a generic
+            # owner. V3 also validates the existing isolated Demo root itself.
+            del owner_args["execution_environment"]
+            del owner_args["live_slot_capital_allocation"]
+            owner = BtcDemoBudgetOwnerV3(**owner_args)
+        else:
+            owner = PortfolioCapitalReservationBudgetOwnerV1(**owner_args)
         restored_policy = owner.entry_budget_policy_v1()
         if (
             restored_policy is not None
             and restored_policy.per_slot_reserved_notional_limit is not None
-            and self.execution_environment != "INTERNAL_SIMULATED_EXECUTION"
+            and self.execution_environment not in {"INTERNAL_SIMULATED_EXECUTION", "TESTNET"}
         ):
             owner.close()
             raise ValueError("SLOT_TEST_BUDGET_REQUIRES_SIMULATED_HOST")
         if owner.has_live_slot_capital_allocation_v1() and self.execution_environment != "LIVE":
             owner.close()
             raise ValueError("LIVE_SLOT_CAPITAL_HOST_SCOPE_MISMATCH")
+        if self.execution_environment == "TESTNET" and restored_policy is not None:
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            try:
+                require_btc_testnet_slot_scope_v1(restored_policy, bindings)
+            except Exception:
+                owner.close()
+                raise
         return owner
 
     def recover_owner_for_l10_close_booking_v1(self, bindings):
@@ -538,7 +675,11 @@ class PortfolioBudgetHostV1:
 
     def recover_owner_for_occupied_execution_v1(self, bindings, *, operation):
         """Open the original writer without reconciling or admitting new capital."""
-        if self.closed or self.execution_environment != "LIVE" or self.durable_mode != "recover":
+        if (
+            self.closed
+            or self.execution_environment not in {"LIVE", "TESTNET"}
+            or self.durable_mode != "recover"
+        ):
             raise ValueError(f"{operation}_ORIGINAL_HOST_REQUIRED")
         if self.owner is None:
             self.owner = self._open_budget_owner_v1(
@@ -665,13 +806,17 @@ class PortfolioBudgetHostV1:
     def observe_authenticated_execution_reconciliation_v1(
         self, bindings, *, proof_root=None, deliver_authenticated_incidents=False
     ):
-        """Observe the original LIVE chain with per-request GET proof."""
+        """Observe the original environment-bound chain with per-request GET proof."""
         from src.ops.execution_reconciliation_get_provenance_v1 import (
             AuthenticatedReconciliationGetV1,
         )
 
-        if self.execution_environment != "LIVE":
+        if self.execution_environment not in {"LIVE", "TESTNET"}:
             raise ValueError("HOST_EXECUTION_EVIDENCE_LIVE_IDENTITY_REQUIRED")
+        if self.execution_environment == "TESTNET":
+            from .test_phase_limits_v1 import require_btc_testnet_slot_scope_v1
+
+            require_btc_testnet_slot_scope_v1(self.entry_budget_policy, bindings)
         if deliver_authenticated_incidents and (
             proof_root is None or self.execution_incident_state_path is None
         ):
@@ -682,6 +827,8 @@ class PortfolioBudgetHostV1:
             clock=self.clock,
             proof_root=proof_root,
         )
+        if self.reconciliation_transport.execution_environment != self.execution_environment:
+            raise ValueError("HOST_AUTHENTICATED_GET_ENVIRONMENT_MISMATCH")
         context = self._observe_with_retry_v1(
             bindings,
             capture=capture,
@@ -742,7 +889,7 @@ class PortfolioBudgetHostV1:
         if (
             self.closed
             or self.owner is None
-            or self.execution_environment != "LIVE"
+            or self.execution_environment not in {"LIVE", "TESTNET"}
             or self.bindings != bindings
             or len(bindings) != 1
             or proof_root is None

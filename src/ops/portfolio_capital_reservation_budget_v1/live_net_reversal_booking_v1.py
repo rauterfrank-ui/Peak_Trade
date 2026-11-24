@@ -84,7 +84,7 @@ def restore_live_net_reversal_bookings_v1(owner, rows):
                 and booking.reservation_id == key
                 and booking.account == owner._account_identity
                 and booking.account == identity.account_identity
-                and identity.execution_environment == "LIVE"
+                and identity.execution_environment == owner.execution_environment_v1()
                 and booking.slot_id == str(hold.slot_id)
                 and (booking.instrument_id, booking.native_id, booking.selection_digest)
                 == (

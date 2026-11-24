@@ -48,6 +48,7 @@ def demo_entry(tmp_path, monkeypatch, request):
         execution_environment="TESTNET",
         allocation=allocation,
     )
+    host._offline_fixture_candles = candles
     try:
         entry, _ = btc.enter(host, candles, admission, request.param)
         _, args, _ = financial.prepare(

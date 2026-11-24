@@ -49,11 +49,19 @@ def _need(condition, reason):
         raise ValueError(reason)
 
 
-def build_btc_demo_capital_inputs_v1(rows, *, account, epoch, now, config):
+def build_btc_demo_capital_inputs_v1(
+    rows, *, account, epoch, now, config, minimum_available=demo._BUDGET_USDC
+):
+    _need(
+        type(minimum_available) is Decimal
+        and minimum_available.is_finite()
+        and minimum_available >= 0,
+        "BTC_TESTNET_INVALID_MINIMUM_AVAILABLE",
+    )
     balance = rows["balance"]
     detail = cost._one(demo._only(balance.payload)["details"], "ccy", "USDC")
     value = cost._money(detail.get("availEq"), positive=True)
-    _need(value >= demo._BUDGET_USDC, "BTC_TESTNET_DECLARED_BUDGET_UNCOVERED")
+    _need(value >= minimum_available, "BTC_TESTNET_DECLARED_BUDGET_UNCOVERED")
     age = acquisition.acquisition_age_seconds_v1(
         acquired_at_utc=balance.acquired_at_utc, now_utc=now
     )
@@ -90,7 +98,9 @@ def build_btc_demo_capital_inputs_v1(rows, *, account, epoch, now, config):
         observation=margin, p01=p01, eligibility=eligibility
     )
     _need(
-        output.produced == "true" and Decimal(output.value) >= demo._BUDGET_USDC,
+        output.produced == "true"
+        and Decimal(output.value) > 0
+        and Decimal(output.value) >= minimum_available,
         "BTC_TESTNET_CAPITAL_NOT_ADMISSIBLE",
     )
     return margin, output, p01, eligibility

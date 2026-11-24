@@ -401,6 +401,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
                 attempt_root=root,
                 account=context.recovery.account,
                 action=DIRECT_DOUBLE_PLAY_REVERSAL,
+                execution_environment=context.recovery.host.execution_environment,
             )
             context.inspect_position_v1()
             require_same_k1_venue_credential_v1(
@@ -437,7 +438,17 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         if "www.okx.com" in str(parsed.hostname or ""):
             raise FullCoreProductiveHttpPostError("WWW_OKX_FORBIDDEN")
         body = serialize_canonical_okx_post_body_v1(payload)
-        headers = build_k1_okx_venue_auth_headers_v1(
+        builder = build_k1_okx_venue_auth_headers_v1
+        if (
+            self._post_net_reversal_context is not None
+            and self._post_net_reversal_context.recovery.host.execution_environment == "TESTNET"
+        ):
+            from .checkout_independent_credential_okx_venue_auth_headers_v1 import (
+                build_k1_okx_demo_auth_headers_v1,
+            )
+
+            builder = build_k1_okx_demo_auth_headers_v1
+        headers = builder(
             handle=self._signing_handle,
             url=url,
             method="POST",

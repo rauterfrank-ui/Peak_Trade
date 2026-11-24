@@ -274,7 +274,13 @@ class SharedPostOwnerAuthorizationV1:
     grant: PostOwnerGrantV1
 
     def consume_v1(
-        self, *, account: str, action: str, envelope_digest: str, attempt_root: Path
+        self,
+        *,
+        account: str,
+        action: str,
+        envelope_digest: str,
+        attempt_root: Path,
+        execution_environment: str = "LIVE",
     ) -> SharedPostOwnerClaimV1:
         grant = self.grant
         if (
@@ -292,7 +298,8 @@ class SharedPostOwnerAuthorizationV1:
             grant.account != account
             or grant.action != action
             or action not in {"ENTER", "L10_CLOSE", "DIRECT_DOUBLE_PLAY_REVERSAL"}
-            or grant.environment != "LIVE"
+            or execution_environment not in {"LIVE", "TESTNET"}
+            or grant.environment != execution_environment
             or grant.venue != "OKX_EEA"
             or grant.envelope_digest != envelope_digest
             or type(envelope_digest) is not str
@@ -349,13 +356,21 @@ class SharedPostOwnerClaimV1:
         )
 
     def inspect_v1(
-        self, *, envelope_digest: str, attempt_root: Path, account: str, action: str
+        self,
+        *,
+        envelope_digest: str,
+        attempt_root: Path,
+        account: str,
+        action: str,
+        execution_environment: str = "LIVE",
     ) -> None:
         if (
             self.attempt_root != attempt_root.resolve()
             or self.grant.envelope_digest != envelope_digest
             or self.grant.account != account
             or self.grant.action != action
+            or execution_environment not in {"LIVE", "TESTNET"}
+            or self.grant.environment != execution_environment
         ):
             raise SharedPostOwnerAuthorityError("POST_GRANT_CLAIM_SCOPE_MISMATCH")
         self.recheck_v1()

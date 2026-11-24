@@ -90,7 +90,7 @@ class N1VenueQuantityLimitAssessmentV1:
 
 
 def capture_venue_quantity_source_v1(
-    *, results, item_id: str, acquisition_decision_id: str
+    *, results, item_id: str, acquisition_decision_id: str, execution_environment="LIVE"
 ) -> VenueQuantitySourceV1:
     spec = next(item for item in REQUIRED_GET_ITEM_SPECS if item.item_id == item_id)
     result = results.get(spec.fetch_group)
@@ -101,6 +101,7 @@ def capture_venue_quantity_source_v1(
         result=result,
         pretrade_decision_id=acquisition_decision_id,
         requested_endpoint=result.endpoint,
+        execution_environment=execution_environment,
     )
     if status != FreshPretradeGetStatusV1.TRUSTED_PRESENT.value:
         raise ValueError("VENUE_QUANTITY_SOURCE_NOT_TRUSTED")
@@ -123,6 +124,7 @@ def capture_n1_venue_quantity_limits_v1(
     bound_instrument: BoundInstrumentV1,
     decision_epoch: str,
     cycle_id: str,
+    execution_environment: str = "LIVE",
 ) -> N1VenueQuantityLimitsObservationV1:
     """Detach the two original response bodies; never consult a path cache."""
 
@@ -133,12 +135,16 @@ def capture_n1_venue_quantity_limits_v1(
         cycle_id=cycle_id,
         acquisition_decision_id=acquisition_decision_id,
         public_source=capture_venue_quantity_source_v1(
-            results=results, item_id="MAX_SIZE", acquisition_decision_id=acquisition_decision_id
+            results=results,
+            item_id="MAX_SIZE",
+            acquisition_decision_id=acquisition_decision_id,
+            execution_environment=execution_environment,
         ),
         private_source=capture_venue_quantity_source_v1(
             results=results,
             item_id="MAX_AVAILABLE",
             acquisition_decision_id=acquisition_decision_id,
+            execution_environment=execution_environment,
         ),
     )
     return replace(observation, integrity_digest=observation.digest_v1())

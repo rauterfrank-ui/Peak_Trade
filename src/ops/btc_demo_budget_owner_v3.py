@@ -68,6 +68,7 @@ class BtcDemoBudgetOwnerV3(PortfolioCapitalReservationBudgetOwnerV1):
             durable_lane_bindings=durable_lane_bindings,
             entry_budget_policy=entry_budget_policy,
             slot_capital_allocation=slot_capital_allocation,
+            execution_environment="TESTNET",
         )
         self._lock = RLock()
 
@@ -89,7 +90,6 @@ class BtcDemoBudgetOwnerV3(PortfolioCapitalReservationBudgetOwnerV1):
         )
         body = deepcopy(payload)
         del body["testnet_owner_contract"]
-        del body["execution_environment"]
         super()._restore_locked(body)
 
     def try_reserve_v1(self, **kwargs):

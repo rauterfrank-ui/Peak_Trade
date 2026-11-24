@@ -24,6 +24,40 @@ def test_frozen_policy_sources_and_reference_targets_are_valid():
     assert result["runtime_effect_inferred"] is False
 
 
+@pytest.mark.parametrize(
+    "source",
+    [
+        "src/ops/btc_demo_net_reversal_financials_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py",
+        "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+    ],
+)
+@pytest.mark.parametrize("rebound", [False, True])
+def test_testnet_preparation_rejects_unreviewed_source_even_with_rebound_atlas(
+    monkeypatch, source, rebound
+):
+    source_path = ROOT / source
+    binding_path = ROOT / "docs/system_atlas/source/development-binding-v1.json"
+    original = Path.read_bytes
+    changed = original(source_path) + b"\n# unreviewed TESTNET successor\n"
+    binding = json.loads(original(binding_path))
+    if rebound:
+        next(row for row in binding["files"] if row["path"] == source)["sha256"] = hashlib.sha256(
+            changed
+        ).hexdigest()
+
+    def read(path):
+        if path == source_path:
+            return changed
+        if path == binding_path and rebound:
+            return json.dumps(binding).encode()
+        return original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", read)
+    with pytest.raises(ValueError, match="DOUBLE_PLAY_POLICY_REVIEWED_BUNDLE_REQUIRED"):
+        PROJECTION["_uses_double_play_policy_bundle"](ROOT)
+
+
 @pytest.mark.parametrize("replace_publisher", [False, True])
 def test_shadow_slot4_rotation_rejects_mixed_generations(monkeypatch, replace_publisher):
     path = (

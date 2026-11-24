@@ -46,7 +46,9 @@ from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durab
 _ACCOUNT = "injected-observer-account"
 
 
-def signed_post_authorization(tmp_path, envelope, *, account, action, now_unix=None):
+def signed_post_authorization(
+    tmp_path, envelope, *, account, action, now_unix=None, execution_environment="LIVE"
+):
     key = SigningKey.generate()
     store_dir = tmp_path / "post-store"
     checkpoint_dir = tmp_path / "post-checkpoint"
@@ -72,6 +74,7 @@ def signed_post_authorization(tmp_path, envelope, *, account, action, now_unix=N
         issued_at_unix=now - 30,
         expires_at_unix=now + 120,
         signature=b"",
+        environment=execution_environment,
     )
     grant = replace(replacement, signature=key.sign(replacement.signing_bytes_v1()).signature)
     return SharedPostOwnerAuthorizationV1(authority, grant), key
