@@ -14,6 +14,7 @@ import math
 from pathlib import Path
 
 from src.ops import btc_demo_lane3_v2 as demo
+from src.ops.btc_demo_testnet_entry_reservation_v1 import BtcDemoBudgetOwnerV2
 from src.ops.exit_policy_producer_binding_v1.models_v1 import canonical_digest_v1
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import NUMERIC_EQUITY_TTL_SECONDS
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
@@ -91,7 +92,7 @@ class BtcDemoBudgetReconciliationHostV1:
 
     def __init__(self, *, owner, bound, account, testnet_root):
         _need(
-            type(owner) is PortfolioCapitalReservationBudgetOwnerV1,
+            type(owner) in (PortfolioCapitalReservationBudgetOwnerV1, BtcDemoBudgetOwnerV2),
             "BTC_DEMO_ORIGINAL_BUDGET_OWNER_REQUIRED",
         )
         lane = demo._demo_lane_root(testnet_root)
@@ -136,6 +137,7 @@ class BtcDemoBudgetReconciliationHostV1:
     def admit_budget_v1(self, *, coverage, output, observed, reconciliation, now):
         """Feed typed USDC capital to the original recovery gate; do not mint it."""
         self._fence_budget_v1()
+        _, head = self.budget_revision_ref_v1()
         report = validate_btc_demo_coverage_v1(coverage, account=self.account, now=now)
         _need(report["position_mode"] == "net_mode", "BTC_DEMO_NET_POSITION_MODE_REQUIRED")
         _need(
@@ -168,13 +170,20 @@ class BtcDemoBudgetReconciliationHostV1:
             and policy.require_next_funding_costs,
             "BTC_DEMO_ORIGINAL_BOUNDED_COST_POLICY_REQUIRED",
         )
-        return self.owner.recover_automatically_v1(
+        if type(self.owner) is BtcDemoBudgetOwnerV2:
+            recover = self.owner.recover_at_head_v2
+            fence = {"expected_durable_head": head}
+        else:
+            recover = self.owner.recover_automatically_v1
+            fence = {}
+        return recover(
             output=output,
             observed=observed,
             reconciliation=reconciliation,
             lane_bindings={"LANE_3": self.bound},
             now_unix=now,
             capital_max_age_seconds=NUMERIC_EQUITY_TTL_SECONDS,
+            **fence,
         )
 
     def reconcile_attempt_v1(self, *, reads, reservation_id, clock):
@@ -334,6 +343,10 @@ class BtcDemoBudgetReconciliationHostV1:
         lock fences another in-process budget transition during the Core write.
         It does not provide a distributed transaction across the Core stores.
         """
+        _need(
+            type(self.owner) is PortfolioCapitalReservationBudgetOwnerV1,
+            "BTC_TESTNET_V2_FIRST_ENTRY_ONLY",
+        )
         _number(now)
         identity, revision, captured, snapshot = self._require_matched_reconciliation_v1(
             reconciliation, require_receipt=True

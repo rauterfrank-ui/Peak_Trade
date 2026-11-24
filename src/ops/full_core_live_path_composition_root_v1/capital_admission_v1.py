@@ -586,6 +586,39 @@ def evaluate_capital_admission_v1(
     return trusted
 
 
+def evaluate_productive_29p_capital_output_v1(*, output, account_identity, instrument_id):
+    """Classify only the productive producer's output at its two live consumers."""
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_risk_capital_model_v1 import (
+        PRODUCER_IDENTITY,
+        CurrentProductive29PRiskCapitalOutputV1,
+    )
+
+    if type(output) is not CurrentProductive29PRiskCapitalOutputV1 or output.produced != "true":
+        return _denied(
+            status=CapitalAdmissionStatusV1.WRONG_CONTEXT.value,
+            claim=None,
+            expected_account_identity=account_identity,
+            expected_instrument_id=instrument_id,
+            source_class="",
+            authority=CAPITAL_AUTHORITY_NONE,
+            reasons=("PRODUCTIVE_29P_CAPITAL_OUTPUT_REQUIRED",),
+        )
+    return evaluate_capital_admission_v1(
+        claim=CapitalAdmissionClaimV1(
+            source_class=CAPITAL_SOURCE_OBSERVED_VENUE,
+            account_identity=output.bound_account_identity,
+            instrument_id=instrument_id,
+            observed_capital_raw=output.value,
+            observed_field_name=PRODUCER_IDENTITY,
+            evidence_class=EVIDENCE_CLASS_LIVE_TYPED,
+            evidence_id=output.decision_epoch,
+        ),
+        expected_account_identity=account_identity,
+        expected_instrument_id=instrument_id,
+        admission_context=ADMISSION_CONTEXT_LIVE,
+    )
+
+
 def join_capital_admission_into_admission_inputs_v1(
     *,
     plan_identity: str,

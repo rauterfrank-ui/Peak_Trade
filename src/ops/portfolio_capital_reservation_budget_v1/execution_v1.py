@@ -257,6 +257,9 @@ def bind_plan_locked_v1(
     if owner._store is None or found is None:
         raise ValueError("EXECUTION_LINK_DURABLE_ADMITTED_OWNER_REQUIRED")
     key, reservation = found
+    sizing = owner._sizing_bindings.get(key)
+    if sizing is not None and sizing.offline_testnet_source_digest is not None:
+        raise ValueError("OFFLINE_TESTNET_RESERVATION_HAS_NO_EXECUTION_AUTHORITY")
     if reservation.decision_id.startswith("l10:") != (double_play_origin is not None):
         raise ValueError("DOUBLE_PLAY_ORIGINAL_SIMULATED_PLAN_REQUIRED")
     link = {

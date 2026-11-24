@@ -91,6 +91,7 @@ class ReservationSizingBindingV1:
     native_initial_margin_binding: object | None = None
     absolute_movement_cost_binding: object | None = None
     xperp_liquidation_binding: object | None = None
+    offline_testnet_source_digest: str | None = None
 
     def validate_v1(self, *, amount: Decimal, decision_id: str) -> None:
         decision, applied = self.decision, self.applied_input
@@ -269,11 +270,28 @@ class ReservationSizingBindingV1:
         if self.xperp_liquidation_binding is not None:
             result["schema"] = "reservation_sizing_binding.v9"
             result["xperp_liquidation_binding"] = self.xperp_liquidation_binding.to_dict_v1()
+        if self.offline_testnet_source_digest is not None:
+            if result["schema"] != "reservation_sizing_binding.v8":
+                raise ValueError("OFFLINE_TESTNET_FULL_COST_BINDINGS_REQUIRED")
+            result["schema"] = "reservation_sizing_binding.v10"
+            result["offline_testnet_source_digest"] = self.offline_testnet_source_digest
         return result
 
     @classmethod
     def from_dict_v1(cls, payload):
         from .restrictive_risk_binding_v1 import RiskAdmissionBindingV1
+
+        if isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v10":
+            previous = dict(payload)
+            source = previous.pop("offline_testnet_source_digest", None)
+            if (
+                type(source) is not str
+                or len(source) != 64
+                or any(c not in "0123456789abcdef" for c in source)
+            ):
+                raise ValueError("OFFLINE_TESTNET_SOURCE_DIGEST_INVALID")
+            previous["schema"] = "reservation_sizing_binding.v8"
+            return replace(cls.from_dict_v1(previous), offline_testnet_source_digest=source)
 
         if isinstance(payload, dict) and payload.get("schema") == "reservation_sizing_binding.v9":
             from .xperp_liquidation_projection_v1 import XPerpLiquidationBindingV1

@@ -215,3 +215,56 @@ def test_bounded_policy_rejects_testnet_host_before_opening_store(tmp_path):
             entry_budget_policy=financial.policy(),
         )
     assert not (tmp_path / "testnet").exists()
+
+
+@pytest.mark.parametrize("scenario", [1], indirect=True)
+@pytest.mark.parametrize(
+    "missing",
+    [
+        "replay",
+        "injected",
+        "portfolio_slot",
+        "host_budget_recovery",
+        "live-host",
+        "testnet-host",
+        "foreign-owner",
+        "foreign-cycle",
+    ],
+)
+def test_reservation_only_requires_original_simulated_entry_before_acquisition(
+    scenario, missing, monkeypatch
+):
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+        CurrentProductiveEnterLive29PPortfolioSlotContextV1,
+    )
+
+    from src.ops.btc_demo_offline_trading_host_v1 import rehearse_simulated_29p_v2
+
+    demo, sim, entry, injected, recovery = scenario
+    before = sim.owner.risk_snapshot_v1()["durable_head"]
+    cycle = entry.cycle
+    inputs = dict(
+        replay=cycle.replay,
+        bound_instrument=demo.budget.bound,
+        decision_epoch=cycle.replay.intermediate.market_context.decision_time,
+        injected=injected,
+        portfolio_budget_owner=sim.owner,
+        portfolio_slot=CurrentProductiveEnterLive29PPortfolioSlotContextV1(
+            "LANE_3", cycle.replay.evidence.decision_id, cycle.cycle_id
+        ),
+        host_budget_recovery=recovery,
+    )
+    if missing in ("live-host", "testnet-host"):
+        monkeypatch.setattr(
+            sim, "execution_environment", "LIVE" if missing == "live-host" else "TESTNET"
+        )
+    elif missing == "foreign-owner":
+        inputs["portfolio_budget_owner"] = demo.budget.owner
+    elif missing == "foreign-cycle":
+        inputs["portfolio_slot"] = replace(inputs["portfolio_slot"], cycle_id="another-cycle")
+    else:
+        inputs[missing] = None
+    result = rehearse_simulated_29p_v2(**inputs)
+    assert result.first_blocker == "RESERVATION_ONLY_ORIGINAL_ENTER_CONTEXT_REQUIRED"
+    assert result.venue_plan_authorized is False and result.replay is None
+    assert result.get_count == 0 and sim.owner.risk_snapshot_v1()["durable_head"] == before

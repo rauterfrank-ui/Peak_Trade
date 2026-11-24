@@ -2664,7 +2664,7 @@
     {
       "path": "src/ops/btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "244eb9ede6e20ae6b59e0f71b68b41afd02c64df15f7895492f47997b2b80968"
+      "sha256": "f1e959673d8b04fc9f0ee129e1b6bed67d93dd20a8e41b42fa8e196952df5488"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
@@ -2674,7 +2674,12 @@
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "022b9f7496b4cd046559259d63c3fb2b6dcc28f6eadb0f56383381da56153f13"
+      "sha256": "9dc87077cef4d774911d916f7eacc2a2534cd8e0e5d01b3ef8525de3d651051b"
+    },
+    {
+      "path": "src/ops/btc_demo_testnet_entry_reservation_v1.py",
+      "before_sha256": null,
+      "sha256": "077350420b8c9a0c6dd4f867fb47ce8a37d3ae18ada39a1c0f5e4a4f8220afc7"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -3037,6 +3042,11 @@
       "sha256": "6e74b0d1b48ffccd61a37e7220cfe85a3cd3c48e41880d3537c8c9235b547fec"
     },
     {
+      "path": "src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py",
+      "before_sha256": "b68cb7f9a43a2ecc2daf8920b1a61c571949dd170606fb3e714c91eeb58cd7c2",
+      "sha256": "a09b27078b0f8557e06136b6f66a84af26225709a0fe795dd252fa20fd80ff33"
+    },
+    {
       "path": "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py",
       "before_sha256": "529551416e1f280ef5904fd83b27ef413cd542d3f4ef514f20e3034a32f0597e",
       "sha256": "4c4376b631dabd5dbaffe7396cdb48ddf467bee9f9e768d4cace74c3fe30976d"
@@ -3229,7 +3239,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
       "before_sha256": "4eb95b6c46f43fe1bcd6dc069963de88d2877b466e0eaad37b3986f9042fb4c2",
-      "sha256": "4d0b445b374370c7b600ef3a9786a2fa1f724d1e0a599df48639a94a62dcb92b"
+      "sha256": "6fef669dc5d0f4f38fa3857081db5e29f606a866c5a8c8af01a05fe15cdeb032"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
@@ -3334,7 +3344,7 @@
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
       "before_sha256": "321d64b2675b22ce5d6f68b36471fb2598113071be0086c2f982bbf74e7f9d80",
-      "sha256": "4da2e3e1840e36189739ebbc3df3187c8954b5a2e9e38a638bf3865fedb42a6f"
+      "sha256": "4197a00de7565e5cc30fc0d09a1c38aba8fa692c020473df4e677a01f19f90b7"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
@@ -3799,7 +3809,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/execution_v1.py",
       "before_sha256": "da60f1e811dedfb3aadd6dc5c94ba3c9047b2255649923f4aa56e6d6fbb100a7",
-      "sha256": "0b1e29bde37de3c667daa913a5d7d20a75bc451c66f38880bef339ae23fba665"
+      "sha256": "dcd11312db7f122fa10d7f60f5fb2a300dac60b267649e8cd73bf1e5ccaea9c5"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py",
@@ -3854,7 +3864,7 @@
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/sizing_binding_v1.py",
       "before_sha256": "b80d33ad3b74064834ec27325921e22aec2a049ab6d228ec56fbfdc1ec4b3f28",
-      "sha256": "e1ea5ecf468af71e1d2f0d76ecde3118f95bc3a5e8a75eb7f8d058f624132150"
+      "sha256": "56e93364fba8f75267468afe8f27bfea594d4aeb9c1f614c5dde6443aeeee38d"
     },
     {
       "path": "src/ops/portfolio_capital_reservation_budget_v1/slot_economic_source_v1.py",
@@ -5049,17 +5059,17 @@
     {
       "path": "tests/ops/test_btc_demo_budget_readback_v1.py",
       "before_sha256": null,
-      "sha256": "650388fbbe557e62a3c9d0a0fa87f686582774c92aca0187c6dd7bf194bfd516"
+      "sha256": "715c469c608bc81f4938b05d07785ad67f2709580e99fd2065e606c1280911cf"
     },
     {
       "path": "tests/ops/test_btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "c117f282ae1b6227b6a24e45b210936cdf89395ca7984a78bdebdab2eb5cd84a"
+      "sha256": "228b147975b3f86b1744351197ea6f28b7a94ce71efbd61a48e5869c5d4d750b"
     },
     {
       "path": "tests/ops/test_btc_demo_entry_reservation_rehearsal_v1.py",
       "before_sha256": null,
-      "sha256": "e6ab6381dc65f9e18a883ad997b5c122754b6ccd41d95fdf982f653724ab4d86"
+      "sha256": "88f7906a01c71b1f5329c324ebba7c2e0aadfb3c0b9446ef7103750d15993423"
     },
     {
       "path": "tests/ops/test_btc_demo_lane3_v2.py",
@@ -5074,12 +5084,17 @@
     {
       "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "35b513348eaf4cad977b09b5180f0d77d6c4c2cbb66622b1c54650ad916ccba4"
+      "sha256": "b48601c0d50abff0931b3ecc2ace5cbe6ba8281798e8958c582bbbf3989d88f2"
     },
     {
       "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
       "before_sha256": null,
       "sha256": "f98f6137104d0b259cdcdaa7942ebfb0d5b90fa2a3a754ed418cfac5e1b7729a"
+    },
+    {
+      "path": "tests/ops/test_btc_demo_testnet_entry_reservation_v1.py",
+      "before_sha256": null,
+      "sha256": "c7fe65e2b3bf38b244432dc76dfebf3b469914266cf1d356607d640f5e2f4475"
     },
     {
       "path": "tests/ops/test_canonical_i17_productive_shadow_contract_readiness_v1.py",
@@ -5414,7 +5429,7 @@
     {
       "path": "tests/ops/test_current_usdc_xperp_financial_admission_v1.py",
       "before_sha256": null,
-      "sha256": "2537573df9fe17ff4b6bcff02f3f1539aacadc655d7e377bcc4785f5d04c0969"
+      "sha256": "44918ed96628079b29a661978574bde3f31e5df2cefd5e605048bf4ac4202d49"
     },
     {
       "path": "tests/ops/test_current_venue_plan_original_decision_parent_v1.py",
@@ -6353,10 +6368,10 @@
   "ranked_nonlive_slots_scope": "Paper can associate the occupied L10 decision with its confirmed simulated net reversal. Ranked USDT swap Shadow reads the N5 selection, Cap23 admission, analytical positions in native contracts and Cap24 result. DDO and GVEF retain original instrument, slot and measured unit. Virtual first purchase requires a separate sizing amount and slot budget binding. The BTC offline host retains pending reversals for reconciliation. Runtime authority effect NONE.",
   "up_paper_confirmation_and_shadow_entry_scope": "The ranked Shadow entry carries native sizing, FX and costs to the virtual slot budget. UP Paper reuses its validated DDO index and timestamps the confirmed reversal. Parallel public depth observation and retrospective liquidity checks are bounded to the selected UP Paper session. The historical rank-six OL handoff remains unbound. The bounded Paper and Shadow preparations pair GVEF with authenticated session inputs and closed episodes or the Shadow DDO outcome.",
   "artifact_assignments": {
-    "repo_commit": "a7ab2b24aff613c361ed08bd992f32766fea0e12",
+    "repo_commit": "5992b75da79ff217c2d1d2e6935c3113a6b06515",
     "obsidian_register": "08 Register/Repo-Dateien.jsonl",
-    "obsidian_register_sha256": "5f054427ad5ae0af21cb9346ca2b69d21d4dbd8ce0f84d5435b1f7a49f3d0c65",
-    "records_sha256": "5f054427ad5ae0af21cb9346ca2b69d21d4dbd8ce0f84d5435b1f7a49f3d0c65",
+    "obsidian_register_sha256": "a714e113cee9c4869cd37649cbcc3484c99df38dcc54d90782b97de3ab658988",
+    "records_sha256": "a714e113cee9c4869cd37649cbcc3484c99df38dcc54d90782b97de3ab658988",
     "additions": [
       {
         "path": "docs/ops/evidence/D01_D02_MAP_BINDING_RECONCILIATION_2026-11-22.json",
@@ -6738,7 +6753,8 @@
         "role": "source",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "fb797bf9a290518347b13c1a9264c3abccdb2089"
+        "repo_blob": "564a0f2ae3463ce4e4d48ce44f5a017c50f4d671",
+        "zuordnungsbasis_blob": "fb797bf9a290518347b13c1a9264c3abccdb2089"
       },
       {
         "path": "src/ops/btc_demo_lane3_v2.py",
@@ -6754,8 +6770,22 @@
         "role": "source",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "dc1a8d6bdb434f2374b2e7638ed31664d918c13b",
+        "repo_blob": "2ad301411bb0aa4c1c4126bdfb5682b5290ff295",
         "zuordnungsbasis_blob": "f21b4e73c9ad3086effa1581cc735d95cd81e4da"
+      },
+      {
+        "path": "src/ops/btc_demo_testnet_entry_reservation_v1.py",
+        "area": "BUDGET",
+        "role": "source",
+        "related_areas": [
+          "HOST",
+          "RISK",
+          "STORE"
+        ],
+        "basis": "slot3_offline_testnet_reservation_review",
+        "mode": "100644",
+        "repo_blob": "021b139219e1a2225c5037a5857feda50c351513",
+        "zuordnungsbasis_blob": "f7682cf6696699550114dea8e96ac259231d9cee"
       },
       {
         "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/offline_candidate_cards_v1.py",
@@ -7356,7 +7386,8 @@
         "role": "test",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "598b6c4379f324baa061c60485c6682f755d0b2b"
+        "repo_blob": "2014e222843b4d540fdb7a9d3d5c074470dec83d",
+        "zuordnungsbasis_blob": "598b6c4379f324baa061c60485c6682f755d0b2b"
       },
       {
         "path": "tests/ops/test_btc_demo_budget_reconciliation_host_v1.py",
@@ -7364,7 +7395,8 @@
         "role": "test",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "7d344957ea9b0d9793275fdd4a92c3695a9a6185"
+        "repo_blob": "b648ecdfd5d81ad19d3a4888d07e0d169055fee2",
+        "zuordnungsbasis_blob": "7d344957ea9b0d9793275fdd4a92c3695a9a6185"
       },
       {
         "path": "tests/ops/test_btc_demo_entry_reservation_rehearsal_v1.py",
@@ -7375,7 +7407,8 @@
           "ACCOUNTING"
         ],
         "mode": "100644",
-        "repo_blob": "67db37be164f7a0fd52060316ca4a141421c4059"
+        "repo_blob": "ef1a1247e8393a792c2ff9c1ce7603d922aab767",
+        "zuordnungsbasis_blob": "67db37be164f7a0fd52060316ca4a141421c4059"
       },
       {
         "path": "tests/ops/test_btc_demo_lane3_v2.py",
@@ -7399,7 +7432,8 @@
         "role": "test",
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
-        "repo_blob": "f800399555fbac09d53fc29f13f484bbbccfeefd"
+        "repo_blob": "b7e7e2cea11c79091ebe3358a7ba2df814b9121b",
+        "zuordnungsbasis_blob": "f800399555fbac09d53fc29f13f484bbbccfeefd"
       },
       {
         "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
@@ -7408,6 +7442,19 @@
         "basis": "obsidian_navigation_2026_11_23",
         "mode": "100644",
         "repo_blob": "06ef2586102f60c4e78284e532e3b0da6a06dd6a"
+      },
+      {
+        "path": "tests/ops/test_btc_demo_testnet_entry_reservation_v1.py",
+        "area": "ENG",
+        "role": "test",
+        "related_areas": [
+          "BUDGET",
+          "STORE"
+        ],
+        "basis": "slot3_offline_testnet_reservation_review",
+        "mode": "100644",
+        "repo_blob": "568a14d7fcfc124ca8a3af74e8c81c3676d6a158",
+        "zuordnungsbasis_blob": "8a173165225d6281b421462617f1d15f0dfddc57"
       },
       {
         "path": "tests/ops/test_current_law_master_v2_source_guard_v1.py",
@@ -7893,5 +7940,6 @@
     }
   },
   "shadow_slot4_generation_scope": "A Shadow session records its bound N5 generation, analytical position, pending budget work and killstate before its first normalized mark. A crash checkpoint is historical evidence for the rotation owner. A generation change requires the existing replacement clearance and sealed originals. The historical PIEVERSE abort remains unresolved.",
-  "btc_entry_reservation_rehearsal_scope": "Slot 3 offline first-entry rehearsal binds the BTC Core decision, its stored USD mark and effective Scope to the existing private linear USDC costing and simulated 25 USDC budget. Both sides retain a sized obligation with opening, closing and funding provisions after cold read. The bounded policy continues to reject a TESTNET host. Runtime authority is NONE."
+  "btc_entry_reservation_rehearsal_scope": "Slot 3 offline first-entry rehearsal binds the BTC Core decision, its stored USD mark and effective Scope to the existing private linear USDC costing and simulated 25 USDC budget. Both sides retain a sized obligation with opening, closing and funding provisions after cold read. The bounded policy continues to reject a TESTNET host. Runtime authority is NONE.",
+  "btc_testnet_offline_reservation_review": "The isolated Slot 3 TESTNET V2 budget owner binds the synthetic BTC entry and source clock before sizing and journaling a first hold. It reuses the original durable writer and recovery format. Both directions use separate 25 USDC budgets. The simulated rehearsal consumes the sealed 29P entry behind a reservation-only return. The protected productive sources match main. Runtime authority is NONE."
 }

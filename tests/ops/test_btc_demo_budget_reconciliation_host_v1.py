@@ -73,7 +73,7 @@ def capital():
     )
 
 
-def owner_host(tmp_path, policy=None):
+def owner_host(tmp_path, policy=None, *, testnet_v2=False):
     root = tmp_path / "demo"
     root.mkdir(mode=0o700)
     lane = root / "testnet-state/LANE_3"
@@ -88,7 +88,10 @@ def owner_host(tmp_path, policy=None):
             }
         )
     )
-    owner = Owner(
+    from src.ops.btc_demo_testnet_entry_reservation_v1 import BtcDemoBudgetOwnerV2
+
+    owner_type = BtcDemoBudgetOwnerV2 if testnet_v2 else Owner
+    owner = owner_type(
         durable_root=lane.parent / "budget-owner/owner",
         durable_account_identity=ACCOUNT,
         durable_mode="create",
@@ -507,14 +510,17 @@ def test_coverage_reproduction_refuses_unproven_budget_input(fault):
         validate_btc_demo_coverage_v1(report, account=ACCOUNT, now=now)
 
 
-def test_typed_original_usdc_capital_reaches_original_bounded_owner(tmp_path):
+@pytest.mark.parametrize("concurrent_change", [False, True])
+def test_typed_original_usdc_capital_reaches_original_bounded_owner(
+    tmp_path, monkeypatch, concurrent_change
+):
     from pathlib import Path
 
     policy = load_slot_entry_budget_v1(
         Path(__file__).resolve().parents[2]
         / "docs/ops/specs/BOUNDED_MULTISLOT_TEST_ENTRY_BUDGET_V5.json"
     )
-    host, observed = owner_host(tmp_path, policy)
+    host, observed = owner_host(tmp_path, policy, testnet_v2=True)
     try:
         report = demo.read_btc_demo_coverage_v2(reads=CoverageReads(), expected_uid=ACCOUNT)
         from src.ops.portfolio_capital_reservation_budget_v1.recovery_v1 import (
@@ -544,6 +550,21 @@ def test_typed_original_usdc_capital_reaches_original_bounded_owner(tmp_path):
             repository_sha="f" * 40,
             now_unix=NOW.timestamp(),
         )
+        if concurrent_change:
+            from src.ops import btc_demo_budget_reconciliation_host_v1 as budget_host
+
+            original_validation = budget_host.validate_btc_demo_coverage_v1
+            winning_revisions = []
+
+            def advance_during_validation(*args, **kwargs):
+                validated = original_validation(*args, **kwargs)
+                host.owner.restart_fail_closed_v1()
+                winning_revisions.append(host.budget_revision_ref_v1())
+                return validated
+
+            monkeypatch.setattr(
+                budget_host, "validate_btc_demo_coverage_v1", advance_during_validation
+            )
         result = host.admit_budget_v1(
             coverage=report,
             output=capital(),
@@ -551,6 +572,13 @@ def test_typed_original_usdc_capital_reaches_original_bounded_owner(tmp_path):
             reconciliation=gate,
             now=NOW.timestamp(),
         )
+        if concurrent_change:
+            assert result.disposition.value == "FAIL_CLOSED"
+            assert result.reason_codes == ("DURABLE_RECOVERY_HEAD_CHANGED",)
+            assert result.mutated is False and result.reservation is None
+            assert host.budget_revision_ref_v1() == winning_revisions[0]
+            assert host.owner.budget_state_v1().recovery_required
+            return
         assert result.disposition.value in {"ADMITTED", "IDEMPOTENT_REPLAY"}
         assert host.owner.admitted_budget_v1() == Decimal("30")
         assert host.owner.entry_budget_policy_v1().per_slot_reserved_notional_limit == 25
