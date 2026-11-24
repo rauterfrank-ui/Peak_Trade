@@ -1,0 +1,88 @@
+{
+  "schema": "peaktrade.n1_testnet_preparation_source_acceptance.v1",
+  "state": "OWNER_AUTHORIZED_SOURCE_SUCCESSOR_PREPARED",
+  "created_at_utc": "2026-11-24T14:42:00.382352+00:00",
+  "reviewed_source_commit": "71b028090309cc06d3a37d0db022b20c7d0a095f",
+  "parent_main": "a599c4e5b42838fa093b34acff354d781dd96390",
+  "runtime_authorization_effect": "NONE",
+  "user_authorization": {
+    "source": "Current conversation",
+    "quote": "Und wenn du für irgendetwas meine Bestätigung oder meine, mein Go brauchst, kriegst du das jetzt schon",
+    "scope": "Necessary contract and seal update for the requested preparation and integration"
+  },
+  "sources": {
+    "scripts/ops/inspect_btc_demo_account_v1.py": "2759cd4fbdd94278887f4d4f4be1f79168916b4ddcc4f1a9507cc1162d322db9",
+    "src/ops/btc_demo_budget_owner_v3.py": "3dbf24c4ef153ea24391f1a22f574183809e4d0b7be66df2633c6645fe06148f",
+    "src/ops/btc_demo_entry_financial_inputs_v1.py": "f2c9e613309e9085444019dd4866c9a27c2ed108d7273ea4e0ed7febf3293996",
+    "src/ops/btc_demo_lane3_v2.py": "27d5d0ed357c9c817392e264eaff6889732da40bad75a12ebb893625aa0051a5",
+    "src/ops/btc_demo_net_reversal_financials_v1.py": "4bcb0b53328a42e794fec34b230e90f05afab95609d7c68399462d455b866486",
+    "src/ops/btc_demo_net_reversal_pretrade_v1.py": "8d62a270e43ee9850aed5f159f2b915c79945657c7bcfe55ce3f049325f773a1",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py": "25913575198dc901956f1abb22ef73b2db2f305fc310cffebf3d1ec060b6185f",
+    "src/ops/execution_reconciliation_get_provenance_v1.py": "989c2ab52ab634f120bff840d2d6111dd35df0a37007cf9bb3eb56285363eee0",
+    "src/ops/execution_reconciliation_proof_store_v1.py": "090db83f51bac05461062311ec88a56d84401360afb512d792ecc147ebc25d7f",
+    "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py": "87706d5a4e7145bcba071934ae51ac6a119129da370794462ed88a35a8488233",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_double_play_reversal_v1.py": "bd553c70644d8bece02fe36cb6f82d39c9870c17aff6477d33d3ba58727c546a",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py": "1c2b5cf741f390ecfca216cb2517ef994e5206d8a1f432b9ea7af7584076602f",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py": "d41c7ae159049b45deca6efac5faf8ac7bdc0175a2447f1a1fe2bfe72ae38899",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py": "fa9c0c32a299ae1d7194204cb04697f106028c98beb54c5c5bcd3061b79d50ca",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_n1_venue_quantity_limit_admission_v1.py": "537cbdc3ce5be9320579d57fa9d952425177fc146e880a24b6007910a5ffc364",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_net_reversal_reconciliation_v1.py": "6dc77faab538ce75c59aee9ceb1ff2bd8306ce4447750dfdcf8149fad03c6f5c",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py": "26f4b6e83369cf364d8b5b83e33ad1ea0fb337fc401584d58dfa8945284cd014",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_post_pending_observation_v1.py": "ff77d2e67218000b74f56e850ec210c3701ba0333ba4666721e5c039c90582cc",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_shared_post_owner_authority_v1.py": "95d399e03b5f5c6f029b24d05dbb2e9354a2d7fee6898e853a862f85abcbbc27",
+    "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py": "d42c18ae8c8a5b5c41f53b663b1bd5bf0341abdf86b0f90e8332ab3496468fce",
+    "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py": "972571f3bc6d6856c719d218d2a9c2059a2c6dea44bdcc13df8f4d195d37d5f6",
+    "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py": "80f2bc998febe351e1e8d50462932c4392ccaa5b9f53c3a8e950fab1f9d7763d",
+    "src/ops/okx_eea_private_account_state_runtime_v1/k1_source_v1.py": "d966938308b6b6c8dfab113e3fe171c8e1090ec073efbe3c61cc9d1c19411359",
+    "src/ops/okx_eea_private_account_state_runtime_v1/startup_source_v1.py": "069298b0194890416ba2390df9c8d773abaffb0f04f0b4a96323dc1a0e2b1227",
+    "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py": "4040a0c32f151de2c59b9a52bd044aece2d055f0fc5f01c805dac05112cafc10",
+    "src/ops/portfolio_capital_reservation_budget_v1/entry_execution_cost_v1.py": "ee234792e4761bc002f4d777887c7894194421006f5f9778d66fa272df69fd87",
+    "src/ops/portfolio_capital_reservation_budget_v1/host_v1.py": "58dab10b38772fff3c2f21170e40a68e814063a8c6fd5346c42dcda73885feec",
+    "src/ops/portfolio_capital_reservation_budget_v1/live_l10_close_booking_v1.py": "1e5b9f56cbacc1c6314356c9635ab29def8857aee2ffb95d9082bdf510117ef5",
+    "src/ops/portfolio_capital_reservation_budget_v1/live_net_reversal_booking_v1.py": "a01694bc6e7e9d5672142ea9130260ab2ab51346a167c95b7392077c07b55902",
+    "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py": "e642694e7c1fab8dc299b724cf1b145b71a7cb76e8e187f34bc0d889a47eee8f",
+    "src/ops/portfolio_capital_reservation_budget_v1/test_phase_limits_v1.py": "0ac480b06ac83280dee4418b4c9402fe8858358be24527e46b2a5aad94ad6d53",
+    "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py": "3d5877bd0b87f491d4695be9b94851581af0ff75d88fabb206509db5378ccd84",
+    "tests/ops/test_btc_demo_entry_reservation_v1.py": "e003896cfb836e00b68d64fc6af94f8dd6dbf0e3ebe635075a752345b2b4ec12",
+    "tests/ops/test_btc_demo_first_entry_pending_v1.py": "38c36b93e2bbeb144cd4353afdd568573d85b4212cd5141cf8dc4b6f7484b4f7",
+    "tests/ops/test_btc_testnet_capital_context_v1.py": "c07d3b28983dd8e4f16d8df8a425c52a5b817a4f5411acbdeac111fba54717ac",
+    "tests/ops/test_btc_testnet_net_reversal_cost_v1.py": "7fa5a3648d39bd1f6894b28b2ebd41a9ea31780a9ff1232d7b2bfc47e76774f6",
+    "tests/ops/test_btc_testnet_original_budget_host_v1.py": "a00dc6b154f39889a49e27bfcc9f677352ac7ce757e19c994efa40ab9d0411e8",
+    "tests/ops/test_btc_testnet_original_execution_receipt_v1.py": "757164ea4251bad9127f85535eb26cea421ddb4043caef5f1e9a0b3a80e24e26",
+    "tests/ops/test_btc_testnet_original_get_environment_v1.py": "ec264c06e9ce29032922331e2bdbd9ed457577de5c516910b92f2ecdf54ffda5",
+    "tests/ops/test_btc_testnet_original_net_reversal_v1.py": "df93a7d2477a86cddb0140e1340a085da5e68544db573027866871fe8cfe5f1b",
+    "tests/ops/test_btc_testnet_original_net_submit_v1.py": "77aba8f7a21152eb6c6c11719c7ec8c2d927e90ef402f104dc8e5a9f32cbf1f1",
+    "tests/ops/test_btc_testnet_original_occupied_core_v1.py": "945fe1f83272521047b48726fd62854b3cdc01892e50b8eb81e50aaea5698491",
+    "tests/ops/test_current_productive_shared_post_owner_authority_v1.py": "abffba5b88e1770b6988e736755917442431b2d9a4eca54b94b9efc34486b0eb",
+    "tests/ops/test_durable_portfolio_budget_recovery_v1.py": "b7636ed30129fef155aa76e6128924c9ed093424795e89bc547a66a682c03803",
+    "tests/ops/test_portfolio_budget_host_v1.py": "9224ac1c13a983d30e39179a09ce194580817f9711a4f1ff18f9202818acd32c",
+    "tests/ops/test_portfolio_execution_recovery_v1.py": "9f71f9b79e83c8a1c33b30dab2c8fe7f5589441d1ff466eca269fc490298dec6",
+    "tests/ops/test_portfolio_sizing_learning_semantic_join_v1.py": "957281bc9c01a69c419396928584feadb6fc7ef242e3f93ec89aaa291c8a09ab"
+  },
+  "not_proven": [
+    "Initial Demo order submit integration",
+    "Bounded final Demo close",
+    "Full five-slot same-session DDO/GVEF integration and start readiness"
+  ],
+  "activation_authorized": false,
+  "actual_orders_sent": 0,
+  "target_base_gate": "Existing target-branch freeze continues to reject its protected source changes; updating this record does not bypass it.",
+  "contract_checks": [
+    {
+      "scope": "atlas",
+      "tests": 100,
+      "xml_sha256": "54fa1047e4a28584a159a57af5fc611a1c5aaecdb66d35ee36cb9863e5c54431",
+      "result": "PASS"
+    },
+    {
+      "scope": "seal",
+      "tests": 3,
+      "xml_sha256": "208a00b4acea828548ceddf5bc2c3918321133345c47a4253426488c8093a4ef",
+      "result": "PASS"
+    }
+  ],
+  "review_contract_sources": {
+    "docs/system_atlas/policy_projection.py": "e5bbbcdee12b9adf71c8ee6c934728b3e08b3a5a46f499f750ecf84ba2642c63",
+    "docs/system_atlas/tests/test_policy_projection.py": "1b320c5dc8d1bf0f04f826d31f365154af3229ea697819eee7011160dd2be3f0"
+  }
+}
