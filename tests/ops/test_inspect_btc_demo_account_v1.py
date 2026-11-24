@@ -98,3 +98,36 @@ def test_missing_active_settlement_cannot_be_inferred_from_list_or_balance():
     assert report["available_equity_usdc"] is None
     assert report["available_equity_covers_cap"] is None
     assert report["sizing_verified"] is False
+
+
+def test_keychain_cli_keeps_credentials_out_of_output(monkeypatch, capsys):
+    from types import SimpleNamespace
+
+    values = {"api-key": "fixture-key", "secret": "fixture-secret", "passphrase": "fixture-phrase"}
+    calls = []
+
+    def run(args, **kwargs):
+        assert args[:3] == ["/usr/bin/security", "find-generic-password", "-s"]
+        assert args[3] == "fixture-service"
+        assert args[-1] == "-w"
+        assert kwargs == {"capture_output": True, "check": True, "timeout": 60}
+        calls.append(args[-2])
+        return SimpleNamespace(stdout=(values[args[-2]] + "\n").encode())
+
+    monkeypatch.setattr(cli.subprocess, "run", run)
+    monkeypatch.setattr(
+        cli.sys,
+        "argv",
+        ["inspect", "--lesen", "--keychain-service", "fixture-service", "--demo-uid", "142"],
+    )
+    monkeypatch.setattr(cli, "account_reader", lambda *fields: tuple(fields))
+
+    def inspect(reader, uid, clock):
+        assert reader == tuple(values.values()) and uid == "142"
+        return {"trading_authority": "NONE", "sizing_verified": False}
+
+    monkeypatch.setattr(cli, "inspect_account", inspect)
+    assert cli.main() == 0
+    output = capsys.readouterr()
+    assert calls == list(values)
+    assert all(secret not in output.out + output.err for secret in values.values())
