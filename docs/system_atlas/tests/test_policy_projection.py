@@ -24,6 +24,20 @@ def test_frozen_policy_sources_and_reference_targets_are_valid():
     assert result["runtime_effect_inferred"] is False
 
 
+@pytest.mark.parametrize("replace_publisher", [False, True])
+def test_shadow_slot4_rotation_rejects_mixed_generations(monkeypatch, replace_publisher):
+    path = (
+        next(iter(PROJECTION["SHADOW_SLOT4_PUBLICATION_DELTAS"]))
+        if replace_publisher
+        else PROJECTION["FIXED_RANK_PERSISTENCE"]
+    )
+    predecessor = subprocess.check_output(["git", "show", "a401ff8f6:" + path], cwd=ROOT)
+    read = Path.read_bytes
+    monkeypatch.setattr(Path, "read_bytes", lambda p: predecessor if p == ROOT / path else read(p))
+    with pytest.raises(ValueError, match="RESERVED_SLOT_ROTATION_REVIEWED_BUNDLE_REQUIRED"):
+        PROJECTION["validate_reserved_slot_rotation_bundle"](ROOT, double_play=True)
+
+
 @pytest.mark.parametrize(
     ("source", "error"),
     [
