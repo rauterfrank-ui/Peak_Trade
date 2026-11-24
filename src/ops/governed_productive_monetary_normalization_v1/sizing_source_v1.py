@@ -37,11 +37,16 @@ class SizingMonetarySourceV1:
     index_tickers_json: str
     conversion_pair_instruments_json: str
     normalization_digest: str
+    contract_settlement_sources_json: str = ""
 
     def rebuild_v1(self):
         if any(type(getattr(self, f.name)) is not str for f in fields(self)):
             raise ValueError("SIZING_MONETARY_SOURCE_STRING_FIELDS_REQUIRED")
-        if any(not getattr(self, f.name) for f in fields(self)):
+        if any(
+            not getattr(self, f.name)
+            for f in fields(self)
+            if f.name != "contract_settlement_sources_json"
+        ):
             raise ValueError("SIZING_MONETARY_SOURCE_INCOMPLETE")
         instruments = json.loads(self.instruments_json)
         ctx = build_capital_risk_sizing_monetary_context_v1(
@@ -56,12 +61,23 @@ class SizingMonetarySourceV1:
             venue_native_id=self.venue_native_id,
             index_tickers_payload=json.loads(self.index_tickers_json),
             conversion_pair_instruments_payload=json.loads(self.conversion_pair_instruments_json),
+            contract_settlement_sources_json=self.contract_settlement_sources_json,
         )
         if ctx.normalization_digest != self.normalization_digest:
             raise ValueError("SIZING_MONETARY_SOURCE_NORMALIZATION_MISMATCH")
         identity = instrument_monetary_identity_from_okx_payload_v1(
             instruments, venue_native_id=self.venue_native_id
         )
+        if self.contract_settlement_sources_json:
+            from .xperp_settlement_v1 import bind_xperp_settlement_rule_v1
+
+            _, identity = bind_xperp_settlement_rule_v1(
+                self.contract_settlement_sources_json,
+                instruments_payload=instruments,
+                venue_native_id=self.venue_native_id,
+                decision_epoch=self.decision_epoch,
+                evaluated_at_utc=self.observed_at,
+            )
         metadata = produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
             venue_native_id=self.venue_native_id,
             instruments_payload=instruments,
@@ -90,15 +106,29 @@ class SizingMonetarySourceV1:
         return ctx
 
     def to_dict_v1(self):
-        return {"schema": "sizing_monetary_source.v1", **asdict(self)}
+        result = asdict(self)
+        if not self.contract_settlement_sources_json:
+            del result["contract_settlement_sources_json"]
+        return {
+            "schema": "sizing_monetary_source.v2"
+            if self.contract_settlement_sources_json
+            else "sizing_monetary_source.v1",
+            **result,
+        }
 
     @classmethod
     def from_dict_v1(cls, value):
-        if (
-            not isinstance(value, dict)
-            or set(value) != {"schema", *(f.name for f in fields(cls))}
-            or value["schema"] != "sizing_monetary_source.v1"
-        ):
+        if not isinstance(value, dict) or value.get("schema") not in {
+            "sizing_monetary_source.v1",
+            "sizing_monetary_source.v2",
+        }:
+            raise ValueError("SIZING_MONETARY_SOURCE_SCHEMA_INVALID")
+        expected = {"schema", *(f.name for f in fields(cls))}
+        if value["schema"] == "sizing_monetary_source.v1":
+            expected.remove("contract_settlement_sources_json")
+        elif not value.get("contract_settlement_sources_json"):
+            raise ValueError("SIZING_MONETARY_SOURCE_SCHEMA_INVALID")
+        if set(value) != expected:
             raise ValueError("SIZING_MONETARY_SOURCE_SCHEMA_INVALID")
         return cls(**{k: v for k, v in value.items() if k != "schema"})
 
@@ -117,6 +147,7 @@ def build_sizing_monetary_source_v1(
     index_tickers_payload,
     conversion_pair_instruments_payload,
     normalization_digest,
+    contract_settlement_sources_json="",
 ):
     source = SizingMonetarySourceV1(
         canonical_instrument_id=canonical_instrument_id,
@@ -131,6 +162,7 @@ def build_sizing_monetary_source_v1(
         index_tickers_json=_json(index_tickers_payload),
         conversion_pair_instruments_json=_json(conversion_pair_instruments_payload),
         normalization_digest=normalization_digest,
+        contract_settlement_sources_json=contract_settlement_sources_json,
     )
     try:
         source.rebuild_v1()

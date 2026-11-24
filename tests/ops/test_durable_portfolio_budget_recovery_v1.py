@@ -388,34 +388,3 @@ def test_sigkill_and_fresh_process_recover_committed_history(tmp_path, phase, qu
         assert result["retry_disposition"] == "IDEMPOTENT_REPLAY"
     elif phase == "before_commit":
         assert result["retry_disposition"] == "ADMITTED"
-
-
-def test_testnet_budget_environment_survives_reopen_and_rejects_live(tmp_path):
-    owner = _owner(tmp_path, execution_environment="TESTNET")
-    try:
-        assert owner.execution_environment_v1() == "TESTNET"
-        assert _auto(owner, tmp_path).disposition is D.ADMITTED
-        held = _reserve(owner).reservation
-        assert owner.risk_snapshot_v1()["state"]["execution_environment"] == "TESTNET"
-    finally:
-        owner.close()
-    with pytest.raises((PortfolioCapitalBudgetError, ValueError)):
-        _owner(tmp_path, mode="recover")
-    reopened = _owner(tmp_path, mode="recover", execution_environment="TESTNET")
-    try:
-        assert reopened.active_sum_v1() == held.amount
-        assert reopened.execution_environment_v1() == "TESTNET"
-        assert reopened.budget_state_v1().recovery_required
-    finally:
-        reopened.close()
-
-
-def test_legacy_live_budget_cannot_be_reinterpreted_as_testnet(tmp_path):
-    owner = _owner(tmp_path)
-    try:
-        assert _auto(owner, tmp_path).disposition is D.ADMITTED
-        assert "execution_environment" not in owner.risk_snapshot_v1()["state"]
-    finally:
-        owner.close()
-    with pytest.raises((PortfolioCapitalBudgetError, ValueError)):
-        _owner(tmp_path, mode="recover", execution_environment="TESTNET")

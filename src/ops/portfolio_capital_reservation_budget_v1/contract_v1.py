@@ -58,8 +58,6 @@ from src.governance.capital_risk_sizing_v1 import (
 )
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
     CapitalAdmissionClaimV1,
-    ADMISSION_CONTEXT_TESTNET,
-    EVIDENCE_CLASS_TESTNET_TYPED,
     evaluate_capital_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
@@ -343,13 +341,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
         entry_budget_policy: object | None = None,
         slot_capital_allocation: SlotCapitalAllocationV1 | None = None,
         live_slot_capital_allocation: SlotCapitalAllocationV1 | None = None,
-        execution_environment: str = "LIVE",
     ) -> None:
-        if execution_environment not in {"LIVE", "TESTNET"}:
-            raise PortfolioCapitalBudgetError("BUDGET_EXECUTION_ENVIRONMENT_INVALID")
-        if execution_environment == "TESTNET" and durable_root is None:
-            raise PortfolioCapitalBudgetError("TESTNET_DURABLE_BUDGET_REQUIRED")
-        self._execution_environment = execution_environment
         self._lock = threading.Lock()
         self._admitted = False
         self._budget = Decimal("0")
@@ -445,10 +437,6 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                 if self._store is not None:
                     self._store.close()
                 raise
-
-    def execution_environment_v1(self) -> str:
-        """Return the immutable execution environment bound to this journal."""
-        return self._execution_environment
 
     def durable_scope_identity_v1(self) -> dict[str, str]:
         """Stable store/account address only; this is never an admission token."""
@@ -3203,11 +3191,6 @@ class PortfolioCapitalReservationBudgetOwnerV1:
     def _durable_payload_locked(self) -> dict:
         return {
             "schema": SCHEMA,
-            **(
-                {"execution_environment": self._execution_environment}
-                if self._execution_environment != "LIVE"
-                else {}
-            ),
             "account_identity": self._account_identity,
             "capital_scope": self._capital_scope,
             "budget": str(self._budget),
@@ -3354,10 +3337,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
 
     def _restore_locked(self, payload: Mapping) -> None:
         try:
-            if payload.get("execution_environment", "LIVE") != self._execution_environment:
-                raise ValueError("BUDGET_EXECUTION_ENVIRONMENT_MISMATCH")
             if set(payload) - {
-                "execution_environment",
                 "sizing_bindings",
                 "execution_links",
                 "entry_budget_policy",
@@ -3963,21 +3943,12 @@ def admit_sized_slot_reservation_v1(
             instrument_id=instrument_id,
             observed_capital_raw=output.value,
             observed_field_name=PRODUCER_IDENTITY,
-            evidence_class=(
-                EVIDENCE_CLASS_TESTNET_TYPED
-                if owner.execution_environment_v1() == "TESTNET"
-                else "LIVE_TYPED"
-            ),
+            evidence_class="LIVE_TYPED",
             evidence_id=output.decision_epoch,
-            execution_environment=owner.execution_environment_v1(),
         ),
         expected_account_identity=account_identity,
         expected_instrument_id=instrument_id,
-        admission_context=(
-            ADMISSION_CONTEXT_TESTNET
-            if owner.execution_environment_v1() == "TESTNET"
-            else ADMISSION_CONTEXT_LIVE
-        ),
+        admission_context=ADMISSION_CONTEXT_LIVE,
     )
     admissibility = evaluate_step_29p_capital_risk_admissibility_v1(capital=capital, claim=claim)
     if admissibility.risk_admissible is not True:

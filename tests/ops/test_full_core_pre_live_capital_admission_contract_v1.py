@@ -59,12 +59,9 @@ from tests.ops.test_full_core_live_account_bound_and_remaining_closeout_v1 impor
     _bound_transport,
     _identity_payloads,
 )
-from tests.ops.test_full_core_live_path_composition_root_v1 import _run
+from tests.ops.test_full_core_live_path_composition_root_v1 import _actual_enter_replay, _run
 from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import (
     _INSTRUMENT,
-)
-from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1 import (
-    _confirmed_replay_input,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -130,7 +127,7 @@ def _join(*, transport=_DEFAULT_TRANSPORT, claim=_DEFAULT_TRANSPORT, **kwargs):
     return join_capital_admission_into_admission_inputs_v1(**payload)
 
 
-def test_flags_and_standing_gates_remain_false() -> None:
+def test_standing_flags_do_not_supply_capital_admission() -> None:
     assert CAPITAL_ADMISSION_IMPLEMENTED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
@@ -138,7 +135,7 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
+        "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_REQUIRES_FRESH_TRUSTED_GET"
     )
     node = gap_node_v1("CAPITAL_ADMISSION")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
@@ -342,7 +339,7 @@ def test_offline_injected_path_still_halts_before_wire(
     transport = _bound_transport(payloads=_identity_payloads(instrument_id=_INSTRUMENT))
     result, _ = _run(
         monkeypatch,
-        _confirmed_replay_input(side="LONG"),
+        _actual_enter_replay(),
         mode="LIVE",
         fresh_pretrade_get_transport=transport,
         expected_account_identity=_TEST_UID,
@@ -357,12 +354,12 @@ def test_offline_injected_path_still_halts_before_wire(
     assert JOIN_SEAM_ID
 
 
-def test_runbook_and_spec_bind_without_live_arming() -> None:
+def test_frozen_runbook_and_historical_spec_do_not_grant_runtime_authority() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    tb_start = runbook.index("## CURRENT Treasury Phase Bindings")
-    tb_section = runbook[tb_start : runbook.index("## CURRENT Order-Intent", tb_start)]
-    assert "PL_TF_002_STATUS=CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN" in tb_section
+    assert "RUNTIME_AUTHORIZATION_EFFECT=NONE" in runbook
+    assert "SOURCE_COMMIT=c742a23c964901c1353fcf3468e618db9cb6ef42" in runbook
+    # These pins describe the dated pre-live spec, not today's standing flags.
     assert "CAPITAL_ADMISSION_IMPLEMENTED=true" in spec
     assert "OBSERVED_CAPITAL != RISK_ADMISSIBLE_CAPITAL" in spec
     assert "PL_TF_001_STATUS=CLOSED_TYPED_ADMISSION_SEAM" in spec

@@ -195,7 +195,9 @@ BTC_DEMO_PRETRADE_QUERIES_V1 = {
 }
 
 
-def read_btc_demo_pretrade_sources_v1(*, reads, expected_uid, decision_epoch, cycle_id, clock):
+def read_btc_demo_pretrade_sources_v1(
+    *, reads, expected_uid, decision_epoch, cycle_id, clock, original_response_sink=None
+):
     """Acquire uncached Demo originals for one decision, without taking a budget hold."""
     from hashlib import sha256
     from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
@@ -206,6 +208,8 @@ def read_btc_demo_pretrade_sources_v1(*, reads, expected_uid, decision_epoch, cy
     )
     from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import canonical
 
+    if original_response_sink is not None and not callable(original_response_sink):
+        raise ValueError("BTC_DEMO_ORIGINAL_RESPONSE_SINK_INVALID")
     if type(reads) is not OkxEeaDemoReadsV1:
         raise ValueError("BTC_DEMO_DIRECT_GET_READER_REQUIRED")
     if not isinstance(cycle_id, str) or not cycle_id or cycle_id.strip() != cycle_id:
@@ -221,10 +225,12 @@ def read_btc_demo_pretrade_sources_v1(*, reads, expected_uid, decision_epoch, cy
     acquisition_age_seconds_v1(acquired_at_utc=decision_epoch, now_utc=start_utc)
     context = canonical(dict(decision_epoch=decision_epoch, cycle_id=cycle_id))
     sources = {}
+    previous = started
     for key, (path, query) in BTC_DEMO_PRETRADE_QUERIES_V1.items():
         payload, acquired, body = reads.read_original_v1(path, **query)
-        if acquired.timestamp() < started:
-            raise ValueError("BTC_DEMO_PRETRADE_RECEIPT_PREDATES_REQUEST")
+        if acquired.timestamp() < previous:
+            raise ValueError("BTC_DEMO_PRETRADE_RECEIPT_CLOCK_REVERSED")
+        previous = acquired.timestamp()
         if key == "account":
             account = _only(payload)
             if account.get("uid") != expected_uid:
@@ -246,6 +252,8 @@ def read_btc_demo_pretrade_sources_v1(*, reads, expected_uid, decision_epoch, cy
             pretrade_decision_id=context,
             acquired_at_utc=acquired.isoformat(),
         )
+        if original_response_sink is not None:
+            original_response_sink(key, body)
     finished = clock()
     if finished < started:
         raise ValueError("BTC_DEMO_PRETRADE_CLOCK_REVERSED")

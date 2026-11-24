@@ -512,7 +512,6 @@ class PortfolioBudgetHostV1:
             durable_account_identity=account,
             durable_mode=self.durable_mode,
             durable_lane_bindings=bindings,
-            execution_environment="TESTNET" if self.execution_environment == "TESTNET" else "LIVE",
             entry_budget_policy=self.entry_budget_policy,
             slot_capital_allocation=self._slot_capital_allocation
             if self.durable_mode == "create"

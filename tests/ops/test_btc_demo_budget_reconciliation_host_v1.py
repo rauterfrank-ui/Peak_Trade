@@ -73,7 +73,9 @@ def capital():
     )
 
 
-def owner_host(tmp_path, policy=None, *, testnet_v2=False):
+def owner_host(
+    tmp_path, policy=None, *, testnet_v2=False, execution_environment="LIVE", allocation=None
+):
     root = tmp_path / "demo"
     root.mkdir(mode=0o700)
     lane = root / "testnet-state/LANE_3"
@@ -90,13 +92,26 @@ def owner_host(tmp_path, policy=None, *, testnet_v2=False):
     )
     from src.ops.btc_demo_testnet_entry_reservation_v1 import BtcDemoBudgetOwnerV2
 
-    owner_type = BtcDemoBudgetOwnerV2 if testnet_v2 else Owner
+    from src.ops.btc_demo_budget_owner_v3 import BtcDemoBudgetOwnerV3
+
+    owner_type = (
+        BtcDemoBudgetOwnerV2
+        if testnet_v2
+        else (BtcDemoBudgetOwnerV3 if execution_environment == "TESTNET" else Owner)
+    )
     owner = owner_type(
         durable_root=lane.parent / "budget-owner/owner",
         durable_account_identity=ACCOUNT,
         durable_mode="create",
         durable_lane_bindings=BINDINGS,
         entry_budget_policy=policy,
+        **(
+            {}
+            if testnet_v2
+            else {
+                "slot_capital_allocation": allocation,
+            }
+        ),
     )
     observed = replace(_observed(), event_time_unix=NOW.timestamp(), wall_time_unix=NOW.timestamp())
     recovered = _auto(

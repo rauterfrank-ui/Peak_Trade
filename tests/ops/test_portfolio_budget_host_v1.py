@@ -487,24 +487,3 @@ while True:
             proc.kill()
         proc.wait(timeout=5)
         proc.stderr.close()
-
-
-def test_testnet_host_opens_an_explicitly_testnet_budget_journal(tmp_path):
-    host = PortfolioBudgetHostV1(
-        root=tmp_path / "demo-host",
-        private_rest_fetch=_fetch(),
-        repository_sha="offline-host-binding-test",
-        session_id="demo-host-test",
-        expected_account_identity=ACCOUNT,
-        durable_mode="create",
-        clock=lambda: NOW,
-        execution_environment="TESTNET",
-    )
-    try:
-        context = host.observe_v1(BINDINGS)
-        context.recover_v1(host.owner, _produce(epoch=EPOCH))
-        assert host.owner.execution_environment_v1() == "TESTNET"
-        assert host.owner.risk_snapshot_v1()["state"]["execution_environment"] == "TESTNET"
-        assert host.owner.active_sum_v1() == 0
-    finally:
-        host.close()

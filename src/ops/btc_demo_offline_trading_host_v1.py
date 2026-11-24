@@ -332,12 +332,14 @@ class BtcDemoOfflineTradingHostV1:
                 "BTC_OFFLINE_EXISTING_OBLIGATION_BLOCKS_NEW_ENTRY",
             )
         epoch = cycle.replay.intermediate.market_context.decision_time
+        originals = {}
         sources = demo.read_btc_demo_pretrade_sources_v1(
             reads=reads,
             expected_uid=self.budget.account,
             decision_epoch=epoch,
             cycle_id=cycle.cycle_id,
             clock=clock,
+            original_response_sink=lambda key, body: originals.__setitem__(key, bytes(body).hex()),
         )
         with exclusive_v1(lock):
             self._original_entry_cycle(entry)
@@ -357,6 +359,7 @@ class BtcDemoOfflineTradingHostV1:
                 )
             return dict(
                 sources=sources,
+                original_bodies_hex=originals,
                 budget_revision=revision,
                 decision_id=cycle.replay.evidence.decision_id,
                 cycle_id=cycle.cycle_id,
@@ -365,6 +368,25 @@ class BtcDemoOfflineTradingHostV1:
                 lane_id=demo._LANE,
                 instrument_id=self.budget.bound.instrument_id,
                 authority="NONE",
+            )
+
+    def reserve_testnet_entry_v1(self, *, entry, reads, movement_input, clock):
+        """Reserve from this decision's original Demo GETs without submitting an order."""
+        from src.ops.btc_demo_entry_reservation_v1 import reserve_btc_demo_entry_v1
+
+        batch = self.inspect_testnet_pretrade_sources_v1(entry=entry, reads=reads, clock=clock)
+        with exclusive_v1(self.cursor_root / "first_entry_mark_v2.lock"):
+            cycle = self._original_entry_cycle(entry)
+            _need(
+                self.budget.budget_revision_ref_v1() == batch["budget_revision"],
+                "BTC_DEMO_ENTRY_BUDGET_HEAD_CHANGED",
+            )
+            return reserve_btc_demo_entry_v1(
+                self,
+                cycle=cycle,
+                batch=batch,
+                movement_input=movement_input,
+                clock=clock,
             )
 
     @staticmethod

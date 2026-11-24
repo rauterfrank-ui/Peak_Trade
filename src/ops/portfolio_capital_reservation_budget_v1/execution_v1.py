@@ -150,7 +150,7 @@ def validate_link_v1(owner, reservation_id, link, *, pending_attempt=False, comm
             raise ValueError("EXECUTION_SEND_PERMIT_INVALID") from exc
     identity = parse_exchange_reconciliation_identity_v1(link["identity"])
     if (
-        owner.execution_environment_v1() == "TESTNET"
+        getattr(owner, "execution_environment_v1", lambda: "LIVE")() == "TESTNET"
         and identity.execution_environment != "TESTNET"
     ):
         raise ValueError("TESTNET_BUDGET_EXECUTION_ENVIRONMENT_MISMATCH")
