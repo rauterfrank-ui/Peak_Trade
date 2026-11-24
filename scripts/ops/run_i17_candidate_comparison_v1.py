@@ -1204,6 +1204,7 @@ def _gap_main(argv):
     parser.add_argument("--state", type=Path, required=True)
     parser.add_argument("--pair-plan", type=Path, required=True)
     parser.add_argument("--expected-plan", type=Path, required=True)
+    parser.add_argument("--campaign-state", type=Path)
     parser.add_argument("--expected", type=Path, required=True)
     parser.add_argument("--observed", type=Path, required=True)
     parser.add_argument("--policy", type=Path, required=True)
@@ -1223,6 +1224,18 @@ def _gap_main(argv):
             policy_path=args.policy,
             verify=args.verify,
         )
+        registered = observed_plan.get("gap_return_campaign")
+        if (
+            registered
+            and args.campaign_state is not None
+            and str(args.campaign_state) != registered
+        ):
+            raise ValueError("GAP_RETURN_CAMPAIGN_MISMATCH")
+        destination = Path(registered) if registered else args.campaign_state
+        if destination is not None and not args.verify:
+            from src.experiments.campaign_reality_gap_return_v1 import publish_gap_return_v1
+
+            publish_gap_return_v1(_absolute(destination), observed_plan, result)
         print(json.dumps(result, sort_keys=True))
         return 0
     except (OSError, ValueError, KeyError, TypeError, InvalidOperation) as exc:

@@ -178,6 +178,10 @@ def read_learning_research_chain_v1(root: Path, learning_digest: str, completed=
         prior_archive = NativeResearchExecutionArchiveV1(prior_run / "native-archive")
         for key in prior["artifacts"]:
             unit = prior_archive.get(key).next_meta_input
+            if job.get("gap_returns"):
+                from src.experiments.campaign_reality_gap_return_v1 import with_returns_v1
+
+                unit = with_returns_v1(unit, root, job["gap_returns"])
             units[unit.research_loop_record["selected_experiment_id"]] = unit
     feedbacks = (
         (result.get("campaign_meta_feedback"), result["first_search"]),

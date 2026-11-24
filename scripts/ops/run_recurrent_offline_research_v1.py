@@ -302,7 +302,9 @@ def _history(workspace, instrument, strategy_id, strategy_version, as_of):
     return prior
 
 
-def _history_units(workspace, references, meta_digests, input_digest, surface):
+def _history_units(workspace, references, meta_digests, input_digest, surface, returns=()):
+    from src.experiments.campaign_reality_gap_return_v1 import with_returns_v1
+
     units = {}
     regions = {}
     for row in references:
@@ -336,6 +338,8 @@ def _history_units(workspace, references, meta_digests, input_digest, surface):
         for artifact in row["artifacts"]:
             unit = archive.get(artifact).next_meta_input
             if for_meta:
+                if returns:
+                    unit = with_returns_v1(unit, workspace.root, returns)
                 units[unit.research_loop_record["selected_experiment_id"]] = unit
             if for_coverage:
                 region = dict(unit.research_loop_record["robustness_evidence"]["parameter_region"])
@@ -473,6 +477,11 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
             "history": history,
             "meta_digests": meta_digests,
         }
+        from src.experiments.campaign_reality_gap_return_v1 import known_returns_v1
+
+        returns = known_returns_v1(workspace.root, meta_digests, now)
+        if returns:
+            packet["gap_returns"] = returns
         publish_v1(path, packet)
     runner = {
         "PAPER_EXCHANGE": run_offline_paper_ddo_research_cycle_v1,
@@ -480,7 +489,12 @@ def _run_one(workspace, source, handoff, source_measurements, campaign, code, no
         "TESTNET": run_offline_testnet_ddo_research_cycle_v1,
     }[source["surface"]]
     prior_units, coverage = _history_units(
-        workspace, packet["history"], packet["meta_digests"], input_digest, source["surface"]
+        workspace,
+        packet["history"],
+        packet["meta_digests"],
+        input_digest,
+        source["surface"],
+        packet.get("gap_returns", ()),
     )
     result = runner(
         workspace.root,
