@@ -26,6 +26,20 @@ def account_reader(api_key, secret, passphrase):
         demo._FEE + "?" + urlencode({"instType": "FUTURES", "instFamily": demo._FAMILY}),
     }
 
+    return _scoped_demo_reader(api_key, secret, passphrase, endpoints)
+
+
+def pretrade_reader(api_key, secret, passphrase):
+    """Sign only the exact Slot 3 Demo entry queries, including no order send."""
+    endpoints = {
+        path + ("?" + urlencode(query) if query else "")
+        for key, (path, query) in demo.BTC_DEMO_PRETRADE_QUERIES_V1.items()
+        if key not in {"book", "funding"}
+    }
+    return _scoped_demo_reader(api_key, secret, passphrase, endpoints)
+
+
+def _scoped_demo_reader(api_key, secret, passphrase, endpoints):
     def sign_get(endpoint):
         if endpoint not in endpoints:
             raise ValueError("BTC_DEMO_ACCOUNT_QUERY_OUT_OF_SCOPE")

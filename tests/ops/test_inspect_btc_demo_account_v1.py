@@ -131,3 +131,73 @@ def test_keychain_cli_keeps_credentials_out_of_output(monkeypatch, capsys):
     output = capsys.readouterr()
     assert calls == list(values)
     assert all(secret not in output.out + output.err for secret in values.values())
+
+
+def test_pretrade_demo_sources_retain_original_bytes_and_exact_cycle(monkeypatch):
+    from hashlib import sha256
+
+    rows = deepcopy(coverage_source())
+    rows[demo._CONFIG][0]["posMode"] = "net_mode"
+    for key, (path, _) in demo.BTC_DEMO_PRETRADE_QUERIES_V1.items():
+        rows.setdefault(path, [])
+    calls = []
+
+    class Opener:
+        def open(self, req, timeout):
+            url = urlsplit(req.full_url)
+            headers = {key.lower(): value for key, value in req.header_items()}
+            assert url.hostname == "eea.okx.com" and req.method == "GET" and req.data is None
+            assert headers["x-simulated-trading"] == "1"
+            public = url.path in {"/api/v5/market/books", "/api/v5/public/funding-rate"}
+            assert ("ok-access-sign" in headers) is not public
+            response = Response(req.full_url, rows[url.path])
+            calls.append((req.selector, response.getvalue()))
+            return response
+
+    monkeypatch.setattr(demo, "build_opener", lambda *handlers: Opener())
+    reader = cli.pretrade_reader("fixture-key", "fixture-secret", "fixture-phrase")
+    started = datetime.now(timezone.utc)
+    result = demo.read_btc_demo_pretrade_sources_v1(
+        reads=reader,
+        expected_uid="142",
+        decision_epoch=started.isoformat(),
+        cycle_id="original-core-cycle",
+        clock=lambda: datetime.now(timezone.utc).timestamp(),
+    )
+    assert list(result) == list(demo.BTC_DEMO_PRETRADE_QUERIES_V1)
+    for (name, source), (endpoint, body) in zip(result.items(), calls):
+        assert source.endpoint == endpoint and source.body_sha256 == sha256(body).hexdigest()
+        assert source.payload == json.loads(body)
+        assert source.transport_class == "OKX_EEA_DEMO_READ_ONLY_GET"
+        assert source.data_safety_source_kind is None
+        assert source.auth_header_sent is (name not in {"book", "funding"})
+        assert json.loads(source.pretrade_decision_id) == {
+            "decision_epoch": started.isoformat(),
+            "cycle_id": "original-core-cycle",
+        }
+    assert len(calls) == 9
+    with pytest.raises(ValueError, match="OUT_OF_SCOPE"):
+        reader.read(demo._ORDER, instId=demo._NATIVE, clOrdId="anything")
+    assert len(calls) == 9
+    with pytest.raises(ValueError, match="ACCOUNT_MISMATCH"):
+        demo.read_btc_demo_pretrade_sources_v1(
+            reads=reader,
+            expected_uid="143",
+            decision_epoch=started.isoformat(),
+            cycle_id="original-core-cycle",
+            clock=lambda: datetime.now(timezone.utc).timestamp(),
+        )
+    assert len(calls) == 10
+
+
+def test_pretrade_demo_rejects_expired_decision_before_network(monkeypatch):
+    reader = cli.pretrade_reader("fixture-key", "fixture-secret", "fixture-phrase")
+    monkeypatch.setattr(reader._opener, "open", lambda *a, **k: pytest.fail("expired network read"))
+    with pytest.raises(ValueError, match="ACQUISITION_STALE"):
+        demo.read_btc_demo_pretrade_sources_v1(
+            reads=reader,
+            expected_uid="142",
+            decision_epoch=NOW.isoformat(),
+            cycle_id="original-core-cycle",
+            clock=lambda: NOW.timestamp() + 16,
+        )

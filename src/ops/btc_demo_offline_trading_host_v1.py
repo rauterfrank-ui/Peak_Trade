@@ -321,6 +321,52 @@ class BtcDemoOfflineTradingHostV1:
                 budget_revision=revision,
             )
 
+    def inspect_testnet_pretrade_sources_v1(self, *, entry, reads, clock):
+        """Bind uncached Demo costing originals to the unchanged Core and budget head."""
+        lock = self.cursor_root / "first_entry_mark_v2.lock"
+        with exclusive_v1(lock):
+            cycle = self._original_entry_cycle(entry)
+            revision = self.budget.budget_revision_ref_v1()
+            _need(
+                self.budget.owner.active_sum_v1() == 0,
+                "BTC_OFFLINE_EXISTING_OBLIGATION_BLOCKS_NEW_ENTRY",
+            )
+        epoch = cycle.replay.intermediate.market_context.decision_time
+        sources = demo.read_btc_demo_pretrade_sources_v1(
+            reads=reads,
+            expected_uid=self.budget.account,
+            decision_epoch=epoch,
+            cycle_id=cycle.cycle_id,
+            clock=clock,
+        )
+        with exclusive_v1(lock):
+            self._original_entry_cycle(entry)
+            _need(
+                self.budget.budget_revision_ref_v1() == revision,
+                "BTC_DEMO_ENTRY_BUDGET_HEAD_CHANGED",
+            )
+            now = datetime.fromtimestamp(clock(), timezone.utc).isoformat()
+            pretrade_acquisition_v1.acquisition_age_seconds_v1(
+                acquired_at_utc=epoch,
+                now_utc=now,
+            )
+            for source in sources.values():
+                pretrade_acquisition_v1.acquisition_age_seconds_v1(
+                    acquired_at_utc=source.acquired_at_utc,
+                    now_utc=now,
+                )
+            return dict(
+                sources=sources,
+                budget_revision=revision,
+                decision_id=cycle.replay.evidence.decision_id,
+                cycle_id=cycle.cycle_id,
+                decision_epoch=epoch,
+                execution_environment="TESTNET",
+                lane_id=demo._LANE,
+                instrument_id=self.budget.bound.instrument_id,
+                authority="NONE",
+            )
+
     @staticmethod
     def _monetary_assessment(report, decision_id):
         instrument = next(

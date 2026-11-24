@@ -137,7 +137,22 @@ class OkxEeaDemoReadsV1:
         self._opener = build_opener(ProxyHandler({}), _RejectRedirect())
 
     def read(self, path, **query):
-        if path not in _PRIVATE_READS and (path, query) != (_FX, {"instId": "USDC-USD"}):
+        payload, acquired_at, _ = self.read_original_v1(path, **query)
+        return payload, acquired_at
+
+    def read_original_v1(self, path, **query):
+        """Return the same GET's original bytes and receipt time for costing."""
+        public_queries = (
+            (_FX, {"instId": "USDC-USD"}),
+            ("/api/v5/market/books", {"instId": _NATIVE, "sz": "20"}),
+            ("/api/v5/public/funding-rate", {"instId": _NATIVE}),
+        )
+        leverage_query = (
+            "/api/v5/account/leverage-info",
+            {"instId": _NATIVE, "mgnMode": "cross"},
+        )
+        private = path in _PRIVATE_READS or (path, query) == leverage_query
+        if not private and (path, query) not in public_queries:
             raise ValueError("BTC_DEMO_GET_PATH_FORBIDDEN")
         endpoint = path + (f"?{urlencode(query)}" if query else "")
         headers = {
@@ -145,7 +160,7 @@ class OkxEeaDemoReadsV1:
             "User-Agent": "PeakTrade-OKX-EEA-Demo-ReadOnly/1",
             **_HEADERS,
         }
-        if path in _PRIVATE_READS:
+        if private:
             signed = self._sign_get(endpoint)
             if set(signed) != _AUTH_FIELDS or not all(signed.values()):
                 raise ValueError("BTC_DEMO_SIGNED_HEADERS_REQUIRED")
@@ -154,7 +169,8 @@ class OkxEeaDemoReadsV1:
         with self._opener.open(request, timeout=8) as response:  # noqa: S310
             if response.status != 200 or response.url != request.full_url:
                 raise ValueError("BTC_DEMO_GET_RESPONSE_UNPROVEN")
-            payload = json.load(response)
+            body = response.read()
+            payload = json.loads(body)
         acquired_at = datetime.now(timezone.utc)
         if (
             not isinstance(payload, dict)
@@ -163,7 +179,81 @@ class OkxEeaDemoReadsV1:
             or any(not isinstance(row, dict) for row in payload["data"])
         ):
             raise ValueError("BTC_DEMO_GET_RESPONSE_UNPROVEN")
-        return payload, acquired_at
+        return payload, acquired_at, body
+
+
+BTC_DEMO_PRETRADE_QUERIES_V1 = {
+    "account": (_CONFIG, {}),
+    "instruments": (_INSTRUMENTS, {"instType": "FUTURES", "instId": _NATIVE}),
+    "fees": (_FEE, {"instType": "FUTURES", "instFamily": _FAMILY}),
+    "book": ("/api/v5/market/books", {"instId": _NATIVE, "sz": "20"}),
+    "balance": (_BALANCE, {}),
+    "leverage": ("/api/v5/account/leverage-info", {"instId": _NATIVE, "mgnMode": "cross"}),
+    "funding": ("/api/v5/public/funding-rate", {"instId": _NATIVE}),
+    "positions": (_POSITIONS, {"instId": _NATIVE}),
+    "pending": (_PENDING, {"instType": "FUTURES", "instId": _NATIVE}),
+}
+
+
+def read_btc_demo_pretrade_sources_v1(*, reads, expected_uid, decision_epoch, cycle_id, clock):
+    """Acquire uncached Demo originals for one decision, without taking a budget hold."""
+    from hashlib import sha256
+    from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+        FreshPretradeGetTransportResultV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.pretrade_acquisition_v1 import (
+        acquisition_age_seconds_v1,
+    )
+    from src.ops.portfolio_capital_reservation_budget_v1.durable_store_v1 import canonical
+
+    if type(reads) is not OkxEeaDemoReadsV1:
+        raise ValueError("BTC_DEMO_DIRECT_GET_READER_REQUIRED")
+    if not isinstance(cycle_id, str) or not cycle_id or cycle_id.strip() != cycle_id:
+        raise ValueError("BTC_DEMO_PRETRADE_CYCLE_REQUIRED")
+    if (
+        not isinstance(expected_uid, str)
+        or not expected_uid.isascii()
+        or not expected_uid.isdecimal()
+    ):
+        raise ValueError("BTC_DEMO_ACTUAL_ACCOUNT_ID_REQUIRED")
+    started = clock()
+    start_utc = datetime.fromtimestamp(started, timezone.utc).isoformat()
+    acquisition_age_seconds_v1(acquired_at_utc=decision_epoch, now_utc=start_utc)
+    context = canonical(dict(decision_epoch=decision_epoch, cycle_id=cycle_id))
+    sources = {}
+    for key, (path, query) in BTC_DEMO_PRETRADE_QUERIES_V1.items():
+        payload, acquired, body = reads.read_original_v1(path, **query)
+        if acquired.timestamp() < started:
+            raise ValueError("BTC_DEMO_PRETRADE_RECEIPT_PREDATES_REQUEST")
+        if key == "account":
+            account = _only(payload)
+            if account.get("uid") != expected_uid:
+                raise ValueError("BTC_DEMO_ACCOUNT_MISMATCH")
+            if account.get("posMode") != "net_mode":
+                raise ValueError("BTC_DEMO_NET_POSITION_MODE_REQUIRED")
+        sources[key] = FreshPretradeGetTransportResultV1(
+            get_performed=True,
+            method="GET",
+            endpoint=path + ("?" + urlencode(query) if query else ""),
+            http_status=200,
+            payload=payload,
+            auth_header_sent=key not in {"book", "funding"},
+            transport_class="OKX_EEA_DEMO_READ_ONLY_GET",
+            venue_live_contact=True,
+            historical_reuse=False,
+            error_class="",
+            body_sha256=sha256(body).hexdigest(),
+            pretrade_decision_id=context,
+            acquired_at_utc=acquired.isoformat(),
+        )
+    finished = clock()
+    if finished < started:
+        raise ValueError("BTC_DEMO_PRETRADE_CLOCK_REVERSED")
+    end_utc = datetime.fromtimestamp(finished, timezone.utc).isoformat()
+    acquisition_age_seconds_v1(acquired_at_utc=decision_epoch, now_utc=end_utc)
+    for source in sources.values():
+        acquisition_age_seconds_v1(acquired_at_utc=source.acquired_at_utc, now_utc=end_utc)
+    return sources
 
 
 def _only(payload):
