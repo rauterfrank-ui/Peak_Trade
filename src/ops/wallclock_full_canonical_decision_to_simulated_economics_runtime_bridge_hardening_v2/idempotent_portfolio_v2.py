@@ -51,6 +51,7 @@ class IdempotentPortfolioV2:
         mark_price: Decimal,
         intent_id: str,
         fill_id: str | None = None,
+        book_fill_price: Decimal | None = None,
     ) -> Optional[SimulatedFillV1]:
         if not intent_id:
             raise IdempotencyErrorV2("INTENT_ID_REQUIRED")
@@ -74,6 +75,7 @@ class IdempotentPortfolioV2:
             side=side_u,
             quantity=quantity,
             mark_price=mark_price,
+            book_fill_price=book_fill_price,
         )
         self.applied_intent_ids.add(intent_id)
         if fill is not None:

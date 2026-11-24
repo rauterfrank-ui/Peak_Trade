@@ -1782,6 +1782,7 @@ def run_hardened_bridge_cycle_v2(
         quantity_projection["portfolio_quantity_base"] = "0"
 
     swap_purchase = None
+    book_fill_price = None
     if ranked_swap_observation is not None:
         intended_dict.update(
             intended_side="HOLD",
@@ -1808,6 +1809,9 @@ def run_hardened_bridge_cycle_v2(
                 adverse_distance=cycle_adverse_exit_distance,
             )
             if swap_purchase["status"] == "PLAN_BOUND":
+                entry = swap_purchase["entry"]
+                if "fill_book" in entry:
+                    book_fill_price = Decimal(entry["opening_book_usdt_per_base"])
                 intended_dict.update(
                     intended_side=swap_purchase["envelope"]["side"].upper(),
                     intended_quantity=swap_purchase["quantity_base"],
@@ -1933,6 +1937,7 @@ def run_hardened_bridge_cycle_v2(
         mark_price=Decimal(str(mark)),
         intent_id=intent_id,
         fill_id=fill_id,
+        book_fill_price=book_fill_price,
     )
     after_hash = portfolio_state_hash(state.portfolio.snapshot())
     if fill_obj is not None:

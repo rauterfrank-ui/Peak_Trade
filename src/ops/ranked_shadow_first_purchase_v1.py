@@ -7,9 +7,11 @@ from decimal import Decimal
 from collections.abc import Callable
 import json
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 from src.governance.capital_risk_sizing_v1 import InstrumentQuantityConstraintsV1
 from src.ops.bounded_peaktrade_system_composition_v1.paper_market_liquidity_v1 import (
+    PaperBookV1,
     _decimal,
     _fresh,
     _one,
@@ -26,6 +28,9 @@ from src.ops.instrument_card_stream_v1 import (
     bind_shadow_slot_entry_budget_v1,
     plain,
     ranked_shadow_slot_budget_v1,
+)
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
+    CANONICAL_HOST,
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
     EeaPublicMdTransportError,
@@ -67,6 +72,9 @@ from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 
 from trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
     build_mv2_offline_boundary_dynamic_price_context_v1,
 )
+
+
+BOOK_FILL_SCOPE = ("LANE_4", "CSOPSKHYNIX2L-USDT-SWAP")
 
 
 def _native_constraints(inventory, instrument):
@@ -143,6 +151,7 @@ def ranked_shadow_book_cost_limit_v1(
             params.slippage_bps,
         )
     )
+    opening_fee = fee if native_id == BOOK_FILL_SCOPE[1] else Decimal(0)
     funding = _one(funding_payload, native_id)
     floor, ceiling = map(_decimal, (funding["minFundingRate"], funding["maxFundingRate"]))
     if not floor <= _decimal(funding["fundingRate"]) <= ceiling or not (0 <= fee and 0 <= slip < 1):
@@ -168,7 +177,7 @@ def ranked_shadow_book_cost_limit_v1(
         )
         if (
             base * mark + allowance > available
-            or base * opening > available
+            or base * opening * (1 + opening_fee) > available
             or base * stop_distance + allowance > loss
         ):
             return None
@@ -190,6 +199,34 @@ def ranked_shadow_book_cost_limit_v1(
     if low * lot < native.minimum_quantity:
         raise ValueError("SHADOW_FIRST_PURCHASE_MINIMUM_LOT_NOT_ADMITTED")
     return low * lot, costs
+
+
+def _check_book_fill(entry, native, now):
+    """Reprice the sized contracts from the same depth bytes at preparation and readback."""
+    book = entry["fill_book"]
+    payload = json.loads(book["body"])
+    row = _one(payload)
+    instrument = entry["venue_native_id"]
+    url = urlsplit(book["url"])
+    if (
+        (entry["lane_id"], instrument) != BOOK_FILL_SCOPE
+        or payload["code"] != "0"
+        or row.get("instId", instrument) != instrument
+        or book["path"] != "/api/v5/market/books"
+        or book["query"] != {"instId": instrument, "sz": "5"}
+        or (url.scheme, url.netloc, url.path) != ("https", CANONICAL_HOST, book["path"])
+        or parse_qs(url.query, keep_blank_values=True) != {"instId": [instrument], "sz": ["5"]}
+        or sha256(book["body"].encode()).hexdigest() != book["sha256"]
+    ):
+        raise ValueError("SHADOW_FIRST_PURCHASE_BOOK_SOURCE_MISMATCH")
+    _fresh(row, book["received_at_unix"], now, classify_live_best_bid_ask_freshness_v1)
+    depth = PaperBookV1.from_okx_v1(row, tick=native.tick_size, lot=native.lot_size)
+    price = depth.executable_price_v1(
+        entry["first_purchase_side"], Decimal(entry["quantity_contracts"]), native.tick_size
+    )
+    if price is None or price != Decimal(entry["opening_book_usdt_per_base"]):
+        raise ValueError("SHADOW_FIRST_PURCHASE_BOOK_PRICE_MISMATCH")
+    return price
 
 
 @dataclass
@@ -301,6 +338,9 @@ class RankedShadowFirstPurchaseV1:
             raise ValueError("SHADOW_FIRST_PURCHASE_COST_LIMIT_INVALID")
         available_usdc = Decimal(budget["available_amount"])
         entry_limit = min(available_usdc, self.policy.per_entry_notional_limit)
+        use_book_fill = (slot, market.native_id) == BOOK_FILL_SCOPE
+        if use_book_fill:
+            entry_limit = min(entry_limit, Decimal("10"))
         if raw_limit is not None:
             entry_limit = min(entry_limit, Decimal(raw_limit))
         receipt["capacity"] = dict(
@@ -444,6 +484,20 @@ class RankedShadowFirstPurchaseV1:
         now = self.clock()
         admission.require_current_v1(now)
         _require_fresh_execution(market, valuation, now)
+        if use_book_fill:
+            book = json.loads(market.receipt_path.read_bytes())["book"]
+            raw = (market.receipt_path.parent / "book.json").read_bytes()
+            if (
+                book["sha256"] != market.source_hashes["book"]
+                or raw != market.source_observations["book"].body
+                or datetime.fromtimestamp(book["received_at_unix"], timezone.utc).isoformat()
+                != market.book_acquired_at_utc
+            ):
+                raise ValueError("SHADOW_FIRST_PURCHASE_BOOK_SOURCE_MISMATCH")
+            entry["fill_book"] = dict(
+                book, body=raw.decode(), url=market.source_observations["book"].url
+            )
+            _check_book_fill(entry, native, now)
         if json.loads(self.config.read_bytes()) != config:
             raise ValueError("SHADOW_FIRST_PURCHASE_CONFIG_CHANGED")
         if budget != ranked_shadow_slot_budget_v1(state, slot, self.policy, valuation):
@@ -554,6 +608,25 @@ def verify_ranked_first_purchase_v1(cycle):
         envelope = FinalOrderEnvelopeV1(**p["envelope"])
         assert_envelope_unmodified_v1(envelope, expected_digest=fill["opening_envelope_digest"])
         expected_base = Decimal(entry["quantity_contracts"]) * Decimal(entry["base_per_contract"])
+        if "fill_book" in entry:
+            price = _check_book_fill(entry, sizing.applied_input.instrument, p["checked_at_unix"])
+            notional = expected_base * price
+            params = budget["original_snapshot"]["original_portfolio"]["params"]
+            fee = notional * (Decimal(params["fee_rate_bps"]) / 10000)
+            limit = Decimal(entry["entry_limit_usdc"])
+            mark = sizing.applied_input.reference_price
+            adverse = price - mark if entry["first_purchase_side"] == "BUY" else mark - price
+            if not (
+                Decimal(fill["mark_price"]) == Decimal(fill["reference_price"]) == mark
+                and Decimal(fill["fill_price"]) == Decimal(fill["simulated_fill_price"]) == price
+                and Decimal(fill["notional"]) == notional
+                and Decimal(fill["fee"]) == Decimal(fill["fee_amount"]) == fee
+                and Decimal(fill["slippage_amount"])
+                == Decimal(fill["slippage_cost"])
+                == max(Decimal(0), adverse) * expected_base
+                and (notional + fee) * Decimal(value["usdc_per_usdt"]) <= limit <= 10
+            ):
+                return False
         progress = p["confirmation"]["progress"]
         return (
             p["status"] == "FILLED"
@@ -611,6 +684,7 @@ def verify_ranked_first_purchase_v1(cycle):
     except (
         ValueError,
         KeyError,
+        IndexError,
         TypeError,
         AttributeError,
         ArithmeticError,
