@@ -44,6 +44,78 @@ from tests.ops.test_single_selected_future_runtime_binding_v1 import (
 REPO = Path(__file__).resolve().parents[2]
 
 
+@pytest.mark.parametrize("short", [False, True], ids=["long-short", "short-long"])
+@pytest.mark.parametrize("thin", [False, True], ids=["two-levels", "blocked-then-two-levels"])
+def test_csop_close_to_flat_then_separately_confirmed_reentry(tmp_path, monkeypatch, short, thin):
+    from copy import deepcopy
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.full_economic_reconstruction_verifier_v2 import (
+        verify_full_economic_reconstruction_v2,
+    )
+
+    scope = next(scope for scope in RANKED_SWAP_SCOPES if scope.base == "CSOPSKHYNIX2L")
+    row = dict(_perp(scope.native_id, base=scope.base, ct_val="1"), tickSz="0.001", maxMktSz="1000")
+    config, assignment = ranked_config(tmp_path, monkeypatch, row, scope)
+    depth = [(1, "2"), (3, "30")]
+    steps = [(D(k) / 100, [(1, "1")] if thin and k <= 6 else depth) for k in range(1, 12)]
+    cycles, state, _ = exercise_ranked_entry(
+        tmp_path,
+        config,
+        assignment,
+        row,
+        short=short,
+        start=OBSERVED_UNIX,
+        price=D("1.838"),
+        move=D("0.01"),
+        initial_equity=D("10.40"),
+        after_opening=steps,
+    )
+    opening, closing, reopening = [c for c in cycles if c["fill"]]
+    first = opening["ranked_shadow_first_purchase"]
+    exit_receipt = closing["ranked_shadow_exit"]
+    again = reopening["ranked_shadow_first_purchase"]
+    assert D(first["capacity"]["entry_limit_usdc"]) == 10
+    assert closing["decision_outcome"] in {"reduce", "exit"}
+    assert exit_receipt["opening_fill_id"] == opening["fill_id"]
+    assert D(exit_receipt["position_after_contracts"]) == 0
+    assert closing["cycle_index"] < reopening["cycle_index"]
+    assert again["entry"]["previous_exit_fill_id"] == closing["fill_id"]
+    assert again["confirmation"]["progress"]["distinct_confirmation_observation_count"] >= 2
+    assert again["entry"]["direction"] == ("long" if short else "short")
+    assert (
+        again["entry"]["entry_action"] == "REENTRY" and D(again["entry"]["entry_limit_usdc"]) <= 10
+    )
+    assert closing["fill"]["side"] == reopening["fill"]["side"] != opening["fill"]["side"]
+    for c in (closing, reopening):
+        f = c["fill"]
+        px, qty = D(f["fill_price"]), D(f["quantity_contracts"])
+        mark = D(f["mark_price"])
+        assert qty > 2
+        # The two best contracts fill one tick away. The remainder fills three ticks away.
+        ticks = ((2 + (qty - 2) * 3) / qty).to_integral_value(rounding=ROUND_CEILING)
+        assert px == mark + (1 if short else -1) * ticks * D("0.001")
+        assert D(f["fee"]) == px * qty * D("0.0002")
+    blocked = [c for c in cycles if (c.get("ranked_shadow_exit") or {}).get("status") == "BLOCKED"]
+    assert bool(blocked) == thin
+    assert all(
+        c["fill"] is None
+        and c["ranked_shadow_exit"]["reason"] == "SHADOW_INSUFFICIENT_EXECUTABLE_DEPTH"
+        for c in blocked
+    )
+
+    def check(ledger):
+        return verify_full_economic_reconstruction_v2(
+            cycle_ledger=ledger,
+            fill_ledger=state.fill_ledger,
+            final_portfolio_snapshot=state.portfolio.snapshot(),
+            economic_metrics=state.portfolio.economic_metrics().to_dict(),
+        )
+
+    assert check(cycles).ok
+    bad = deepcopy(cycles)
+    bad[closing["cycle_index"] - 1]["ranked_shadow_exit"]["opening_fill_id"] = "other"
+    assert not check(bad).ok
+
+
 class RecordedQuotes:
     def __init__(self, instrument, now):
         self.venue_instrument_id = instrument.venue_native_inst_id
@@ -91,7 +163,18 @@ class RecordedQuotes:
 
 
 def exercise_ranked_entry(
-    root, config, assignment, inventory, *, short, start, price, fault=None, move=None
+    root,
+    config,
+    assignment,
+    inventory,
+    *,
+    short,
+    start,
+    price,
+    fault=None,
+    move=None,
+    after_opening=(),
+    initial_equity=None,
 ):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
         prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
@@ -108,7 +191,13 @@ def exercise_ranked_entry(
         venue_instrument_id=i.venue_native_inst_id,
     )
     state.portfolio = state.portfolio.from_params(
-        replace(state.portfolio.model.params, linear_futures_collateral=True)
+        replace(
+            state.portfolio.model.params,
+            linear_futures_collateral=True,
+            initial_equity=initial_equity
+            if initial_equity is not None
+            else state.portfolio.model.params.initial_equity,
+        )
     )
     tick = D(i.tick_size)
     move = tick if move is None else move
@@ -160,11 +249,8 @@ def exercise_ranked_entry(
         transport.after_fx = lambda: setattr(transport, "now", transport.now + 300)
     cycles = []
     state.mid_prices = [float(price + (j % 3) * move) for j in range(12)]
-    for j in range(8):
-        transport.now = start + j * 0.2
-        transport.mark = price + (-1 if short else 1) * j * move
-        if fault == "hold":
-            transport.mark = price
+
+    def observe(j):
         market = collect_ranked_swap_observation_v1(
             assignment, root / str(j), lambda: transport.now, transport=transport
         )
@@ -190,10 +276,52 @@ def exercise_ranked_entry(
         )
         if out.bridge_cycle is not None:
             cycles.append(out.bridge_cycle)
-            purchase = cycles[-1].get("ranked_shadow_first_purchase")
-            if purchase and fault:
-                break
+
+    for j in range(8):
+        transport.now = start + j * 0.2
+        transport.mark = price + (-1 if short else 1) * j * move
+        if fault == "hold":
+            transport.mark = price
+        observe(j)
+        if cycles and cycles[-1].get("ranked_shadow_first_purchase") and (fault or after_opening):
+            break
+    opened_at = transport.mark
+    for k, (offset, depth) in enumerate(after_opening, start=j + 1):
+        transport.now = start + k * 0.2
+        transport.mark = opened_at + (offset if short else -offset)
+        transport.depth = depth
+        observe(k)
     return cycles, state, transport.fx_requests
+
+
+def ranked_config(tmp_path, monkeypatch, row, scope):
+    chain = _build_chain(tmp_path, [row])
+    universe = load_and_validate_universe_snapshot_v1(
+        chain["universe_root"], expected_repository_sha=REPO_SHA
+    ).snapshot
+    assignment = RankedRunSlotV1(
+        scope.lane_id,
+        chain["selection"],
+        universe.instruments[0],
+        universe.snapshot_id,
+        "fixture-transition",
+        chain["selection_root"],
+    )
+    monkeypatch.setattr(selection, "read_ranked_run_slot_v1", lambda config: assignment)
+    config = tmp_path / "slot.json"
+    config.write_text(
+        json.dumps(
+            dict(
+                session_id="ranked-test",
+                lane=scope.lane_id,
+                surface="SHADOW",
+                native_instrument_id=scope.native_id,
+                canonical_instrument_id=scope.canonical_id,
+                n5_source={k: str(chain[k]) for k in ("ranking_root", "universe_root")},
+            )
+        )
+    )
+    return config, assignment
 
 
 @pytest.mark.parametrize("short", [False, True], ids=["long", "short"])
@@ -224,32 +352,7 @@ def test_ranked_analytical_first_purchase(tmp_path, monkeypatch, scope, short, f
         lotSz="0.1",
         minSz="0.2",
     )
-    chain = _build_chain(tmp_path, [row])
-    universe = load_and_validate_universe_snapshot_v1(
-        chain["universe_root"], expected_repository_sha=REPO_SHA
-    ).snapshot
-    assignment = RankedRunSlotV1(
-        scope.lane_id,
-        chain["selection"],
-        universe.instruments[0],
-        universe.snapshot_id,
-        "fixture-transition",
-        chain["selection_root"],
-    )
-    monkeypatch.setattr(selection, "read_ranked_run_slot_v1", lambda config: assignment)
-    config = tmp_path / "slot.json"
-    config.write_text(
-        json.dumps(
-            dict(
-                session_id="ranked-test",
-                lane=scope.lane_id,
-                surface="SHADOW",
-                native_instrument_id=scope.native_id,
-                canonical_instrument_id=scope.canonical_id,
-                n5_source={k: str(chain[k]) for k in ("ranking_root", "universe_root")},
-            )
-        )
-    )
+    config, assignment = ranked_config(tmp_path, monkeypatch, row, scope)
     if fault in {"ten", "below_minimum", "zero"}:
         cfg = json.loads(config.read_bytes())
         cfg["shadow_entry_cost_limit_usdc"] = {"ten": "10", "below_minimum": "0.60", "zero": "0"}[

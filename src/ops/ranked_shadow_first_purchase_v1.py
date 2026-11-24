@@ -201,15 +201,25 @@ def ranked_shadow_book_cost_limit_v1(
     return low * lot, costs
 
 
-def _check_book_fill(entry, native, now):
-    """Reprice the sized contracts from the same depth bytes at preparation and readback."""
-    book = entry["fill_book"]
+def _retained_book(market):
+    book = json.loads(market.receipt_path.read_bytes())["book"]
+    raw = (market.receipt_path.parent / "book.json").read_bytes()
+    if (
+        book["sha256"] != market.source_hashes["book"]
+        or raw != market.source_observations["book"].body
+        or datetime.fromtimestamp(book["received_at_unix"], timezone.utc).isoformat()
+        != market.book_acquired_at_utc
+    ):
+        raise ValueError("SHADOW_FIRST_PURCHASE_BOOK_SOURCE_MISMATCH")
+    return dict(book, body=raw.decode(), url=market.source_observations["book"].url)
+
+
+def _executable_book_price(book, lane, instrument, native, side, quantity, now):
     payload = json.loads(book["body"])
     row = _one(payload)
-    instrument = entry["venue_native_id"]
     url = urlsplit(book["url"])
     if (
-        (entry["lane_id"], instrument) != BOOK_FILL_SCOPE
+        (lane, instrument) != BOOK_FILL_SCOPE
         or payload["code"] != "0"
         or row.get("instId", instrument) != instrument
         or book["path"] != "/api/v5/market/books"
@@ -221,10 +231,24 @@ def _check_book_fill(entry, native, now):
         raise ValueError("SHADOW_FIRST_PURCHASE_BOOK_SOURCE_MISMATCH")
     _fresh(row, book["received_at_unix"], now, classify_live_best_bid_ask_freshness_v1)
     depth = PaperBookV1.from_okx_v1(row, tick=native.tick_size, lot=native.lot_size)
-    price = depth.executable_price_v1(
-        entry["first_purchase_side"], Decimal(entry["quantity_contracts"]), native.tick_size
+    price = depth.executable_price_v1(side, quantity, native.tick_size)
+    if price is None:
+        raise ValueError("SHADOW_INSUFFICIENT_EXECUTABLE_DEPTH")
+    return price
+
+
+def _check_book_fill(entry, native, now):
+    """Reprice the sized contracts from the same depth bytes at preparation and readback."""
+    price = _executable_book_price(
+        entry["fill_book"],
+        entry["lane_id"],
+        entry["venue_native_id"],
+        native,
+        entry["first_purchase_side"],
+        Decimal(entry["quantity_contracts"]),
+        now,
     )
-    if price is None or price != Decimal(entry["opening_book_usdt_per_base"]):
+    if price != Decimal(entry["opening_book_usdt_per_base"]):
         raise ValueError("SHADOW_FIRST_PURCHASE_BOOK_PRICE_MISMATCH")
     return price
 
@@ -239,6 +263,96 @@ class RankedShadowFirstPurchaseV1:
     transport: object
     clock: Callable[[], float]
     transport_error: EeaPublicMdTransportError | None = None
+
+    @property
+    def manages_position(self):
+        return (
+            self.assignment.lane_id,
+            self.assignment.instrument.venue_native_inst_id,
+        ) == BOOK_FILL_SCOPE
+
+    def prepare_exit(self, *, state, market, action, replay):
+        """Price only a reduction of this generation's actually booked position."""
+        from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+            serialize_canonical_trading_decision_evidence_canonical,
+        )
+        from src.ops.ranked_shadow_entry_selection_v1 import (
+            _selection_context,
+            observe_ranked_shadow_positions_v1,
+        )
+
+        try:
+            entry = state.ranked_confirmed_entry_budget
+            config = json.loads(self.config.read_bytes())
+            current, admission = _selection_context(config, state.session_id, self.assignment)
+            now = self.clock()
+            observed = observe_ranked_shadow_positions_v1(
+                state, current, session_id=state.session_id, now=now
+            )
+            (position,) = observed.positions
+            native = _native_constraints(self.inventory, admission.instrument)
+            side = action["intended_side"]
+            quantity = Decimal(action["intended_quantity"]) / native.contract_multiplier
+            signed = position.signed_quantity
+            last = state.fill_ledger[-1]
+            previous = state.cycle_ledger[last["cycle_index"] - 1]
+            prior_exit = previous.get("ranked_shadow_exit")
+            opening_index = prior_exit["opening_cycle_index"] if prior_exit else last["cycle_index"]
+            opening = state.cycle_ledger[opening_index - 1]
+            if (
+                not self.manages_position
+                or not entry
+                or previous["fill"] != last
+                or opening["ranked_shadow_first_purchase"]["entry"] != entry
+                or not verify_ranked_first_purchase_v1(opening)
+                or entry["n5_assignment"] != current.reference()
+                or entry["selection_integrity_digest"] != admission.selection.integrity_digest
+                or (entry["session_id"], entry["instrument_id"], entry["venue_native_id"])
+                != (state.session_id, market.canonical_id, market.native_id)
+                or replay.evidence.instrument_id != market.canonical_id
+                or replay.evidence.decision_outcome != action["decision_outcome"]
+                or action["decision_outcome"] not in {"exit", "reduce"}
+                or action["quantity_source"] != "exit_or_reduce"
+                or side != ("SELL" if signed > 0 else "BUY")
+                or not native.minimum_quantity
+                <= quantity
+                <= min(abs(signed), native.maximum_quantity)
+                or quantity % native.lot_size
+            ):
+                raise ValueError("SHADOW_EXIT_POSITION_BINDING_MISMATCH")
+            _fresh(
+                _one(market.source_observations["mark"].payload, market.native_id),
+                market.mark_acquired_unix,
+                now,
+                classify_live_mark_price_freshness_v1,
+            )
+            book = _retained_book(market)
+            core_body = serialize_canonical_trading_decision_evidence_canonical(replay.evidence)
+            if sha256(core_body.encode()).hexdigest() != replay.evidence.semantic_digest:
+                raise ValueError("SHADOW_EXIT_DECISION_DIGEST_MISMATCH")
+            if prior_exit:
+                _require_new_book(prior_exit["fill_book"], book)
+            price = _executable_book_price(
+                book, current.lane_id, market.native_id, native, side, quantity, now
+            )
+            return dict(
+                status="PRICED",
+                side=side,
+                quantity_contracts=str(quantity),
+                position_before_contracts=str(signed),
+                fill_book=book,
+                price=str(price),
+                checked_at_unix=now,
+                opening_cycle_index=opening_index,
+                opening_fill_id=opening["fill_id"],
+                core_decision_id=replay.evidence.decision_id,
+                core_digest=replay.evidence.semantic_digest,
+                core_decision=core_body,
+            )
+        except OSError as exc:
+            raise WallclockEvidenceError("SHADOW_EXIT_SOURCE_IO_FAILED") from exc
+        except (ValueError, KeyError, TypeError, ArithmeticError, IndexError) as exc:
+            return dict(status="BLOCKED", reason=str(exc))
 
     def prepare(self, *, state, market, replay, cycle_id, host_decision_id, adverse_distance):
         self.transport_error = None
@@ -485,18 +599,17 @@ class RankedShadowFirstPurchaseV1:
         admission.require_current_v1(now)
         _require_fresh_execution(market, valuation, now)
         if use_book_fill:
-            book = json.loads(market.receipt_path.read_bytes())["book"]
-            raw = (market.receipt_path.parent / "book.json").read_bytes()
-            if (
-                book["sha256"] != market.source_hashes["book"]
-                or raw != market.source_observations["book"].body
-                or datetime.fromtimestamp(book["received_at_unix"], timezone.utc).isoformat()
-                != market.book_acquired_at_utc
-            ):
-                raise ValueError("SHADOW_FIRST_PURCHASE_BOOK_SOURCE_MISMATCH")
-            entry["fill_book"] = dict(
-                book, body=raw.decode(), url=market.source_observations["book"].url
-            )
+            entry["fill_book"] = _retained_book(market)
+            if state.fill_ledger:
+                previous = closed_ranked_cycle_v1(state, slot)
+                prior_index = previous["ranked_shadow_exit"]["opening_cycle_index"]
+                prior_entry = state.cycle_ledger[prior_index - 1]["ranked_shadow_first_purchase"][
+                    "entry"
+                ]
+                if prior_entry["n5_assignment"] != self.assignment.reference():
+                    raise ValueError("SHADOW_REENTRY_GENERATION_CHANGED")
+                _require_new_book(previous["ranked_shadow_exit"]["fill_book"], entry["fill_book"])
+                entry.update(entry_action="REENTRY", previous_exit_fill_id=previous["fill_id"])
             _check_book_fill(entry, native, now)
         if json.loads(self.config.read_bytes()) != config:
             raise ValueError("SHADOW_FIRST_PURCHASE_CONFIG_CHANGED")
@@ -523,6 +636,120 @@ class RankedShadowFirstPurchaseV1:
             base_currency=admission.instrument.base_currency,
             checked_at_unix=now,
         )
+
+
+def _require_new_book(previous, current):
+    before, after = (_one(json.loads(book["body"])) for book in (previous, current))
+    old_ts, new_ts = _timestamp(before), _timestamp(after)
+    old_seq, new_seq = before.get("seqId"), after.get("seqId")
+    sequenced = type(old_seq) is int and type(new_seq) is int
+    if (
+        new_ts < old_ts
+        or (sequenced and old_seq == new_seq)
+        or (new_ts == old_ts and not (sequenced and new_seq > old_seq))
+    ):
+        raise ValueError("SHADOW_EXECUTION_NEW_BOOK_REQUIRED")
+
+
+def closed_ranked_cycle_v1(state, slot):
+    """Re-admit the flat budget only after its own booked, fully closing exit."""
+    if (slot, state.venue_instrument_id) == BOOK_FILL_SCOPE and state.fill_ledger:
+        last = state.fill_ledger[-1]
+        index = last.get("cycle_index")
+        if type(index) is not int or not 0 < index <= len(state.cycle_ledger):
+            raise ValueError("SHADOW_REENTRY_EXIT_CYCLE_MISSING")
+        cycle = state.cycle_ledger[index - 1]
+        exit_receipt = cycle.get("ranked_shadow_exit") or {}
+        if (
+            cycle["session_id"] == state.session_id
+            and cycle["cycle_index"] == index
+            and len(state.portfolio.applied_fill_ids) == len(state.fill_ledger)
+            and cycle["instrument_id"] == state.instrument_id
+            and last == cycle["fill"]
+            and last["fill_id"] in state.portfolio.applied_fill_ids
+            and exit_receipt.get("status") == "FILLED"
+            and exit_receipt["fill_id"] == last["fill_id"]
+            and Decimal(exit_receipt["position_after_contracts"]) == 0
+            and state.venue_flat
+        ):
+            return cycle
+    raise ValueError("SHADOW_FIRST_PURCHASE_FLAT_BUDGET_REQUIRED")
+
+
+def verified_exit_price_v1(cycle, opening, snapshot, previous_exit):
+    """Reconstruct the reducing fill from its original opening and pre-fill position."""
+    receipt, action, fill = cycle["ranked_shadow_exit"], cycle["intended_action"], cycle["fill"]
+    core = json.loads(receipt["core_decision"])
+    if (
+        sha256(receipt["core_decision"].encode()).hexdigest() != receipt["core_digest"]
+        or core["decision_id"] != receipt["core_decision_id"]
+        or core["replay_id"] != f"{cycle['session_id']}-{cycle['cycle_id']}"
+        or core["instrument_id"] != cycle["instrument_id"]
+        or core["trading_epoch"] != cycle["trading_epoch"]
+        or core["decision_outcome"] != cycle["decision_outcome"]
+        or core["reason_codes"] != sorted(cycle["reason_codes"])
+        or not core["entry_exit_policy_ref"]
+    ):
+        raise ValueError("SHADOW_EXIT_DECISION_BINDING_MISMATCH")
+    entry = opening["ranked_shadow_first_purchase"]["entry"]
+    native = ReservationSizingBindingV1.from_dict_v1(
+        opening["ranked_shadow_first_purchase"]["sizing"]
+    ).applied_input.instrument
+    base = Decimal(snapshot["state"]["positions"][cycle["instrument_id"]]["quantity"])
+    contracts = Decimal(receipt["quantity_contracts"])
+    side = "SELL" if base > 0 else "BUY"
+    size = contracts * native.contract_multiplier
+    remaining = base + (size if side == "BUY" else -size)
+    if (
+        cycle["decision_outcome"] not in {"exit", "reduce"}
+        or action["intent_action"] != cycle["decision_outcome"].upper()
+        or action["quantity_source"] != "exit_or_reduce"
+        or fill["closing_opening_fill_id"] != receipt["opening_fill_id"]
+        or receipt["opening_fill_id"] != opening["fill_id"]
+        or receipt["opening_cycle_index"] != opening["cycle_index"]
+        or cycle["session_id"] != opening["session_id"]
+        or cycle["instrument_id"] != entry["instrument_id"]
+        or (entry["lane_id"], entry["venue_native_id"]) != BOOK_FILL_SCOPE
+        or receipt["status"] != "FILLED"
+        or not (fill["fill_id"] == cycle["fill_id"] == receipt["fill_id"])
+        or not (side == action["intended_side"] == fill["side"] == receipt["side"])
+        or action.get("decision_outcome") != cycle["decision_outcome"]
+        or not (0 < size <= abs(base))
+        or not native.minimum_quantity <= contracts <= native.maximum_quantity
+        or contracts % native.lot_size
+        or contracts != Decimal(fill["quantity_contracts"])
+        or fill["quote_currency"] != "USDT"
+        or fill["quantity_unit"] != opening["fill"]["quantity_unit"]
+        or size != Decimal(fill["quantity"])
+        or size != Decimal(action["intended_quantity"])
+        or base != Decimal(receipt["position_before_contracts"]) * native.contract_multiplier
+        or remaining != Decimal(receipt["position_after_contracts"]) * native.contract_multiplier
+        or remaining
+        != Decimal(
+            cycle["portfolio_snapshot"]["state"]["positions"][cycle["instrument_id"]]["quantity"]
+        )
+    ):
+        raise ValueError("SHADOW_EXIT_BOOKING_MISMATCH")
+    if previous_exit:
+        _require_new_book(previous_exit["fill_book"], receipt["fill_book"])
+    price = _executable_book_price(
+        receipt["fill_book"], *BOOK_FILL_SCOPE, native, side, contracts, receipt["checked_at_unix"]
+    )
+    if (
+        not (
+            price
+            == Decimal(receipt["price"])
+            == Decimal(fill["fill_price"])
+            == Decimal(fill["simulated_fill_price"])
+        )
+        or Decimal(fill["fee_amount"]) != Decimal(fill["fee"])
+        or Decimal(fill["slippage_amount"]) != Decimal(fill["slippage_cost"])
+        or size * price != Decimal(fill["notional"])
+        or Decimal(fill["notional"]) * Decimal(snapshot["params"]["fee_rate_bps"]) / 10000
+        != Decimal(fill["fee"])
+    ):
+        raise ValueError("SHADOW_EXIT_BOOK_PRICE_OR_FEE_MISMATCH")
+    return price
 
 
 def _require_fresh_execution(market, valuation, now):
@@ -659,7 +886,15 @@ def verify_ranked_first_purchase_v1(cycle):
             and progress["distinct_confirmation_observation_count"] >= 2
             and progress["assessment_state"] == "confirmed"
             and p["fill_id"] == fill["fill_id"] == cycle["fill_id"]
-            and action["intent_action"] == entry["entry_action"] == "FIRST_PURCHASE"
+            and action["intent_action"] == entry["entry_action"]
+            and (
+                entry["entry_action"] == "FIRST_PURCHASE"
+                and not entry.get("previous_exit_fill_id")
+                or entry["entry_action"] == "REENTRY"
+                and (entry["lane_id"], entry["venue_native_id"]) == BOOK_FILL_SCOPE
+                and entry.get("previous_exit_fill_id")
+                in budget["original_snapshot"]["original_portfolio"]["applied_fill_ids"]
+            )
             and envelope.admission_ref == canonical_digest_v1(entry)
             and not envelope.reduce_only
             and envelope.instrument_id == scope.native_id

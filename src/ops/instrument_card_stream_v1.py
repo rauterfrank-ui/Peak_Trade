@@ -560,10 +560,10 @@ def read_instrument_card_v1(root, *, bound, lane_id, now, ranking_bound=None, sl
     return body
 
 
-def _validate_first_purchase_v1(entry):
+def _validate_first_purchase_v1(entry, *, expected_action="FIRST_PURCHASE"):
     direction = entry.get("direction")
     if (
-        entry.get("entry_action", "FIRST_PURCHASE") != "FIRST_PURCHASE"
+        entry.get("entry_action", "FIRST_PURCHASE") != expected_action
         or direction not in {"long", "short"}
         or entry.get("first_purchase_side") != opening_order_side_v1(direction)
     ):
@@ -572,7 +572,15 @@ def _validate_first_purchase_v1(entry):
 
 def validate_shadow_slot_entry_budget_v1(*, state, bound, budget, entry):
     """Validate the session, slot, selection and budget represented by a receipt."""
-    _validate_first_purchase_v1(entry)
+    expected_action = "FIRST_PURCHASE"
+    if entry.get("entry_action") == "REENTRY":
+        from src.ops.ranked_shadow_first_purchase_v1 import closed_ranked_cycle_v1
+
+        parent = closed_ranked_cycle_v1(state, budget["lane_id"])
+        if entry.get("previous_exit_fill_id") != parent["fill_id"]:
+            raise ValueError("SHADOW_REENTRY_PARENT_MISMATCH")
+        expected_action = "REENTRY"
+    _validate_first_purchase_v1(entry, expected_action=expected_action)
     scope = next(
         (i for i in (*RANKED_SWAP_SCOPES, SOPH_I17) if i.canonical_id == state.instrument_id), None
     )
@@ -697,10 +705,13 @@ def ranked_shadow_slot_budget_v1(state, lane, policy, valuation):
         or snap["orders_submitted"] is not False
         or snap["broker_writes"] is not False
         or state.ranked_confirmed_entry_budget is not None
-        or snap["applied_fill_ids"]
         or any(Decimal(p["quantity"]) != 0 for p in snap["state"]["positions"].values())
     ):
         raise ValueError("SHADOW_FIRST_PURCHASE_FLAT_BUDGET_REQUIRED")
+    if snap["applied_fill_ids"]:
+        from src.ops.ranked_shadow_first_purchase_v1 import closed_ranked_cycle_v1
+
+        closed_ranked_cycle_v1(state, lane)
     available = min(
         PAPER_ALLOCATION_USDC,
         policy.per_slot_reserved_notional_limit,
