@@ -40,6 +40,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     build_explicit_mid_price_basis_v2,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    InstrumentObservationKeyV1,
     ObservationTransportMetadataV1,
 )
 
@@ -111,7 +112,31 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
 
     # Productive typed-vol edge: finalize PT1M mark samples from distinct observations.
     # Decision cycles without a completed PT1M bucket do not invent vol observations.
-    finalizer = ensure_pt1m_mark_observation_finalizer_v1(bridge_state)
+    ranked_history_key = None
+    if ranked_swap_observation is not None:
+        if (
+            ranked_swap_observation.canonical_id != ticks[-1].instrument_id
+            or ranked_swap_observation.native_id != bridge_state.venue_instrument_id
+        ):
+            return HardenedWallclockBridgeOutcomeV2(
+                ok=False, md_blockers=("RANKED_MARK_INSTRUMENT_MISMATCH",)
+            )
+        source_key = InstrumentObservationKeyV1(
+            VENUE_OKX, ranked_swap_observation.canonical_id, ranked_swap_observation.native_id
+        )
+        host = bridge_state.typed_volatility_cmc_binding_host
+        if host is not None and host.producer.history.bound_instrument_key == source_key:
+            if (
+                mid != float(ranked_swap_observation.mark)
+                or event_ts != ranked_swap_observation.market_event_unix
+            ):
+                return HardenedWallclockBridgeOutcomeV2(
+                    ok=False, md_blockers=("RANKED_MARK_OBSERVATION_BASIS_MISMATCH",)
+                )
+            ranked_history_key = source_key
+    finalizer = ensure_pt1m_mark_observation_finalizer_v1(
+        bridge_state, ranked_history_key=ranked_history_key
+    )
     finalized = (
         None
         if instrument_card_market is not None
@@ -125,15 +150,23 @@ def run_hardened_wallclock_bridge_observation_cycle_v2(
     finalized_emitted = False
     if finalized is not None:
         finalized_emitted = True
+        event_time = finalized.event_time_unix_seconds
+        received = finalized.receive_time_unix_seconds
+        if ranked_history_key is not None:
+            # G17 indexes finalized OKX candles by bucket open. The close first
+            # becomes known when the observation in the next bucket arrives.
+            event_time = finalized.bucket_start_unix_seconds
+            received = receive_ts
         transport = None
-        if finalized.receive_time_unix_seconds is not None:
+        if received is not None:
             transport = ObservationTransportMetadataV1(
-                receive_time=float(finalized.receive_time_unix_seconds),
+                receive_time=float(received),
                 wallclock_now=float(wall_now_unix),
             )
         finalized_kwargs = {
+            "finalized_pt1m_venue": finalizer.venue,
             "finalized_pt1m_mark_price": float(finalized.mark_price),
-            "finalized_pt1m_event_time_unix_seconds": float(finalized.event_time_unix_seconds),
+            "finalized_pt1m_event_time_unix_seconds": float(event_time),
             "finalized_pt1m_transport": transport,
         }
 

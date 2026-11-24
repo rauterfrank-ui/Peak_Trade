@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 
@@ -227,18 +228,30 @@ def test_instrument_change_isolates_state() -> None:
     prior = state.pt1m_mark_observation_finalizer.finalized_count
     assert prior > 0
     state.instrument_id = "OTHER-INSTRUMENT"
-    # Next wallclock call resets finalizer + typed host for new identity.
+    state.venue_instrument_id = "OTHER-SWAP"
     et = T0 + 100 * BAR_INTERVAL_SECONDS + 5.0
-    out = run_hardened_wallclock_bridge_observation_cycle_v2(
-        bridge_state=state,
-        ticks=[_tick(seq=999, event_ts=et, price=123.0)],
-        reference_price=Decimal("123.0"),
-        wall_now_unix=et + 0.05,
-        session_id="iso-a",
-    )
+
+    def observe(tick):
+        return run_hardened_wallclock_bridge_observation_cycle_v2(
+            bridge_state=state,
+            ticks=[tick],
+            reference_price=Decimal("123.0"),
+            wall_now_unix=et + 0.05,
+            session_id="iso-a",
+        )
+
+    old_tick = _tick(seq=999, event_ts=et, price=123.0)
+    rejected = observe(old_tick)
+    assert not rejected.ok and "INSTRUMENT_NOT_IN_ALLOWLIST" in rejected.md_blockers
+    assert state.pt1m_mark_observation_finalizer.finalized_count == prior
+    out = observe(replace(old_tick, instrument_id=state.instrument_id))
     assert out.ok is True
     assert state.pt1m_mark_observation_finalizer.finalized_count == 0
     assert state.pt1m_mark_observation_finalizer.canonical_instrument_id == "OTHER-INSTRUMENT"
+    assert (
+        state.typed_volatility_cmc_binding_host.producer.history.venue_instrument_id == "OTHER-SWAP"
+    )
+    assert state.typed_volatility_cmc_binding_host.producer.history.observation_count_prices == 0
 
 
 def test_legacy_proxy_not_authority_and_no_silent_default() -> None:

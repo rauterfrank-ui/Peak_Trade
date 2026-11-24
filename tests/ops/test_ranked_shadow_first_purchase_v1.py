@@ -166,22 +166,94 @@ def test_csop_slot4_two_switches_on_one_budget(
 def test_csop_slot4_three_switches_on_one_budget(
     tmp_path, monkeypatch, positions, prices, third_switch_fees, total_fees, final_equity
 ):
-    # Continue from the fifth fill. Two observations offer just one contract.
-    # The replenished book has two contracts at the touch and more four ticks away.
-    deep = [(1, "2"), (5, "30")]
-    thin = [(1, "1")]
-    extra_steps = [
-        (D("-0.010"), deep),
-        (D("0.020"), thin),
-        (D("0.030"), thin),
-        (D("0.040"), deep),
-        (D("0.050"), deep),
-        (D("0.060"), deep),
-    ]
-    filled = check_csop_slot4_sequence(
-        tmp_path, monkeypatch, positions, prices, total_fees, final_equity, extra_steps=extra_steps
+    _, filled = check_csop_slot4_sequence(
+        tmp_path,
+        monkeypatch,
+        positions,
+        prices,
+        total_fees,
+        final_equity,
+        extra_steps=csop_switch_steps((-10, 20, 30, 40, 50, 60)),
     )
     close, reentry = filled[-2:]
+    check_csop_switch_depth_and_fees(close, reentry, third_switch_fees)
+    purchase = reentry["ranked_shadow_first_purchase"]
+    available = D(close["portfolio_snapshot"]["state"]["cash"])
+    mark = D(purchase["valuation"]["mark_usdt_per_base"])
+    allowance = D(purchase["entry"]["cost_allowance_usdt"])
+    cap = D(purchase["sizing"]["decision"]["pre_sizing_risk"]["capital_cap_quantity"])
+    assert cap == abs(positions[-1])
+    assert cap * mark + allowance <= available
+    if positions[-1] == 4:
+        # Five contracts at the mark would fit, but even the cost allowance for four
+        # takes that five-contract amount over the remaining cash.
+        assert 5 * mark < available < 5 * mark + allowance
+
+
+@pytest.mark.parametrize(
+    "positions, prices, fourth_switch_fees, total_fees, final_equity",
+    [
+        pytest.param(
+            (5, 0, -5, 0, 5, 0, -5, 0, 4),
+            ("1.842", "1.819", "1.799", "1.823", "1.843", "1.797", "1.777", "1.825", "1.844"),
+            "0.0033002",
+            "0.0160002",
+            "9.2664798",
+            id="long-short-long-short-long",
+        ),
+        pytest.param(
+            (-5, 0, 5, 0, -5, 0, 4, 0, -5),
+            ("1.840", "1.863", "1.883", "1.859", "1.839", "1.885", "1.904", "1.858", "1.837"),
+            "0.0033234",
+            "0.0160156",
+            "9.3414644",
+            id="short-long-short-long-short",
+        ),
+    ],
+)
+def test_csop_slot4_four_switches_across_minute_on_one_budget(
+    tmp_path, monkeypatch, positions, prices, fourth_switch_fees, total_fees, final_equity
+):
+    # Both opening fills occur at second 58.420; follow-on observation 20 closes the minute.
+    start = OBSERVED_UNIX + (58.02 if positions[0] < 0 else 57.82)
+    cycles, filled = check_csop_slot4_sequence(
+        tmp_path,
+        monkeypatch,
+        positions,
+        prices,
+        total_fees,
+        final_equity,
+        start=start,
+        followup_interval=0.080,
+        extra_steps=csop_switch_steps((-10, 20, 30, 40, 50, 60))
+        + csop_switch_steps((70, 40, 30, 20, 10, 0)),
+    )
+    (rollover,) = [
+        c
+        for prev, c in zip(cycles, cycles[1:])
+        if c["price_basis"]["event_ts_unix"] // 60 > prev["price_basis"]["event_ts_unix"] // 60
+    ]
+    assert rollover["cycle_index"] == filled[6]["cycle_index"] + 1 == filled[0]["cycle_index"] + 20
+    assert rollover["canonical_volatility_typed_binding"]["producer_outcome"] == "PRODUCED"
+    assert all(
+        c["canonical_market_context_typed_estimate_present"]
+        for c in cycles[rollover["cycle_index"] - 1 :]
+    )
+    check_csop_switch_depth_and_fees(*filled[-2:], fourth_switch_fees)
+
+
+def csop_switch_steps(offsets_in_ticks):
+    # Only one contract on the second and third observation; otherwise two at
+    # the touch and the rest four ticks away.
+    deep = [(1, "2"), (5, "30")]
+    thin = [(1, "1")]
+    return [
+        (D("0.001") * ticks, thin if index in (2, 3) else deep)
+        for index, ticks in enumerate(offsets_in_ticks, 1)
+    ]
+
+
+def check_csop_switch_depth_and_fees(close, reentry, expected_fees):
     purchase = reentry["ranked_shadow_first_purchase"]
     entry = purchase["entry"]
     for cycle, receipt in ((close, close["ranked_shadow_exit"]), (reentry, entry)):
@@ -197,22 +269,91 @@ def test_csop_slot4_three_switches_on_one_budget(
         vwap = (best_size * best_price + (quantity - best_size) * next_price) / quantity
         rounded_price = vwap.quantize(D("0.001"), rounding=ROUND_CEILING if buy else ROUND_FLOOR)
         assert D(fill["fill_price"]) == rounded_price
-    assert D(close["fill"]["fee"]) + D(reentry["fill"]["fee"]) == D(third_switch_fees)
+    assert D(close["fill"]["fee"]) + D(reentry["fill"]["fee"]) == D(expected_fees)
 
-    available = D(close["portfolio_snapshot"]["state"]["cash"])
-    mark = D(purchase["valuation"]["mark_usdt_per_base"])
-    allowance = D(entry["cost_allowance_usdt"])
-    cap = D(purchase["sizing"]["decision"]["pre_sizing_risk"]["capital_cap_quantity"])
-    assert cap == abs(positions[-1])
-    assert cap * mark + allowance <= available
-    if positions[-1] == 4:
-        # Five contracts at the mark would fit, but even the cost allowance for four
-        # takes that five-contract amount over the remaining cash.
-        assert 5 * mark < available < 5 * mark + allowance
+
+def test_csop_slot4_finalized_minute_continues_g17_history(tmp_path, monkeypatch):
+    scope = next(scope for scope in RANKED_SWAP_SCOPES if scope.base == "CSOPSKHYNIX2L")
+    row = dict(_perp(scope.native_id, base=scope.base, ct_val="1"), tickSz="0.001")
+    config, assignment = ranked_config(tmp_path, monkeypatch, row, scope)
+    start = OBSERVED_UNIX + 59.2
+    quotes = RecordedQuotes(assignment.instrument, start)
+    cycles, state, _ = exercise_ranked_entry(
+        tmp_path,
+        config,
+        assignment,
+        row,
+        short=False,
+        start=start,
+        price=D("1.808"),
+        move=D("0.010"),
+        after_opening=[(D("0.002"), [(1, "30")])] * 3,
+        transport=quotes,
+    )
+    history = state.typed_volatility_cmc_binding_host.producer.history
+    previous, added = history.records[-2:]
+    (rollover,) = [
+        i
+        for i in range(1, len(cycles))
+        if cycles[i]["price_basis"]["event_ts_unix"] // 60
+        > cycles[i - 1]["price_basis"]["event_ts_unix"] // 60
+    ]
+    cycle = cycles[rollover]
+    assert history.observation_count_prices == 62
+    assert added.venue == previous.venue == "OKX"
+    assert (added.canonical_instrument_id, added.venue_instrument_id) == (
+        scope.canonical_id,
+        scope.native_id,
+    )
+    assert added.event_time.unix_seconds == previous.event_time.unix_seconds + 60 == OBSERVED_UNIX
+    assert added.mark_price == cycles[rollover - 1]["price_basis"]["mid_price"]
+    assert added.receive_time == cycle["price_basis"]["receive_ts_unix"] >= OBSERVED_UNIX + 60
+    assert cycle["canonical_volatility_typed_binding"]["producer_outcome"] == "PRODUCED"
+    assert all(c["canonical_market_context_typed_estimate_present"] for c in cycles[rollover:])
+
+    quotes.now += 60
+    market = collect_ranked_swap_observation_v1(
+        assignment, tmp_path / "mismatch", lambda: quotes.now, transport=quotes
+    )
+    tick = ObservationMarketTickV1(
+        scope.canonical_id,
+        "OKX",
+        "FUTURES",
+        len(cycles) + 1,
+        quotes.now,
+        quotes.now,
+        0,
+        market.mark,
+    )
+    for foreign, reason in (
+        (replace(market, native_id="OTHER-SWAP"), "RANKED_MARK_INSTRUMENT_MISMATCH"),
+        (replace(market, canonical_id="other"), "RANKED_MARK_INSTRUMENT_MISMATCH"),
+        (replace(market, mark=market.mark + 1), "RANKED_MARK_OBSERVATION_BASIS_MISMATCH"),
+    ):
+        rejected = run_hardened_wallclock_bridge_observation_cycle_v2(
+            bridge_state=state,
+            ticks=[tick],
+            reference_price=quotes.mark,
+            wall_now_unix=quotes.now,
+            session_id=state.session_id,
+            price_field="markPx",
+            ranked_swap_observation=foreign,
+        )
+        assert not rejected.ok and reason in rejected.md_blockers
+    assert history.records[-1] == added
 
 
 def check_csop_slot4_sequence(
-    tmp_path, monkeypatch, positions, prices, total_fees, final_equity, *, extra_steps=()
+    tmp_path,
+    monkeypatch,
+    positions,
+    prices,
+    total_fees,
+    final_equity,
+    *,
+    extra_steps=(),
+    start=OBSERVED_UNIX,
+    followup_interval=0.2,
 ):
     from copy import deepcopy
     from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.full_economic_reconstruction_verifier_v2 import (
@@ -223,7 +364,7 @@ def check_csop_slot4_sequence(
     row = dict(_perp(scope.native_id, base=scope.base, ct_val="1"), tickSz="0.001", maxMktSz="1000")
     config, assignment = ranked_config(tmp_path, monkeypatch, row, scope)
     fx = D("1.001148")  # USDT per USDC
-    quotes = RecordedQuotes(assignment.instrument, OBSERVED_UNIX)
+    quotes = RecordedQuotes(assignment.instrument, start)
     quotes.usdt_per_usdc = str(fx)
     # Archived opening mark 1.838, best bid 1.840 and ask 1.842.
     quotes.book_mid_offset = D("0.003")
@@ -240,14 +381,16 @@ def check_csop_slot4_sequence(
         assignment,
         row,
         short=positions[0] < 0,
-        start=OBSERVED_UNIX,
+        start=start,
         price=D("1.858") if positions[0] < 0 else D("1.808"),
         move=D("0.010"),
         initial_equity=initial_cash,
         after_opening=[*steps, *extra_steps],
+        followup_interval=followup_interval,
         transport=quotes,
     )
     filled = [cycle for cycle in cycles if cycle["fill"]]
+    assert len(filled) == len(positions)
     assert [c["fill"] for c in filled] == state.fill_ledger
     opening, final = filled[0], filled[-1]
     assert D(opening["ranked_shadow_first_purchase"]["capacity"]["slot_available_usdc"]) == 10
@@ -350,7 +493,7 @@ def check_csop_slot4_sequence(
         f"RANKED_REENTRY_LINKAGE_BREAK_{final['cycle_index']}"
         in reconstruct(wrong_reentry).blockers
     )
-    return filled
+    return cycles, filled
 
 
 class RecordedQuotes:
@@ -414,6 +557,7 @@ def exercise_ranked_entry(
     fault=None,
     move=None,
     after_opening=(),
+    followup_interval=0.2,
     initial_equity=None,
     transport=None,
 ):
@@ -528,8 +672,9 @@ def exercise_ranked_entry(
         if cycles and cycles[-1].get("ranked_shadow_first_purchase") and (fault or after_opening):
             break
     opened_at = transport.mark
+    opening_time = transport.now
     for k, (offset, depth) in enumerate(after_opening, start=j + 1):
-        transport.now = start + k * 0.2
+        transport.now = opening_time + (k - j) * followup_interval
         transport.mark = opened_at + (offset if short else -offset)
         transport.depth = depth
         observe(k)

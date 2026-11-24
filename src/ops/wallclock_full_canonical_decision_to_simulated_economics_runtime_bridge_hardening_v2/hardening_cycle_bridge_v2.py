@@ -406,9 +406,15 @@ def _ensure_typed_volatility_binding_host_v1(
 
 def ensure_pt1m_mark_observation_finalizer_v1(
     state: "HardenedBridgeSessionStateV2",
+    *,
+    ranked_history_key: InstrumentObservationKeyV1 | None = None,
 ) -> CanonicalVolatilityPt1mMarkObservationFinalizerV1:
     """Session-local PT1M finalizer for productive wallclock → typed-vol wiring."""
-    expected_venue = _DEFAULT_VOL_TYPED_BINDING_VENUE
+    expected_venue = (
+        ranked_history_key.venue
+        if ranked_history_key is not None
+        else _DEFAULT_VOL_TYPED_BINDING_VENUE
+    )
     expected_canon = str(state.instrument_id)
     expected_venue_inst = state.venue_instrument_id
     if state.pt1m_mark_observation_finalizer is None:
@@ -432,7 +438,8 @@ def ensure_pt1m_mark_observation_finalizer_v1(
             canonical_instrument_id=expected_canon,
             venue_instrument_id=expected_venue_inst,
         )
-        state.typed_volatility_cmc_binding_host = None
+        if ranked_history_key is None:
+            state.typed_volatility_cmc_binding_host = None
     return finalizer
 
 
@@ -989,6 +996,7 @@ def run_hardened_bridge_cycle_v2(
     price_basis: ExplicitPriceBasisV2 | None = None,
     forced_actionable: Mapping[str, Any] | None = None,
     finalized_pt1m_mark_sample: MarketSampleIdentityV1 | None = None,
+    finalized_pt1m_venue: str = _DEFAULT_VOL_TYPED_BINDING_VENUE,
     finalized_pt1m_mark_price: float | None = None,
     finalized_pt1m_event_time_unix_seconds: float | None = None,
     finalized_pt1m_transport: ObservationTransportMetadataV1 | None = None,
@@ -1312,7 +1320,7 @@ def run_hardened_bridge_cycle_v2(
         market_context,
         sample=finalized_pt1m_mark_sample,
         transport=finalized_pt1m_transport,
-        venue=_DEFAULT_VOL_TYPED_BINDING_VENUE,
+        venue=finalized_pt1m_venue,
         canonical_instrument_id=str(state.instrument_id),
         venue_instrument_id=state.venue_instrument_id,
         event_time_unix_seconds=finalized_pt1m_event_time_unix_seconds,
