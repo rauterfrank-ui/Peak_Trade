@@ -231,12 +231,14 @@ def _verify_typed_cycle_bindings(
                 raise ValueError("DDO_SHADOW_SESSION_SCOPE_MISMATCH")
             venue = json.loads((root / "venue_instrument_binding.json").read_bytes())
             if scope.instrument_type == "SWAP":
+                from src.ops.ranked_shadow_slot4_successor_v1 import recorded_shadow_rank_matches_v1
+
                 original = session.get("n5_assignment")
                 if (
                     not isinstance(original, dict)
                     or original != venue.get("n5_assignment")
                     or original.get("lane_id") != scope.lane_id
-                    or original.get("selected_rank") != int(scope.lane_id.split("_")[1])
+                    or not recorded_shadow_rank_matches_v1(original, scope)
                     or original.get("venue_native_id") != scope.native_id
                     or original.get("canonical_instrument_id") != scope.canonical_id
                     or not all(

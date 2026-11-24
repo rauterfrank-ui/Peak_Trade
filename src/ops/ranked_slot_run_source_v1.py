@@ -8,12 +8,16 @@ import re
 
 from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1 import (
     RECOVERY_MODE_RESTART,
-    load_completed_fixed_rank_publication_v1,
+    load_completed_selection_publication_v1,
     load_pending_selection_publication_v1,
     recover_durable_lane_assignment_v1,
     topology_integrity_digest_v1,
 )
 from src.ops.governed_futures_universe_producer_v1.models_v1 import GovernedUniverseInstrumentV1
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import (
+    FIXED_RANK_ASSIGNMENT_POLICY,
+    SHADOW_SLOT4_SUCCESSOR_POLICY,
+)
 from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
     load_and_validate_universe_snapshot_v1,
 )
@@ -32,6 +36,7 @@ class RankedRunSlotV1:
     universe_id: str
     transition_id: str
     selection_root: Path | None = None
+    predecessor: dict | None = None
 
     def reference(self):
         s = self.selection
@@ -46,6 +51,11 @@ class RankedRunSlotV1:
             ranking_snapshot_id=s.ranking_snapshot_id,
             ranking_digest=s.ranking_integrity_digest,
             transition_id=self.transition_id,
+            **(
+                {"slot4_successor": {"predecessor": self.predecessor, "selection": s.to_dict()}}
+                if self.predecessor is not None
+                else {}
+            ),
         )
 
     def require_current_v1(self, now):
@@ -81,6 +91,10 @@ class RankedRunSlotV1:
 
 
 def read_ranked_run_slot_v1(config):
+    return _read_ranked_run_slot_v1(config, fixed_original_only=False)
+
+
+def _read_ranked_run_slot_v1(config, *, fixed_original_only):
     lane = config["lane"]
     if lane not in ("LANE_1", "LANE_2", "LANE_4", "LANE_5") or config["authority"] != "NONE":
         raise ValueError("RANKED_SLOT_SCOPE_INVALID")
@@ -89,12 +103,16 @@ def read_ranked_run_slot_v1(config):
         Path(source[k]) for k in ("topology_root", "ranking_root", "universe_root")
     )
     revision = source["repository_sha"]
-    receipt = load_completed_fixed_rank_publication_v1(topology)
+    receipt = load_completed_selection_publication_v1(topology)
+    policy = receipt["topology"]["initial_assignment_policy"] if receipt else None
+    successor = policy == SHADOW_SLOT4_SUCCESSOR_POLICY
+    if successor and fixed_original_only:
+        raise ValueError("SHADOW_SLOT4_FIXED_PREDECESSOR_REQUIRED")
     recovered = recover_durable_lane_assignment_v1(
         topology_state_root_base=topology, recovery_mode=RECOVERY_MODE_RESTART
     )
     if (
-        not receipt
+        policy not in (FIXED_RANK_ASSIGNMENT_POLICY, SHADOW_SLOT4_SUCCESSOR_POLICY)
         or not recovered
         or receipt["transition_id"] != source["transition_id"]
         or receipt["topology_digest"] != topology_integrity_digest_v1(recovered.to_dict())
@@ -111,6 +129,11 @@ def read_ranked_run_slot_v1(config):
     if not (selected.ok and ranked.ok and governed.ok):
         raise ValueError("RANKED_SLOT_SOURCE_INTEGRITY_FAILURE")
     s, r, u = selected.selection, ranked.snapshot, governed.snapshot
+    predecessor = None
+    if successor:
+        from src.ops.ranked_shadow_slot4_successor_v1 import validate_successor_source_v1
+
+        predecessor = validate_successor_source_v1(config, receipt, s, r, u)
     identity = (config["canonical_instrument_id"], config["native_instrument_id"])
     rows = [
         i
@@ -128,7 +151,7 @@ def read_ranked_run_slot_v1(config):
         or (s.instrument_id, s.venue_native_id) != identity
         or slot.canonical_instrument_id != s.instrument_id
         or ranks != [s.selected_rank]
-        or ranks != [int(lane.split("_")[1])]
+        or (not successor and ranks != [int(lane.split("_")[1])])
         or len(rows) != 1
         or (s.selection_id, s.integrity_digest)
         != (source["selection_id"], source["selection_digest"])
@@ -141,12 +164,26 @@ def read_ranked_run_slot_v1(config):
         or r.universe_snapshot_id != u.snapshot_id
         or (r.universe_source_digest, r.universe_payload_digest)
         != (u.source_digest, u.payload_digest)
-        or receipt != load_completed_fixed_rank_publication_v1(topology)
+        or receipt != load_completed_selection_publication_v1(topology)
         or load_pending_selection_publication_v1(topology)
     ):
         raise ValueError("RANKED_SLOT_ORIGINAL_REFERENCE_MISMATCH")
+    if not fixed_original_only and not successor and lane == "LANE_4":
+        from src.ops.ranked_shadow_slot4_successor_v1 import successor_root_v1
+
+        child = successor_root_v1(topology)
+        if load_pending_selection_publication_v1(child) or load_completed_selection_publication_v1(
+            child
+        ):
+            raise ValueError("SHADOW_SLOT4_PREDECESSOR_SUPERSEDED")
     return RankedRunSlotV1(
-        lane, s, rows[0], u.snapshot_id, receipt["transition_id"], Path(slot.lane_state_root)
+        lane,
+        s,
+        rows[0],
+        u.snapshot_id,
+        receipt["transition_id"],
+        Path(slot.lane_state_root),
+        predecessor,
     )
 
 

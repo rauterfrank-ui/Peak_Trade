@@ -16,6 +16,9 @@ from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
 )
 
 
+STARTUP_PORTFOLIO_MAX_AGE_SECONDS = 5
+
+
 def require_startup_portfolio_v1(observed_portfolio):
     if not isinstance(observed_portfolio, PortfolioTruthSnapshotV1):
         raise ValueError("OBSERVED_PORTFOLIO_REQUIRED")
@@ -107,7 +110,7 @@ def read_startup_portfolio_document_v1(path, *, expected_account_identity, now_u
         for t in (event, captured, now)
     ):
         raise ValueError("STARTUP_OBSERVATION_TIME_INVALID")
-    if not 0 <= now - event <= 5 or not event <= captured <= now:
+    if not 0 <= now - event <= STARTUP_PORTFOLIO_MAX_AGE_SECONDS or not event <= captured <= now:
         raise ValueError("STARTUP_OBSERVATION_STALE_OR_FUTURE")
     rows = payload.get("positions")
     if not isinstance(rows, list):

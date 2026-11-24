@@ -114,6 +114,18 @@ def _inspect(config, now, current, admission, *, include_bound=False):
 
 def observe_ranked_shadow_positions_v1(state, assignment, *, session_id, now):
     """Read the Shadow owner's base quantities and express positions in native contracts."""
+    if (state.session_id, state.instrument_id, state.venue_instrument_id) != (
+        session_id,
+        assignment.instrument.canonical_instrument_id,
+        assignment.instrument.venue_native_inst_id,
+    ):
+        raise ValueError("SHADOW_PORTFOLIO_SCOPE_MISMATCH")
+    return ranked_shadow_positions_from_snapshot_v1(
+        state.portfolio.snapshot(), assignment, session_id=session_id, now=now
+    )
+
+
+def ranked_shadow_positions_from_snapshot_v1(snapshot, assignment, *, session_id, now):
     from src.ops.productive_reconciliation_runtime_binding_v1 import (
         PortfolioTruthSnapshotV1,
         PositionTruthV1,
@@ -122,13 +134,11 @@ def observe_ranked_shadow_positions_v1(state, assignment, *, session_id, now):
     instrument = assignment.instrument
     scope = require_i17_shadow_instrument_v1((instrument.venue_native_inst_id,))
     if (
-        (state.session_id, state.instrument_id, state.venue_instrument_id, assignment.lane_id)
-        != (session_id, scope.canonical_id, scope.native_id, scope.lane_id)
+        assignment.lane_id != scope.lane_id
         or instrument.canonical_instrument_id != scope.canonical_id
         or scope.instrument_type != "SWAP"
     ):
         raise ValueError("SHADOW_PORTFOLIO_SCOPE_MISMATCH")
-    snapshot = state.portfolio.snapshot()
     if snapshot["orders_submitted"] is not False or snapshot["broker_writes"] is not False:
         raise ValueError("SHADOW_PORTFOLIO_ORIGINAL_REQUIRED")
     rows = snapshot["state"]["positions"]
@@ -253,6 +263,10 @@ def resolve_ranked_shadow_entry_selection_v1(
         mark_price_by_native_id={native: row["markPx"]},
     )
     evidence = gate.evidence.to_dict()
+    if native == "PIEVERSE-USDT-SWAP":
+        from src.ops.ranked_shadow_slot4_rotation_v1 import retain_slot4_observation_v1
+
+        retain_slot4_observation_v1(state, current, observed, "entry")
     receipt = dict(
         session_id=session_id,
         lane=assignment.lane_id,

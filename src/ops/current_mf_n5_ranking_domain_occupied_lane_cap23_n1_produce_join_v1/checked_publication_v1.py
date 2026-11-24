@@ -27,6 +27,7 @@ from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1
 )
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import (
     FIXED_RANK_ASSIGNMENT_POLICY,
+    SHADOW_SLOT4_SUCCESSOR_POLICY,
 )
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.soph_shadow_bootstrap_v1 import (
     SOPH_SHADOW_INITIAL_ASSIGNMENT_POLICY,
@@ -448,6 +449,8 @@ def resume_pending_lane_publication_v1(
     if receipt is None:
         return None
     writer.assert_held()
+    if receipt["topology"].get("initial_assignment_policy") == SHADOW_SLOT4_SUCCESSOR_POLICY:
+        _fail("SHADOW_SLOT4_SUCCESSOR_SCOPED_RECOVERY_REQUIRED")
     if expected_shadow_genesis is not None:
         if (
             receipt["topology"] != expected_shadow_genesis.to_dict()
