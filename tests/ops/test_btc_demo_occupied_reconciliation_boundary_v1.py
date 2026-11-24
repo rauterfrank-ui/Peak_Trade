@@ -297,7 +297,7 @@ def test_legacy_first_fill_report_remains_readable_without_occupied_upgrade(tmp_
     try:
         restored, published = host.budget.bind_confirmed_entry_v1(
             reconciliation=legacy,
-            repository_sha="f" * 40,
+            repository_sha=host.repository_sha,
             config_digest=EXIT_CONFIG,
             writer_session_id="legacy-first-fill-readback",
             g17_producer=host.g17,

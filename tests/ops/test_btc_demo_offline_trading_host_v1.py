@@ -70,15 +70,21 @@ def setup_host(tmp_path, monkeypatch, direction=1, *, policy=None, testnet_v2=Fa
         evidence_store_root=tmp_path / "g17",
         mark_closes=closes,
     )
+    from pathlib import Path
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+        _short_repository_sha_v1,
+    )
+
+    repository_sha = _short_repository_sha_v1(Path(__file__).resolve().parents[2])
     host = BtcDemoOfflineTradingHostV1(
         budget_host=budget,
         g17_producer=producer,
-        repository_sha="f" * 40,
+        repository_sha=repository_sha,
         config_digest=EXIT_CONFIG,
         writer_session_id="btc-offline-join",
     )
     reconciliation = non_productive_harness_master_v2_reconciliation_admission_v1(
-        bound=bound, session_id="btc-offline-join", repository_sha="f" * 40
+        bound=bound, session_id="btc-offline-join", repository_sha=repository_sha
     )
     return host, candles, reconciliation, row
 
@@ -187,6 +193,35 @@ def test_original_btc_core_and_g17_reach_real_first_fill_publication(
         assert fill["entry_price_usd"] == "64000"
         assert fill["filled_quantity"] == identity["final_quantity"]
         assert fill["fees"] == [{"trade_id": "98", "currency": "USDC", "signed_amount": "-0.0032"}]
+        from scripts.ops.btc_demo_entry_learning_handoff_v1 import (
+            btc_demo_entry_learning_handoff_v1,
+        )
+        from src.learning.deterministic_decision_outcome_v0.ledger_v0 import LEDGER_FILENAME_DEFAULT
+
+        args = dict(
+            measurement=research,
+            decision_ledger=demo._demo_lane_root(host.budget.root)
+            / "ddo"
+            / LEDGER_FILENAME_DEFAULT,
+            output_root=tmp_path / "entry-learning",
+        )
+        for field in ("decision_id", "config_digest", "cycle_id", "repository_sha"):
+            with pytest.raises(ValueError, match="ORIGINAL_DOUBLE_PLAY_DECISION_MISMATCH"):
+                btc_demo_entry_learning_handoff_v1(
+                    **dict(args, measurement={**research, field: "foreign"})
+                )
+        handoff = btc_demo_entry_learning_handoff_v1(**args)
+        assert handoff == btc_demo_entry_learning_handoff_v1(**args)
+        assert handoff["measurement"]["decision_id"] == entry.cycle.replay.evidence.decision_id
+        assert (
+            fill["decision_source"]["policy_decision_id"]
+            == entry.cycle.replay.evidence.entry_exit_policy_ref
+        )
+        assert (
+            handoff["learning_evidence"]["outcome_evidence_provenance"]["fill_source_type"]
+            == "VENUE_TESTNET"
+        )
+
     finally:
         host.budget.owner.close()
 

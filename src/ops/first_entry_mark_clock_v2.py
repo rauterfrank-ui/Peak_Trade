@@ -97,6 +97,7 @@ def run_first_entry_mark_cycle_v2(
     prepare_pretrade: Callable[[str, str], None] | None = None,
     lane_id: str = LANE_ID,
     cursor_store_root: Path | None = None,
+    capture_demo_decision: bool = False,
 ) -> FirstEntryMarkCycleV2:
     """Take one fresh Mark through the existing Core and durable entry cursor.
 
@@ -147,8 +148,34 @@ def run_first_entry_mark_cycle_v2(
         ):
             raise ValueError("FIRST_ENTRY_MARK_ISOLATED_CURSOR_ROOT_REQUIRED")
         lane_root = selected
+    from contextlib import nullcontext
+
+    capture_scope = nullcontext()
+    ledger_path = None
+    if capture_demo_decision:
+        from src.learning.deterministic_decision_outcome_v0.ledger_v0 import LEDGER_FILENAME_DEFAULT
+        from src.learning.deterministic_decision_outcome_v0.capture_v0 import DdoCaptureBindingV0
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+            session_ddo_writer_scope_v1,
+        )
+        from src.ops import btc_demo_lane3_v2 as demo
+
+        demo_lane = demo._demo_lane_root(base)
+        ledger_path = demo_lane / "ddo" / LEDGER_FILENAME_DEFAULT
+        if (
+            lane_id != demo._LANE
+            or bound.venue_native_id != demo._NATIVE
+            or lane_root != demo_lane / "cursor" / lane_id
+            or ledger_path.resolve() != ledger_path
+        ):
+            raise ValueError("FIRST_ENTRY_BTC_DEMO_DECISION_LEDGER_SCOPE")
+        capture_scope = session_ddo_writer_scope_v1(
+            DdoCaptureBindingV0(
+                enabled=True, ledger_path=ledger_path, precise_host_decision_time=True
+            )
+        )
     lane_root.mkdir(parents=True, exist_ok=True, mode=0o700)
-    with (lane_root / "first_entry_mark_v2.lock").open("a") as lock:
+    with capture_scope, (lane_root / "first_entry_mark_v2.lock").open("a") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         prior = load_current_productive_sidestate_confirmation_cursor_v1(lane_root)
         budget_path = lane_root / "first_entry_budget_v2.json"
@@ -234,10 +261,11 @@ def run_first_entry_mark_cycle_v2(
             bound_instrument=bound, store_root=lane_root, cycle_id=lane_cycle_id
         )
         # This bounded start runs the original decision and cursor owners.
-        # Offline learning capture/export is outside its reservation deadline.
+        # The BTC Demo entry observes the original decision in its lane ledger.
         cycle = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
             cycle_id=lane_cycle_id,
+            ddo_durable_evidence_ledger_path=ledger_path,
             observed_unix=observed_unix,
             mark_px=provenance.mark_px,
             index_px=provenance.index_px,

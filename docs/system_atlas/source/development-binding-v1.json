@@ -1709,7 +1709,7 @@
     {
       "path": "scripts/ops/btc_demo_entry_learning_handoff_v1.py",
       "before_sha256": null,
-      "sha256": "7965156e9bef51558c3da291d89557d643ebe80e4580b70bd181a753d64e5229"
+      "sha256": "0ee8b36947d139e1db1733695b767989fba1c03dc1478dc55884782769bcaee8"
     },
     {
       "path": "scripts/ops/capture_offline_learning_mark_window_v1.py",
@@ -2669,12 +2669,12 @@
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
       "before_sha256": null,
-      "sha256": "5ad2656170b28d2d105621dc1b627f1f2ea4955847c78e89baaa32ae2b8343b1"
+      "sha256": "325cc5be058ec6cecabdd9f505da34a2554499bd409c4d366b554465583f7149"
     },
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "388d852782ad3e28cc9ce010b690a0fce926e8727aaa4dbec7413ab4ac6ef84e"
+      "sha256": "ee95955262c9600437db19c52be3ff3ab6dddc2f1af3034ecee63df4bb6d7f01"
     },
     {
       "path": "src/ops/btc_demo_testnet_entry_reservation_v1.py",
@@ -3039,7 +3039,7 @@
     {
       "path": "src/ops/first_entry_mark_clock_v2.py",
       "before_sha256": null,
-      "sha256": "6e74b0d1b48ffccd61a37e7220cfe85a3cd3c48e41880d3537c8c9235b547fec"
+      "sha256": "0c7f87b736401bf0dd76a1286fd53acdda426dfecb6250745b815294bfcd81dc"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py",
@@ -3139,7 +3139,7 @@
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
       "before_sha256": "10dfb5217be629495ff97c0c57b179c27583b6458da44c75c095d1560d4a056c",
-      "sha256": "204e226ce2c4c9b110e5c31134cde271b2149fb89a33b2784fa404fcc24a9a33"
+      "sha256": "5476450143f9e4b56e25f02c50c62f8f8a6f087104ca08dbdce547849ce41504"
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -5079,12 +5079,12 @@
     {
       "path": "tests/ops/test_btc_demo_occupied_reconciliation_boundary_v1.py",
       "before_sha256": null,
-      "sha256": "980a93365163fecab64df7fe662d65e6cc2219f24c100cb5ec82142116d0ead6"
+      "sha256": "2c7e0b6085a203ec13e5f00d0bcdaf49e9a14c87b4ea6b0412885e7c192e6cdf"
     },
     {
       "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "88d0754b3b94db281707aea0e085ab9a5716fff77196c358e7cf88aedc2fc144"
+      "sha256": "b06f3028e1000ed244e43dc02b7c5709929486582d76ca162550ecaa11b8d060"
     },
     {
       "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
@@ -6348,7 +6348,7 @@
     }
   ],
   "scope_addendum": "BTC offline continuation on PR7381: real original Core/G17/first-fill/C1/Exit and occupied consumers in both directions with explicit isolated state addressing. Original decision lineage is checked before opening; research readback and recovery retain first-publication provenance. USD/native prices remain distinct from USDC capital, with no sizing operands or settlement grant. Synthetic original journal/GET fixtures do not prove monetary entry or autonomous Demo operation. No session, credentials, network, send, training, protected owner or seal change.",
-  "btc_occupied_reconciliation_scope": "BTC occupied continuation requires a current original identity/episode/reconciliation and all original receipt clocks. Full parsed batches have immutable local readback; observation records create no capital ledger or authenticity/permit. Original owner lock fences in-process budget transitions during Core consumption. USD price, private settlement label, public index valuation and canonical risk numeraire retain separate roles. Native USD normalization and original TESTNET reversal/booking/continuous authorization remain open. No protected owner, financial formula, seal, credential, real session or send changes.",
+  "btc_occupied_reconciliation_scope": "BTC occupied continuation requires a current original identity/episode/reconciliation and all original receipt clocks. Full parsed batches have immutable local readback; observation records create no capital ledger or authenticity/permit. Original owner lock fences in-process budget transitions during Core consumption. USD price, private settlement label, public index valuation and canonical risk numeraire retain separate roles. Native USD normalization and original TESTNET reversal/booking/continuous authorization remain open. No protected owner, financial formula, seal, credential, real session or send changes. BTC Demo first-entry capture binds the original Double Play policy decision and its decision clock to the confirmed opening evidence and its DDO learning consumer. The exit policy configuration and the learning configuration have separate identities.",
   "paper_shadow_mark_clock_scope": "Bind the reviewed Mark field, original public-book quote/time witness and rejected-capture receipts to their existing Paper/Shadow writers and verifier. Offline IRYS episode assessment remains simulated USD economics. Original archives, freshness/funding/risk gates, BTC/Testnet and runtime authority are unchanged. No operating session is started.",
   "soph_shadow_capital_risk_scope": {
     "base_sha": "9e6fd12a2872a61540701ef1439808502de8acfe",

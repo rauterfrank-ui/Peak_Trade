@@ -233,6 +233,7 @@ class BtcDemoOfflineTradingHostV1:
             reconciliation=reconciliation,
             lane_id=demo._LANE,
             cursor_store_root=self.cursor_root,
+            capture_demo_decision=True,
         )
 
     def assess_monetary_entry_v1(self, *, entry, coverage, now):
