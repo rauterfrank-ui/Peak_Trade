@@ -632,11 +632,11 @@ def main(argv=None):
                     or args.card_cap24_evidence_root is None
                 ):
                     raise ValueError("RANKED_PAPER_SESSION_AND_CAP24_REQUIRED")
+                admission = read_paper_entry_admission_v1(ranked_config, assignment)
                 card_assignment = _read_cap24_binding(
                     args.card_cap24_evidence_root,
-                    entry_repository_sha=assignment.selection.repository_sha,
+                    entry_repository_sha=admission.selection.repository_sha,
                 )
-                admission = read_paper_entry_admission_v1(ranked_config, assignment)
                 admission.require_binding_v1(card_assignment)
                 admission.require_current_v1(time())
                 if "paper_entry_admission" in ranked_config:
