@@ -15,7 +15,7 @@ def test_every_path_is_placed_and_current_research_boundaries_keep_their_scope()
     model = COVERAGE["_load"](ROOT, "current-model.json")
     doc, rows, routes, signals, counts = COVERAGE["load_coverage"](ROOT, model)
     assert counts["atlas_assigned_paths"] == len(rows)
-    assert counts["atlas_assigned_paths"] - counts["atlas_baseline_assigned_paths"] == 155
+    assert counts["atlas_assigned_paths"] - counts["atlas_baseline_assigned_paths"] == 156
     assert rows["src/ops/ranked_shadow_slot4_pre_tick_v1.py"]["area"] == "STORE"
     assert rows["src/ops/ranked_shadow_slot4_rotation_v1.py"]["area"] == "ACCOUNTING"
     assert rows["scripts/ops/up_paper_ws_depth_v1.py"]["area"] == "DATA"
@@ -26,6 +26,7 @@ def test_every_path_is_placed_and_current_research_boundaries_keep_their_scope()
     assert counts["atlas_boundary_records"] == len(doc["routes"]) + len(doc["repo_contracts"])
     assert rows["scripts/ops/inspect_btc_demo_account_v1.py"]["area"] == "VIEW"
     assert rows["tests/ops/test_inspect_btc_demo_account_v1.py"]["role"] == "test"
+    assert rows["tests/ops/test_btc_demo_entry_reservation_rehearsal_v1.py"]["role"] == "test"
     assert len(signals) == 58
 
     assert routes["GRENZE-P26"]["status"] == "retired_direct_path"
