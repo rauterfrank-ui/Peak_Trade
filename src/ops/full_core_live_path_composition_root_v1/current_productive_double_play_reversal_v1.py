@@ -751,7 +751,7 @@ def _read_retained_net_reversal_v1(lane_pair, scope):
 
 
 def _inspect_original_reversal_hold_v1(owner, bound, reversal):
-    basis = owner.live_reversal_slot_basis_v1(
+    basis = owner.authenticated_reversal_slot_basis_v1(
         slot_id=reversal.episode.lane_id, reservation_id=reversal.old_reservation_id, bound=bound
     )
     if (
@@ -825,7 +825,9 @@ class CurrentPostNetReversalContextV1:
             or source.position_margin_modes.get(proof.reservation_id) != (envelope.td_mode,)
             or entry["envelope"]["td_mode"] != envelope.td_mode
             or entry["reconciliation"]["reservation_released"] is not False
-            or reversal.episode.account_scope.execution_environment != "LIVE"
+            or reversal.episode.account_scope.execution_environment not in {"LIVE", "TESTNET"}
+            or reversal.episode.account_scope.execution_environment != host.execution_environment
+            or host.execution_environment != host.owner.execution_environment_v1()
             or reversal.episode.account_scope.account_identity != recovery.account
             or host.expected_account_identity != recovery.account
             or any(
@@ -842,6 +844,17 @@ class CurrentPostNetReversalContextV1:
         ):
             raise ValueError("POST_AUTHORITY_REVERSAL_CURRENT_POSITION_UNPROVEN")
         _inspect_original_reversal_hold_v1(host.owner, bound, reversal)
+        if host.execution_environment == "TESTNET":
+            from src.ops.btc_demo_net_reversal_financials_v1 import verify_reversal_financials_v1
+
+            record = verify_reversal_financials_v1(reversal)
+            from .pretrade_acquisition_v1 import acquisition_age_seconds_v1
+
+            for raw in record["original_sources"].values():
+                acquisition_age_seconds_v1(
+                    acquired_at_utc=raw["acquired_at_utc"],
+                    now_utc=datetime.fromtimestamp(now, epoch.tzinfo).isoformat(),
+                )
 
 
 def read_retained_net_reversal_post_context_v1(
@@ -939,6 +952,8 @@ def _prepare_authenticated_net_reversal_post_v1(
     prove_one_shot_join_standing_boundary_v1()
     host = recovery.host
     proof = authenticated_entry.proof
+    if authorization.grant.environment != host.execution_environment:
+        raise ValueError("POST_AUTHORITY_REVERSAL_GRANT_ENVIRONMENT_MISMATCH")
     live_sha = resolve_and_assert_live_post_execution_baseline_v1(
         declared_baseline_origin_main_sha=baseline_origin_main_sha,
         integrity_backend=execution_integrity_backend,
@@ -979,6 +994,7 @@ def _prepare_authenticated_net_reversal_post_v1(
             action=DIRECT_DOUBLE_PLAY_REVERSAL,
             envelope_digest=envelope.envelope_digest,
             attempt_root=root,
+            execution_environment=host.execution_environment,
         )
         persist_durable_post_owner_go_consume_v1(
             store_root=root,
@@ -1063,7 +1079,9 @@ def recover_submitted_net_reversal_v1(*, lane_pair, get_budget_host, proof_root=
     reversal, envelope = _read_retained_net_reversal_v1(lane_pair, scope)
     if (
         reversal.episode.account_scope
-        != PositionEpisodeScopeV1(budget_host.expected_account_identity, "LIVE")
+        != PositionEpisodeScopeV1(
+            budget_host.expected_account_identity, budget_host.execution_environment
+        )
         or mandate["owner_go_token"] != POST_OWNER_GO
         or not mandate["record"].get(SHARED_POST_OWNER_CLAIM_FIELD)
     ):

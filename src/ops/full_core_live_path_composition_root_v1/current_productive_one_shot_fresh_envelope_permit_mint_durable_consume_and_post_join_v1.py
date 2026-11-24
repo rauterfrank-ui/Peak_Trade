@@ -652,17 +652,35 @@ def execute_authenticated_net_reversal_post_v1(
     authorization,
     baseline_origin_main_sha,
     perform_real_venue_post: bool,
-    k1_backend: OsNativeStoreLookupBackendV1,
+    k1_backend: OsNativeStoreLookupBackendV1 | None = None,
     opener_factory: Callable[[], OpenerDirector] | None = None,
     execution_integrity_backend=None,
+    testnet_signing_handle=None,
 ) -> FullCoreTradeOrderPostResultV1:
     """Send the sealed occupied-slot net order under its original one-shot grant."""
     from .current_productive_double_play_reversal_v1 import (
         _prepare_authenticated_net_reversal_post_v1,
     )
 
-    if perform_real_venue_post is not True or k1_backend is None:
+    testnet = recovery.host.execution_environment == "TESTNET"
+    if perform_real_venue_post is not True or (not testnet and k1_backend is None):
         raise ValueError("POST_AUTHORITY_REVERSAL_EXPLICIT_SEND_AND_K1_REQUIRED")
+    if testnet:
+        from .checkout_independent_credential_okx_venue_auth_headers_v1 import (
+            FullCoreK1BoundVenueAuthHandleV1,
+            require_same_k1_venue_credential_v1,
+        )
+
+        if (
+            type(testnet_signing_handle) is not FullCoreK1BoundVenueAuthHandleV1
+            or testnet_signing_handle.execution_environment != "TESTNET"
+        ):
+            raise ValueError("POST_AUTHORITY_REVERSAL_TESTNET_SIGNER_REQUIRED")
+        require_same_k1_venue_credential_v1(
+            recovery.authenticated_reconciliation.original_handle_v1(), testnet_signing_handle
+        )
+    elif testnet_signing_handle is not None:
+        raise ValueError("POST_AUTHORITY_REVERSAL_SIGNER_ENVIRONMENT_MISMATCH")
     context, safety, attempt, claim = _prepare_authenticated_net_reversal_post_v1(
         lane_pair=lane_pair,
         recovery=recovery,
@@ -673,9 +691,17 @@ def execute_authenticated_net_reversal_post_v1(
     )
     envelope = context.envelope
     try:
-        with open_current_productive_k1_opaque_signing_handle_session_v1(
-            owner_go=K1_OPAQUE_SIGNING_OWNER_GO, backend=k1_backend
-        ) as session:
+        from contextlib import nullcontext
+        from types import SimpleNamespace
+
+        session_source = (
+            nullcontext(SimpleNamespace(signing_handle=testnet_signing_handle))
+            if testnet
+            else open_current_productive_k1_opaque_signing_handle_session_v1(
+                owner_go=K1_OPAQUE_SIGNING_OWNER_GO, backend=k1_backend
+            )
+        )
+        with session_source as session:
             sender = FullCoreProductiveHttpTradeOrderTransportV1(
                 handle=FullCoreSendCredentialHandleV1(
                     handle_id=session.signing_handle.handle_id, bound=True, material_loaded=False
