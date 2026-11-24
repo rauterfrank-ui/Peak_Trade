@@ -2664,7 +2664,7 @@
     {
       "path": "src/ops/btc_demo_budget_reconciliation_host_v1.py",
       "before_sha256": null,
-      "sha256": "f1e959673d8b04fc9f0ee129e1b6bed67d93dd20a8e41b42fa8e196952df5488"
+      "sha256": "bd3e00db033785ba5f36faa663a5a8c82fdd4b67e734224cdeb54cea1df1d2f9"
     },
     {
       "path": "src/ops/btc_demo_lane3_v2.py",
@@ -2674,12 +2674,12 @@
     {
       "path": "src/ops/btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "9dc87077cef4d774911d916f7eacc2a2534cd8e0e5d01b3ef8525de3d651051b"
+      "sha256": "388d852782ad3e28cc9ce010b690a0fce926e8727aaa4dbec7413ab4ac6ef84e"
     },
     {
       "path": "src/ops/btc_demo_testnet_entry_reservation_v1.py",
       "before_sha256": null,
-      "sha256": "077350420b8c9a0c6dd4f867fb47ce8a37d3ae18ada39a1c0f5e4a4f8220afc7"
+      "sha256": "c91b8c7dcd9d8c986cadcaea05516ea68f13312f39907a1f7c588502f8b5651f"
     },
     {
       "path": "src/ops/canonical_i17_productive_shadow_contract_readiness_v1/verifier_v1.py",
@@ -5084,7 +5084,7 @@
     {
       "path": "tests/ops/test_btc_demo_offline_trading_host_v1.py",
       "before_sha256": null,
-      "sha256": "b48601c0d50abff0931b3ecc2ace5cbe6ba8281798e8958c582bbbf3989d88f2"
+      "sha256": "88d0754b3b94db281707aea0e085ab9a5716fff77196c358e7cf88aedc2fc144"
     },
     {
       "path": "tests/ops/test_btc_demo_source_observation_integrity_v1.py",
@@ -5094,7 +5094,7 @@
     {
       "path": "tests/ops/test_btc_demo_testnet_entry_reservation_v1.py",
       "before_sha256": null,
-      "sha256": "c7fe65e2b3bf38b244432dc76dfebf3b469914266cf1d356607d640f5e2f4475"
+      "sha256": "a19c3db704f016384a13d79b22f43f339647eaf264473f263dff5db90336f6c3"
     },
     {
       "path": "tests/ops/test_canonical_i17_productive_shadow_contract_readiness_v1.py",
@@ -7941,5 +7941,5 @@
   },
   "shadow_slot4_generation_scope": "A Shadow session records its bound N5 generation, analytical position, pending budget work and killstate before its first normalized mark. A crash checkpoint is historical evidence for the rotation owner. A generation change requires the existing replacement clearance and sealed originals. The historical PIEVERSE abort remains unresolved.",
   "btc_entry_reservation_rehearsal_scope": "Slot 3 offline first-entry rehearsal binds the BTC Core decision, its stored USD mark and effective Scope to the existing private linear USDC costing and simulated 25 USDC budget. Both sides retain a sized obligation with opening, closing and funding provisions after cold read. The bounded policy continues to reject a TESTNET host. Runtime authority is NONE.",
-  "btc_testnet_offline_reservation_review": "The isolated Slot 3 TESTNET V2 budget owner binds the synthetic BTC entry and source clock before sizing and journaling a first hold. It reuses the original durable writer and recovery format. Both directions use separate 25 USDC budgets. The simulated rehearsal consumes the sealed 29P entry behind a reservation-only return. The protected productive sources match main. Runtime authority is NONE."
+  "btc_testnet_offline_reservation_review": "The isolated Slot 3 TESTNET V2 budget owner binds the synthetic BTC entry and source clock before sizing and journaling a first hold. It reuses the original durable writer and recovery format. Both directions use separate 25 USDC budgets. The simulated rehearsal consumes the sealed 29P entry behind a reservation-only return. The protected productive sources match main. Runtime authority is NONE. The isolated book replay consumes the same reservation, decision and journal revision and retains signed opening fees per synthetic fill. A fixture hold cannot enter venue reconciliation."
 }

@@ -433,6 +433,14 @@ class BtcDemoOfflineTradingHostV1:
                 clock=clock,
             )
 
+    def replay_reserved_entry_fill_v1(self, *, entry, reservation_id, expected_revision):
+        """Book an isolated full-depth fixture replay against its original hold."""
+        from src.ops.btc_demo_testnet_entry_reservation_v1 import _book_fixture_entry_v1
+
+        with exclusive_v1(self.cursor_root / "first_entry_mark_v2.lock"):
+            cycle = self._original_entry_cycle(entry)
+            return _book_fixture_entry_v1(self.budget, cycle, reservation_id, expected_revision)
+
     def rehearse_entry_reservation_v1(self, *, entry, injected, recovery):
         """Apply the private linear settlement contract in a separate simulation journal.
 

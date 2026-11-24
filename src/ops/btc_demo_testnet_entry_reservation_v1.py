@@ -256,6 +256,12 @@ def _sizing(cycle, bound, instruments, equity, observed_at, policy, source_diges
 
 def require_fixture_journal_source_v1(owner, *, checksum, slot, decision, cycle, evaluated_at):
     """Verify the fixture journal and its original input before honoring a replay clock."""
+    capture = _read_fixture_capture(owner, checksum, slot, decision, cycle)
+    _need(capture["evaluated_at_utc"] == evaluated_at, "BTC_TESTNET_ORIGINAL_SOURCE_MISMATCH")
+    return capture
+
+
+def _read_fixture_capture(owner, checksum, slot, decision, cycle):
     scope = owner.durable_scope_identity_v1()
     root = Path(scope["root"])
     _need(len(root.parents) >= 3, "BTC_TESTNET_ORIGINAL_OWNER_REQUIRED")
@@ -281,7 +287,6 @@ def require_fixture_journal_source_v1(owner, *, checksum, slot, decision, cycle,
     _need(
         cost.digest(capture) == checksum
         and capture["schema"] == "btc_testnet_offline_entry_sources.v2"
-        and capture["evaluated_at_utc"] == evaluated_at
         and capture["source"] == SOURCE
         and capture["execution_environment"] == "TESTNET"
         and capture["account"] == scope["account"]
@@ -672,3 +677,121 @@ def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_
     )
     _need(result.disposition is ReserveDispositionV1.ADMITTED, ",".join(result.reason_codes))
     return result.reservation.reservation_id, checksum
+
+
+def _book_fixture_entry_v1(budget, cycle, rid, revision):
+    """Replay the reserved market entry at its archived book and signed taker rate."""
+    from src.execution.paper.futures_accounting import notional_value
+    from src.governance.canonical_order_intent_v1 import (
+        CanonicalOrderIntentBuildInputV1,
+        build_canonical_order_intent_v1,
+    )
+
+    owner = budget.owner
+    _need(type(owner) is BtcDemoBudgetOwnerV2, "BTC_TESTNET_V2_OWNER_REQUIRED")
+    with owner._lock:
+        _need(budget.budget_revision_ref_v1() == revision, "BTC_DEMO_BUDGET_HEAD_CHANGED")
+        key = owner._by_id.get(rid)
+        _need(key is not None, "BTC_TESTNET_ORIGINAL_RESERVATION_REQUIRED")
+        hold = owner._by_key[key]
+        sizing = owner._sizing_bindings[key]
+        receipt = sizing.entry_cost_binding.validate_v1(
+            monetary_source=sizing.monetary_source,
+            applied_input=sizing.applied_input,
+            decision=sizing.decision,
+        )
+        _need(
+            hold.state.value == "RESERVED"
+            and rid not in owner.execution_links_v1()
+            and hold.decision_id == cycle.replay.evidence.decision_id
+            and hold.cycle_id == cycle.cycle_id
+            and receipt["native_id"] == budget.bound.venue_native_id
+            and receipt["quote_currency"] == "USDC",
+            "BTC_TESTNET_ORIGINAL_USDC_FIXTURE_HOLD_REQUIRED",
+        )
+        capture = _read_fixture_capture(
+            owner,
+            sizing.offline_testnet_source_digest,
+            str(hold.slot_id),
+            hold.decision_id,
+            hold.cycle_id,
+        )
+        _need(
+            revision[0] == capture["parent_revision"][0] + 2,
+            "BTC_TESTNET_ORIGINAL_RESERVATION_REVISION_REQUIRED",
+        )
+        side = receipt["side"]
+        intent = build_canonical_order_intent_v1(
+            CanonicalOrderIntentBuildInputV1(
+                sizing_input=sizing.applied_input,
+                sizing_decision=sizing.decision,
+                intent_id="btc-offline-entry:" + rid,
+                trading_epoch=capture["decision_epoch"],
+                canonical_trading_logic_version="integrated_offline_trading_logic_replay_v1",
+                intent_action=cycle.decision_outcome.upper(),
+                policy_digest=capture["policy_digest"],
+                order_type_policy="MARKET_ONLY",
+                price_policy="EXPLICIT_NONE",
+                time_in_force_policy="GTC",
+                max_slippage_policy="ARCHIVED_BOOK_DEPTH_ONLY",
+                expected_position_side=side,
+                current_reconciled_exposure=Decimal(0),
+            )
+        ).intent
+        _need(
+            intent is not None and intent.side == side and not intent.submission_authorized,
+            "BTC_FIXTURE_INTENT_REQUIRED",
+        )
+        book = capture["sources"]["book"]["payload"]["data"][0]
+        remaining = intent.quantity
+        notional = Decimal(0)
+        fills = []
+        rate = Decimal(receipt["taker_rate"])
+        multiplier = sizing.applied_input.instrument.contract_multiplier
+        for price, size, *_ in book["asks" if side == "LONG" else "bids"]:
+            quantity = min(remaining, Decimal(size))
+            value = notional_value(
+                mark_price=Decimal(price), qty=quantity, contract_size=multiplier
+            )
+            fills.append(
+                dict(price=price, contracts=str(quantity), signed_fee_usdc=str(value * rate))
+            )
+            notional += value
+            remaining -= quantity
+            if remaining == 0:
+                break
+        _need(
+            remaining == 0
+            and notional / multiplier / intent.quantity == Decimal(receipt["book_vwap"]),
+            "BTC_FIXTURE_DEPTH_MISMATCH",
+        )
+        fee = sum(Decimal(fill["signed_fee_usdc"]) for fill in fills)
+        record = dict(
+            schema="btc_offline_reserved_entry_fill.v1",
+            source=SOURCE,
+            authority="NONE",
+            execution_model="ARCHIVED_BOOK_REPLAY",
+            account=budget.account,
+            lane=demo._LANE,
+            native_id=receipt["native_id"],
+            instrument_id=intent.instrument_id,
+            reservation_id=rid,
+            revision=list(revision),
+            replay_as_of=capture["evaluated_at_utc"],
+            book_observed_at=capture["sources"]["book"]["acquired_at_utc"],
+            source_digest=sizing.offline_testnet_source_digest,
+            decision_id=intent.decision_id,
+            cycle=hold.cycle_id,
+            intent_digest=intent.semantic_digest,
+            side=side,
+            contracts=str(intent.quantity),
+            average_price=receipt["book_vwap"],
+            fills=fills,
+            signed_opening_fee_usdc=str(fee),
+            fixture_budget_after_fee_usdc=str(demo._BUDGET_USDC + fee),
+        )
+        lane = demo._demo_lane_root(budget.root)
+        path = lane / "simulated-reserved-entries" / (cost.digest(rid) + ".json")
+        _need(path.resolve() == path, "BTC_TESTNET_FIXTURE_SOURCE_PATH_INVALID")
+        immutable_json_v1(path, record)
+        return json.loads(path.read_bytes())
