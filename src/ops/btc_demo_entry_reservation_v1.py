@@ -186,10 +186,18 @@ def reserve_btc_demo_entry_v1(host, *, cycle, batch, movement_input, clock):
         evaluated_at_utc=now,
     )
     funding = cost.FundingCostObservationV1.capture_v1(**base, source=rows["funding"])
-    movement = AbsoluteMovementCostObservationV1.capture_v1(
-        instrument_raw_input=movement_input,
-        opening_observation=opening,
-        evaluated_at_utc=now,
+    from src.ops.portfolio_capital_reservation_budget_v1.absolute_movement_cost_v1 import (
+        EntryPublicMarkSourceV1,
+    )
+
+    movement = (
+        movement_input.observe_v1(bound=bound, opening_observation=opening)
+        if type(movement_input) is EntryPublicMarkSourceV1
+        else AbsoluteMovementCostObservationV1.capture_v1(
+            instrument_raw_input=movement_input,
+            opening_observation=opening,
+            evaluated_at_utc=now,
+        )
     )
     capture = dict(
         schema="btc_demo_entry_sources.v1",

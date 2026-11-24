@@ -61,11 +61,18 @@ class BoundedDemoSessionRegistrationV1:
 def validate_session_control_v1(owner, record):
     if record is None:
         return None
-    if type(record) is not dict or record.get("phase") not in {"RUNNING", "CLOSING", "CLOSED"}:
+    if type(record) is not dict or record.get("phase") not in {
+        "RUNNING",
+        "CLOSING",
+        "CLOSED",
+        "COMPLETED_NO_ENTRY",
+    }:
         raise ValueError("BTC_DEMO_SESSION_CONTROL_INVALID")
     keys = {"registration", "registration_digest", "phase"}
-    if record["phase"] != "RUNNING":
+    if record["phase"] in {"CLOSING", "CLOSED"}:
         keys.add("close_plan")
+    if record["phase"] == "COMPLETED_NO_ENTRY":
+        keys.add("no_entry_receipt")
     if record["phase"] == "CLOSED":
         keys.add("close_receipt")
     if set(record) != keys:
@@ -81,7 +88,7 @@ def validate_session_control_v1(owner, record):
         or registration.digest_v1() != record["registration_digest"]
     ):
         raise ValueError("BTC_DEMO_SESSION_CONTROL_SCOPE_MISMATCH")
-    if record["phase"] != "RUNNING":
+    if record["phase"] in {"CLOSING", "CLOSED"}:
         from src.ops.btc_demo_session_close_v1 import validate_close_plan_v1
 
         validate_close_plan_v1(owner, registration, record["close_plan"])
@@ -89,6 +96,10 @@ def validate_session_control_v1(owner, record):
         from src.ops.btc_demo_session_close_reconciliation_v1 import validate_close_receipt_v1
 
         validate_close_receipt_v1(owner, record)
+    if record["phase"] == "COMPLETED_NO_ENTRY":
+        from src.ops.btc_demo_runtime_no_entry_v1 import validate_no_entry_v1
+
+        validate_no_entry_v1(owner, registration, record["no_entry_receipt"])
     return registration
 
 
