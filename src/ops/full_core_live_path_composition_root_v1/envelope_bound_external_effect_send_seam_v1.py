@@ -207,6 +207,7 @@ def attempt_envelope_bound_external_effect_send_v1(
     post_quantity_context=None,
     post_pending_context=None,
     futures_financial_custody=None,
+    execution_environment="LIVE",
 ) -> EnvelopeBoundSendSeamResultV1:
     if canonical_intent is not None:
         try:
@@ -282,6 +283,7 @@ def attempt_envelope_bound_external_effect_send_v1(
                 envelope=envelope,
                 stage="BEFORE_BUDGET_SUBMIT",
                 expected_account=context["account"] if context is not None else None,
+                execution_environment=execution_environment,
             )
         except CurrentPostPendingObservationError as exc:
             raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc

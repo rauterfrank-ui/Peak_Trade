@@ -30,6 +30,13 @@ from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
     layer_c_derived_exit_policy_adverse_config_digest_v1,
 )
 from tests.ops.test_btc_demo_entry_reservation_v1 import demo_entry as demo_entry
+from tests.ops.test_btc_demo_entry_submit_v1 import (
+    entry_send as entry_send,
+    send_btc_demo_entry_fixture_v1,
+)
+from tests.ops._current_post_safety_fixture_v1 import (
+    synthetic_active_post_safety_v1 as synthetic_active_post_safety_v1,
+)
 from tests.ops.test_closing_execution_cost_provision_v1 import no_network as no_network
 from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
     _permit,
@@ -38,22 +45,23 @@ from tests.ops.test_portfolio_budget_host_v1 import _fetch
 
 
 @pytest.fixture
-def original_testnet_entry(demo_entry, tmp_path, monkeypatch):
-    demo, entry, reads, movement, instant, payloads = demo_entry
+def original_testnet_entry(entry_send, tmp_path, monkeypatch):
+    case = entry_send
+    demo, entry, instant = case.host, case.entry, case.instant
+    payloads = case.payloads
+    movement = case.movement
     owner, bound = demo.budget.owner, demo.budget.bound
-    result, _ = demo.reserve_testnet_entry_v1(
-        entry=entry, reads=reads, movement_input=movement, clock=instant.timestamp
+    rid, envelope = case.rid, case.envelope
+    # Exercise original admission, shared grant, dual barriers and signed fake
+    # POST before independent signed GET confirmation. No real network.
+    send_btc_demo_entry_fixture_v1(case, "ack")
+    from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+        parse_exchange_reconciliation_identity_v1,
     )
-    rid = result.reservation.reservation_id
-    envelope, plan_context = demo.plan_testnet_entry_v1(
-        entry=entry,
-        reservation_id=rid,
-        expected_revision=demo.budget.budget_revision_ref_v1(),
-        clock=instant.timestamp,
+
+    identity = parse_exchange_reconciliation_identity_v1(
+        owner.execution_links_v1()[rid]["identity"]
     )
-    # This local synthetic permit exercises the original writer only. No
-    # transport attempt or durable send-permit consume is created by this test.
-    identity = owner.begin_execution_submit_v2(rid, envelope, plan_context, _permit(envelope))
     assert identity.execution_environment == "TESTNET"
     policy = owner.entry_budget_policy_v1()
     saved = owner.risk_snapshot_v1()["state"]["sizing_bindings"][rid]

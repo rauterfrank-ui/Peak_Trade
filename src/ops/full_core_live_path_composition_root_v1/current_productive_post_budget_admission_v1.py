@@ -34,10 +34,12 @@ class CurrentPostBudgetAdmissionContextV1:
         from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
             PortfolioCapitalReservationBudgetOwnerV1,
         )
+        from src.ops.btc_demo_budget_owner_v3 import BtcDemoBudgetOwnerV3
 
         try:
             if (
-                type(self.owner) is not PortfolioCapitalReservationBudgetOwnerV1
+                type(self.owner)
+                not in {PortfolioCapitalReservationBudgetOwnerV1, BtcDemoBudgetOwnerV3}
                 or type(self.transport_attempt) is not OriginalPermitTransportAttemptV1
                 or type(self.permit) is not ExternalEffectPermitV1
                 or type(self.identity)
@@ -50,6 +52,13 @@ class CurrentPostBudgetAdmissionContextV1:
                 or self.envelope != envelope
             ):
                 raise ValueError("ORIGINAL_CONTEXT_REQUIRED")
+            if type(self.owner) is BtcDemoBudgetOwnerV3 and (
+                type(self.identity) is not PortfolioExecutionReconciliationIdentityV2
+                or self.identity.execution_environment != "TESTNET"
+                or self.identity.slot_id != "LANE_3"
+                or self.identity.native_id != "BTC-USD_UM_XPERP-310328"
+            ):
+                raise ValueError("BTC_DEMO_ORIGINAL_BUDGET_SCOPE_REQUIRED")
             assert_envelope_unmodified_v1(envelope)
             assert_permit_matches_envelope_v1(self.permit, envelope)
             self.transport_attempt.inspect_v1(
