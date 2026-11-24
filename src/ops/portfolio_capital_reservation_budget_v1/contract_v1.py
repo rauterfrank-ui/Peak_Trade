@@ -2048,6 +2048,7 @@ class PortfolioCapitalReservationBudgetOwnerV1:
                     slot=str(slot),
                     decision=decision,
                     cycle=cycle,
+                    evaluated_at=offline_testnet_evaluated_at,
                 )
             except (ValueError, TypeError, OSError, KeyError) as exc:
                 return self._closed(("BTC_TESTNET_ORIGINAL_JOURNAL_SOURCE_REQUIRED", str(exc)))

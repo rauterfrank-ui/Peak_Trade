@@ -219,9 +219,21 @@ def test_bounded_policy_rejects_testnet_host_before_opening_store(tmp_path):
 
 @pytest.mark.parametrize("scenario", [1], indirect=True)
 @pytest.mark.parametrize(
-    "missing", ["replay", "injected", "portfolio_slot", "host_budget_recovery"]
+    "missing",
+    [
+        "replay",
+        "injected",
+        "portfolio_slot",
+        "host_budget_recovery",
+        "live-host",
+        "testnet-host",
+        "foreign-owner",
+        "foreign-cycle",
+    ],
 )
-def test_reservation_only_denies_incomplete_entry_before_acquisition(scenario, missing):
+def test_reservation_only_requires_original_simulated_entry_before_acquisition(
+    scenario, missing, monkeypatch
+):
     from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
         CurrentProductiveEnterLive29PPortfolioSlotContextV1,
         join_current_productive_enter_live_29p_before_venue_plan_v1,
@@ -242,7 +254,16 @@ def test_reservation_only_denies_incomplete_entry_before_acquisition(scenario, m
         host_budget_recovery=recovery,
         reservation_only=True,
     )
-    inputs[missing] = None
+    if missing in ("live-host", "testnet-host"):
+        monkeypatch.setattr(
+            sim, "execution_environment", "LIVE" if missing == "live-host" else "TESTNET"
+        )
+    elif missing == "foreign-owner":
+        inputs["portfolio_budget_owner"] = demo.budget.owner
+    elif missing == "foreign-cycle":
+        inputs["portfolio_slot"] = replace(inputs["portfolio_slot"], cycle_id="another-cycle")
+    else:
+        inputs[missing] = None
     result = join_current_productive_enter_live_29p_before_venue_plan_v1(**inputs)
     assert result.first_blocker == "RESERVATION_ONLY_ORIGINAL_ENTER_CONTEXT_REQUIRED"
     assert result.venue_plan_authorized is False and result.replay is None

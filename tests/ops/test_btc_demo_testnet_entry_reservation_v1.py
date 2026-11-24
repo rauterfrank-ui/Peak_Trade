@@ -128,6 +128,7 @@ def test_offline_testnet_hold_survives_cold_read(case):
     assert (
         draft.cost.digest(evidence) == checksum and evidence["execution_environment"] == "TESTNET"
     )
+    assert evidence["evaluated_at_utc"] == kwargs["clock"]()
     assert evidence["parent_revision"] == list(kwargs["expected_revision"])
     side = kwargs["entry"].cycle.decision_outcome.removeprefix("enter_").upper()
     assert binding["native_initial_margin_binding"]["receipt"]["side"] == side
@@ -178,6 +179,7 @@ def test_offline_testnet_hold_survives_cold_read(case):
         ("reconciliation", "RECON"),
         ("parent", "FRESH_FIRST_ENTRY"),
         ("race", "DURABLE_HEAD_CHANGED"),
+        ("writer-clock", "ORIGINAL_JOURNAL_SOURCE_REQUIRED"),
         ("tampered-capture", "ORIGINAL_JOURNAL_SOURCE_REQUIRED"),
         ("settlement", "USDC_SETTLEMENT_SOURCE_REQUIRED"),
     ],
@@ -220,6 +222,16 @@ def test_invalid_source_or_journal_cannot_create_hold(case, fault, reason, monke
             return write_source(path, dict(packet, decision="other-fixture-decision"))
 
         monkeypatch.setattr(draft, "immutable_json_v1", corrupt_source)
+    elif fault == "writer-clock":
+        reserve = owner.try_reserve_v1
+
+        def wrong_receipt_time(**arguments):
+            arguments["offline_testnet_evaluated_at"] = (
+                datetime.fromisoformat(kwargs["clock"]()) + timedelta(seconds=1)
+            ).isoformat()
+            return reserve(**arguments)
+
+        monkeypatch.setattr(owner, "try_reserve_v1", wrong_receipt_time)
     elif fault == "race":
         writer = owner.try_reserve_v1
 

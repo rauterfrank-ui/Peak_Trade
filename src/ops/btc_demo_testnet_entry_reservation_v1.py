@@ -243,7 +243,7 @@ def _sizing(cycle, bound, instruments, equity, observed_at, policy, source_diges
     return sizing, source
 
 
-def require_fixture_journal_source_v1(owner, *, checksum, slot, decision, cycle):
+def require_fixture_journal_source_v1(owner, *, checksum, slot, decision, cycle, evaluated_at):
     """Verify the fixture journal and its original input before honoring a replay clock."""
     scope = owner.durable_scope_identity_v1()
     root = Path(scope["root"])
@@ -269,7 +269,8 @@ def require_fixture_journal_source_v1(owner, *, checksum, slot, decision, cycle)
     capture = json.loads(path.read_bytes())
     _need(
         cost.digest(capture) == checksum
-        and capture["schema"] == "btc_testnet_offline_entry_sources.v1"
+        and capture["schema"] == "btc_testnet_offline_entry_sources.v2"
+        and capture["evaluated_at_utc"] == evaluated_at
         and capture["source"] == SOURCE
         and capture["execution_environment"] == "TESTNET"
         and capture["account"] == scope["account"]
@@ -356,8 +357,29 @@ def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_
         gate.ok and gate.classification.value == "MATCH",
         "BTC_TESTNET_ORIGINAL_RECONCILIATION_MATCH_REQUIRED",
     )
+    base = dict(
+        bound_instrument=bound, decision_epoch=epoch, cycle_id=cycle.cycle_id, evaluated_at_utc=now
+    )
+    opening = cost.EntryExecutionCostObservationV1.capture_v1(
+        **base,
+        account_identity=account,
+        sources={k: rows[k] for k in ("account", "instruments", "fees", "book")},
+    )
+    native = NativeInitialMarginObservationV1.capture_v1(
+        sources={k: rows[k] for k in ("balance", "leverage")},
+        opening_observation=opening,
+        evaluated_at_utc=now,
+    )
+    funding = cost.FundingCostObservationV1.capture_v1(**base, source=rows["funding"])
+    movement = AbsoluteMovementCostObservationV1.capture_v1(
+        instrument_raw_input=movement_input, opening_observation=opening, evaluated_at_utc=now
+    )
+    finished = clock()
+    acquisition.acquisition_age_seconds_v1(acquired_at_utc=now, now_utc=finished)
+    acquisition.acquisition_age_seconds_v1(acquired_at_utc=epoch, now_utc=finished)
     capture = dict(
-        schema="btc_testnet_offline_entry_sources.v1",
+        schema="btc_testnet_offline_entry_sources.v2",
+        evaluated_at_utc=finished,
         execution_environment="TESTNET",
         source=SOURCE,
         account=account,
@@ -383,26 +405,11 @@ def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_
         policy,
         checksum,
     )
-    base = dict(
-        bound_instrument=bound, decision_epoch=epoch, cycle_id=cycle.cycle_id, evaluated_at_utc=now
-    )
-    opening = cost.EntryExecutionCostObservationV1.capture_v1(
-        **base,
-        account_identity=account,
-        sources={k: rows[k] for k in ("account", "instruments", "fees", "book")},
-    )
-    native = NativeInitialMarginObservationV1.capture_v1(
-        sources={k: rows[k] for k in ("balance", "leverage")},
-        opening_observation=opening,
-        evaluated_at_utc=now,
-    )
-    funding = cost.FundingCostObservationV1.capture_v1(**base, source=rows["funding"])
-    movement = AbsoluteMovementCostObservationV1.capture_v1(
-        instrument_raw_input=movement_input, opening_observation=opening, evaluated_at_utc=now
-    )
-    finished = clock()
-    acquisition.acquisition_age_seconds_v1(acquired_at_utc=now, now_utc=finished)
-    acquisition.acquisition_age_seconds_v1(acquired_at_utc=epoch, now_utc=finished)
+    folder = lane / "entry-reservation-sources"
+    _need(folder.resolve() == folder, "BTC_TESTNET_FIXTURE_SOURCE_PATH_INVALID")
+    path = folder / (checksum + ".json")
+    _need(path.resolve() == path, "BTC_TESTNET_FIXTURE_SOURCE_PATH_INVALID")
+    immutable_json_v1(path, capture)
     recovered = owner.recover_automatically_v1(
         output=output,
         reconciliation=gate,
@@ -415,11 +422,6 @@ def _reserve_fixture_entry_v1(host, cycle, *, sources, movement_input, expected_
     _need(recovered.disposition is ReserveDispositionV1.ADMITTED, ",".join(recovered.reason_codes))
     seq, head = budget.budget_revision_ref_v1()
     _need(seq == expected_revision[0] + 1, "BTC_TESTNET_RECOVERY_REVISION_CHANGED")
-    folder = lane / "entry-reservation-sources"
-    _need(folder.resolve() == folder, "BTC_TESTNET_FIXTURE_SOURCE_PATH_INVALID")
-    path = folder / (checksum + ".json")
-    _need(path.resolve() == path, "BTC_TESTNET_FIXTURE_SOURCE_PATH_INVALID")
-    immutable_json_v1(path, capture)
     local = owner.local_commitment_readback_v1()
     generation = owner.require_local_commitment_readback_v1(local, account_identity=account)
     result = _reserve_from_admitted_capital_v1(

@@ -814,6 +814,34 @@ def check_authenticated_double_play_29p_admission_v1(
     )
 
 
+def _reservation_only_context_matches_v1(replay, owner, slot, recovery, injected, bound, epoch):
+    from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
+        HostBudgetRecoveryContextV1,
+        PortfolioBudgetHostV1,
+    )
+
+    return (
+        current_productive_decision_class_v1(replay) == DECISION_ENTER
+        and type(recovery) is HostBudgetRecoveryContextV1
+        and type(recovery.host) is PortfolioBudgetHostV1
+        and not recovery.host.closed
+        and recovery.host.execution_environment == "INTERNAL_SIMULATED_EXECUTION"
+        and type(owner) is PortfolioCapitalReservationBudgetOwnerV1
+        and recovery.host.owner is owner
+        and type(slot) is CurrentProductiveEnterLive29PPortfolioSlotContextV1
+        and slot.slot_id == "LANE_3"
+        and bound is not None
+        and recovery.host.bindings == {slot.slot_id: bound}
+        and slot.decision_id == replay.evidence.decision_id
+        and type(injected) is CurrentProductiveEnterLive29PInjectedGetV1
+        and recovery.account == recovery.host.account == injected.expected_account_identity
+        and slot.cycle_id == injected.acquisition_cycle_id
+        and epoch
+        == injected.acquisition_decision_id
+        == replay.intermediate.market_context.decision_time
+    )
+
+
 def join_current_productive_enter_live_29p_before_venue_plan_v1(
     *,
     replay: IntegratedOfflineReplayResultV1 | None,
@@ -835,13 +863,17 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     if type(reservation_only) is not bool or (
         reservation_only
         and (
-            current_productive_decision_class_v1(replay) != DECISION_ENTER
-            or injected is None
-            or portfolio_budget_owner is None
-            or portfolio_slot is None
-            or host_budget_recovery is None
-            or double_play is not None
+            double_play is not None
             or handoff_journal is not None
+            or not _reservation_only_context_matches_v1(
+                replay,
+                portfolio_budget_owner,
+                portfolio_slot,
+                host_budget_recovery,
+                injected,
+                bound_instrument,
+                decision_epoch,
+            )
         )
     ):
         return _denied_result(
