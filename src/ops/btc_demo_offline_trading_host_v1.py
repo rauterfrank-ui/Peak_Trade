@@ -389,6 +389,18 @@ class BtcDemoOfflineTradingHostV1:
                 clock=clock,
             )
 
+    def plan_testnet_entry_v1(self, *, entry, reservation_id, expected_revision, clock):
+        """Bind the original reserved quantity to a TESTNET plan, without a submit."""
+        from src.ops.btc_demo_entry_plan_v1 import prepare_btc_demo_entry_plan_v1
+
+        return prepare_btc_demo_entry_plan_v1(
+            self,
+            entry=entry,
+            reservation_id=reservation_id,
+            expected_revision=expected_revision,
+            clock=clock,
+        )
+
     @staticmethod
     def _monetary_assessment(report, decision_id):
         instrument = next(

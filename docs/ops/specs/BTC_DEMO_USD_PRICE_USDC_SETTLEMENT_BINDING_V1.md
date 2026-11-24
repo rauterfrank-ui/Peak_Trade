@@ -52,4 +52,12 @@ multi-level depth, fees, cold readback, and rejection before a hold when
 source or monetary identities disagree. They do not prove the complete
 scheduled five-lane runtime or its subsequent Demo reversal chain.
 
+The explicit entry-plan handoff now consumes the same retained sizing binding
+through the original canonical intent builder, composition, venue translator
+and envelope producer. It carries TESTNET as order environment, preserves the
+original decision and Core cursor, and stores the original entry-frame
+reference. Expiry before or during composition is checked before journal
+mutation. Cold readback preserves this plan and requires recovery admission.
+This handoff creates no permit or submit attempt and opens no transport.
+
 RUNTIME_AUTHORIZATION_EFFECT=NONE
